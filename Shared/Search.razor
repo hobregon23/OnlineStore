@@ -1,0 +1,28 @@
+﻿<div class="hero__search__form">
+    <EditForm Model="@Search_object" OnValidSubmit="@OnValidSubmit">
+        <select class="hero__search__categories custom1-select" @onchange="OnChange" required>
+            <option value="all">Todo</option>
+            @foreach (var item in Categories)
+            {
+                <option value="@item.Name">
+                    @item.Name
+                </option>
+            }
+            <span class="arrow_carrot-down"></span>
+        </select>
+        <InputText placeholder="¿Qué necesitas?" class="form-control" @bind-Value="@Search_object.Text"></InputText>
+        <button type="submit" class="site-btn">BUSCAR</button>
+    </EditForm>
+</div>
+
+@code {
+
+    [Parameter] public SearchObject Search_object { get; set; } = new SearchObject();
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+    [Parameter] public List<Category> Categories { get; set; }
+
+    public void OnChange(ChangeEventArgs e)
+    {
+        Search_object.Category = e.Value.ToString();
+    }
+}

@@ -1,0 +1,209 @@
+﻿@page "/"
+@inject IJSRuntime JS
+@inject IFeaturedService featuredService
+@inject IProductService productService
+@inject ICategoryService categoryService
+@inject NavigationManager navi
+
+
+<div class="hero__item set-bg mx-md-auto mb-5" style="background-image: url(img/hero/banner.jpg); width: 85%">
+    <div class="hero__text">
+        <span>ENCUENTRA</span>
+        <h2>LO MEJOR <br />DE HUAWEI</h2>
+        <p>Todo en un solo lugar</p>
+        <a href="shop-grid/?brand=Huawei" class="primary-btn">¡Ver Más!</a>
+    </div>
+</div>
+
+<!-- Categories Section Begin -->
+<section class="categories">
+    <div class="container">
+        <div class="row">
+            <div class="categories__slider owl-carousel">
+                @foreach (var item in Categories)
+                {
+                    <div class="col-lg-3 mb-3">
+                        <div class="categories__item set-bg" style="background-image: url(@item.Image_url);">
+                            <h5 class="transition-3d-hover"><a href="shop-grid/?category=@item.Name">@item.Name</a></h5>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Categories Section End -->
+<!-- Featured Section Begin -->
+@if (featuredProducts.Count > 0)
+{
+    <section class="featured spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <h2>Productos Destacados</h2>
+                    </div>
+                    <div class="featured__controls">
+                        <ul>
+                            <li class="@(F_active("Todos"))" data-filter="*" @onclick="@(()=>Featured_click("Todos"))">Todos</li>
+                            @foreach (var item in featuredCategories)
+                            {
+                                <li class="@(F_active(item.Product.Category_name))" data-filter=".@item.Product.Category_name" @onclick="@(()=>Featured_click(item.Product.Category_name))">@item.Product.Category_name</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row featured__filter">
+                @foreach (var item in featuredProducts)
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6 mix @item.Product.Category_name fresh-meat">
+                        <div class="featured__item">
+                            <a href="/shop-details?id=@item.Product.Id">
+                                <div class="featured__item__pic set-bg" style="background-image: url(@item.Product.Image_url);">
+                                    <ul class="featured__item__pic__hover">
+                                        @if (item.Product.Qty <= 0)
+                                        {
+                                            <li class=" w-100">
+                                                <span class="warning-bg-label w-100" style="font-weight: 900">AGOTADO</span>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <a href=""><i class="fa fa-shopping-cart"></i></a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </a>
+                            <div class="featured__item__text">
+                                <h6><a href="/shop-details?id=@item.Product.Id">@item.Product.Name</a></h6>
+                                @if (item.Product.Original_price > item.Product.Price)
+                                {
+                                    <div class="product__discount__item__text" style="padding-top: 0">
+                                        <div class="product__item__price">
+                                            $@item.Product.Price
+                                            <span>$@item.Product.Original_price</span>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <h5>$@item.Product.Price</h5>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+<!-- Featured Section End -->
+<!-- Banner Begin -->
+<div class="banner mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="banner__pic">
+                    <a href="shop-grid"><img src="img/banner/banner-1.jpg" alt=""></a>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="banner__pic">
+                    <a href="shop-grid/?brand=Xiaomi"><img src="img/banner/banner-2.jpg" alt=""></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Banner End -->
+<!-- Latest Product Section Begin -->
+<section class="latest-product spad mb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="latest-product__text">
+                    <h4>Productos Recientes</h4>
+                    <div class="latest-product__slider row">
+                        <div class="latest-prdouct__slider__item row mx-md-auto">
+                            @foreach (var item in recentProducts)
+                            {
+                                <a href="/shop-details?id=@item.Id" class="latest-product__item mr-5">
+                                    <div class="latest-product__item__pic">
+                                        <img src="@item.Image_url" alt="">
+                                    </div>
+                                    <div class="latest-product__item__text">
+                                        <h6>@item.Name</h6>
+                                        @if (item.Original_price > item.Price)
+                                        {
+                                            <div class="product__discount__item__text" style="padding-top: 0">
+                                                <div class="product__item__price">
+                                                    $@item.Price
+                                                    <span>$@item.Original_price</span>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span>$@item.Price</span>
+                                        }
+                                    </div>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Latest Product Section End -->
+
+
+
+
+@code{
+
+    public string F_item_active { get; set; } = "Todos";
+    public List<FeaturedProduct> featuredProducts { get; set; } = new List<FeaturedProduct>();
+    public List<FeaturedProduct> featuredCategories { get; set; } = new List<FeaturedProduct>();
+    public List<Product> recentProducts { get; set; } = new List<Product>();
+    public List<Category> Categories { get; set; } = new List<Category>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("featured__controls_click");
+            await JS.InvokeVoidAsync("OwlCarousel");
+        }
+    }
+
+    private async Task LoadData()
+    {
+        featuredProducts = await featuredService.GetAll();
+        recentProducts = await productService.GetRecents(6);
+        Categories = await categoryService.GetAll();
+        featuredCategories = featuredProducts.GroupBy(x => x.Product.Category_name).Select(x => x.FirstOrDefault()).ToList();
+    }
+
+    private string F_active(string item)
+    {
+        return F_item_active == item ? "active" : "";
+    }
+
+    private async Task Featured_click(string item)
+    {
+        F_item_active = item;
+        await JS.InvokeVoidAsync("featured__controls_click");
+    }
+
+}

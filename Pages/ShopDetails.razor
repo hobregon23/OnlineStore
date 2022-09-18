@@ -1,0 +1,162 @@
+﻿@page "/shop-details"
+@inject IJSRuntime JS
+@inject IProductService productService
+@inject NavigationManager navi
+
+@if (Product == null)
+{
+    navi.NavigateTo("/shop-grid", true);
+}
+else
+{
+    <!-- Product Details Section Begin -->
+    <section class="product-details spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="product__details__pic">
+                        <div class="product__details__pic__item">
+                            <img class="product__details__pic__item--large"
+                                 src="@Product.Image_url" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="product__details__text">
+                        <h3>@Product.Name</h3>
+                        @if (Product.Original_price > Product.Price)
+                        {
+                            <div class="product__discount__item__text1" style="padding-top: 0">
+                                <div class="product__details__price">
+                                    $@Product.Price
+                                    <span>$@Product.Original_price</span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="product__details__price">$@Product.Price</div>
+                        }
+                        <p>
+                            @Product.Description
+                        </p>
+                        <div class="product__details__quantity">
+                            <div class="quantity">
+                                <div class="pro-qty">
+                                    <input type="text" value="1">
+                                </div>
+                            </div>
+                        </div>
+                        @if (Product.Qty <= 0)
+                        {
+                            <span class="danger-label">AGOTADO</span>
+                        }
+                        else
+                        {
+                            <a href="" class="primary-btn">AÑADIR</a>
+                        }
+                        <ul>
+                            <li><b>Disponibilidad</b> <span>@(Product.Qty > 0 ? "En Existencia " : "Agotado") <samp class="ml-5">Quedan: @Product.Qty</samp></span></li>
+                            <li><b>Marca</b> <span>@Product.Brand_name</span></li>
+                            <li><b>Categoría</b> <span>@Product.Category_name</span></li>
+                            <li><b>Modelo</b> <span>@Product.Model_name</span></li>
+                            <li><b>Estado</b> <span>@(Product.Is_new ? "Nuevo" : "Reparado")</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Product Details Section End -->
+    <!-- Related Product Section Begin -->
+    @if (Related_products.Count > 0)
+    {
+        <section class="related-product">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="section-title related__product__title">
+                            <h2>Te Puede Interesar</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    @foreach (var item in Related_products)
+                    {
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <div class="product__item">
+                                <a href="" @onclick="@(() => navi.NavigateTo("/shop-details?id="+@item.Id, true))">
+                                    <div class="product__item__pic set-bg" style="background-image: url(@item.Image_url);">
+                                        <ul class="product__item__pic__hover">
+                                            @if (item.Qty <= 0)
+                                            {
+                                                <li class=" w-100">
+                                                    <span class="warning-bg-label w-100" style="font-weight: 900">AGOTADO</span>
+                                                </li>
+                                            }
+                                            else
+                                            {
+                                                <li>
+                                                    <a href=""><i class="fa fa-shopping-cart"></i></a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </a>
+                                <div class="product__item__text">
+                                    <h6><a href="" @onclick="@(() => navi.NavigateTo("/shop-details?id="+@item.Id, true))">@item.Name</a></h6>
+                                    @if (item.Original_price > item.Price)
+                                    {
+                                        <div class="product__discount__item__text" style="padding-top: 0">
+                                            <div class="product__item__price">
+                                                $@item.Price
+                                                <span>$@item.Original_price</span>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <h5>$@item.Price</h5>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+    <!-- Related Product Section End -->
+}
+
+
+@code{
+
+    public List<Product> Related_products { get; set; } = new List<Product>();
+    public int Id { get; set; }
+    public Product Product { get; set; } = new Product();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+        await LoadParameters();
+    }
+
+    private async Task LoadParameters()
+    {
+        var uri = navi.ToAbsoluteUri(navi.Uri);
+        if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var _param))
+        {
+            int _id;
+            int.TryParse(_param, out _id);
+            Id = _id;
+        }
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        Product = await productService.GetById(Id);
+        Related_products = await productService.GetRandom();
+    }
+}

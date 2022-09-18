@@ -1,0 +1,114 @@
+﻿@page "/checkout"
+@inject NavigationManager navi
+
+
+<!-- Checkout Section Begin -->
+<section class="checkout spad" style="padding-top: 30px">
+    <div class="container">
+        <div class="checkout__form">
+            <h4>Detalles del Pago</h4>
+            <form action="#">
+                <div class="row">
+                    <div class="col-lg-8 col-md-6">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Nombre<span>*</span></p>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Apellidos<span>*</span></p>
+                                    <input type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Provincia es un select<span>*</span></p>
+                            <input type="text">
+                        </div>
+                        <div class="checkout__input">
+                            <p>Dirección<span>*</span></p>
+                            <input type="text" class="checkout__input__add">
+                        </div>
+                        <div class="checkout__input">
+                            <p>Pueblo/Ciudad<span>*</span></p>
+                            <input type="text">
+                        </div>
+                        <div class="checkout__input">
+                            <p>Municipio<span>*</span></p>
+                            <input type="text">
+                        </div>
+                        <div class="checkout__input">
+                            <p>Código Postal<span>*</span></p>
+                            <input type="text">
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Teléfono<span>*</span></p>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Correo<span>*</span></p>
+                                    <input type="text">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="checkout__order">
+                            <h4>Tu orden</h4>
+                            <div class="checkout__order__products">Productos <span>Total</span></div>
+                            <ul>
+                                <li>Vegetable’s Package <span>$75.99</span></li>
+                                <li>Fresh Vegetable <span>$151.99</span></li>
+                                <li>Organic Bananas <span>$53.99</span></li>
+                            </ul>
+                            <div class="checkout__order__subtotal">Subtotal <span>$750.99</span></div>
+                            <div class="checkout__order__shipping">Envío <span>$10.00</span></div>
+                            <div class="checkout__order__total">Total <span>$760.99</span></div>
+                            <div class="checkout__input__checkbox">
+                                <label for="shipping">
+                                    Recoger en la Tienda
+                                    <input type="checkbox" id="shipping">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="checkout__input__checkbox">
+                                <label for="inperson">
+                                    Presencial
+                                    <input type="checkbox" checked disabled id="inperson">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <p>
+                                El pago se realizará de forma presencial, en efectivo o mediante transferencia bancaria
+                                a la cuenta que aparece en la factura una vez haya examinado los productos recibidos.
+                            </p>
+                            <button type="submit" class="site-btn">CREAR ORDEN</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<!-- Checkout Section End -->
+
+
+@code{
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        //
+    }
+}

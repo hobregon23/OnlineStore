@@ -1,0 +1,34 @@
+﻿<AuthorizeView>
+    <Authorized>
+        <a href="/editar-cuenta">Hola, @Name!</a>
+        <form method="get" action="/salir">
+            <button type="submit" class="nav-link btn btn-link text-danger">Salir</button>
+        </form>
+    </Authorized>
+    <NotAuthorized>
+        <a href="/login">Acceder</a>
+        <a href="/signup">Registrarse</a>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    [CascadingParameter] protected Task<AuthenticationState> AuthStat { get; set; }
+
+    private string Name { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var user = (await AuthStat).User;
+        var claims = user.Claims;
+        try
+        {
+            Name = claims.First(x => x.Type.Contains("givenname")).Value;
+        }
+        catch
+        {
+            Name = "";
+        }
+    }
+
+}

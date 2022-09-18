@@ -1,0 +1,224 @@
+﻿@page "/shop-grid"
+@inject IProductService productService
+@inject ICategoryService categoryService
+@inject NavigationManager navi
+
+
+<!-- Product Section Begin -->
+<section class="product spad" style="padding-top: 0">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-5">
+                <div class="sidebar" style="background-image: none">
+                    <div class="sidebar__item">
+                        <h4>Categorías</h4>
+                        <ul>
+                            <li class="@(navi.Uri.Length == navi.BaseUri.Length+9 ? "ul-active" : "")"><a href="" @onclick="@(() => navi.NavigateTo("shop-grid", true))">Todas</a></li>
+                            @foreach (var item in Categories)
+                            {
+                                <li class="@(navi.Uri.Contains(item.Name) ? "ul-active" : "")"><a href="" @onclick="@(() => navi.NavigateTo("shop-grid/?category="+@item.Name, true))">@item.Name</a></li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="sidebar__item">
+                        <h4>Precio</h4>
+                        <div class="price-range-wrap">
+                            @*<div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
+                                 data-min="1" data-max="500000">
+                                <div class="ui-slider-range ui-corner-all ui-widget-header"></div>
+                                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
+                                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
+                            </div>*@
+                            <EditForm Model="Search_filter.Price_range" OnValidSubmit="ApplyPriceRange">
+                                <div class="range-slider">
+                                    <div class="price-input">
+                                        <span class="mr-2">Min. $</span>
+                                        <InputNumber id="minamount" @bind-Value="@Search_filter.Price_range.Min" />
+                                        <br />
+                                        <span class="mr-2">Max $</span>
+                                        <InputNumber id="maxamount" @bind-Value="@Search_filter.Price_range.Max" />
+                                    </div>
+                                    <div>
+                                        <button type="submit" class="btn btn-outline-success w-75 mt-3">Aplicar</button>
+                                    </div>
+                                </div>
+                            </EditForm>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9 col-md-7">
+                <div class="filter__item">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-5">
+                            <div class="filter__sort">
+                                <span>Filtrar por</span>
+                                <select @onchange="OnFilterChange">
+                                    <option value="all">Todos</option>
+                                    <option value="new">Nuevo</option>
+                                    <option value="repaired">Reparado</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4">
+                            <div class="filter__found">
+                                <h6><span>@Products.Count de @itemsTotal</span> Productos encontrados</h6>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-3">
+                            <div class="filter__option">
+                                <span class="icon_grid-2x2"></span>
+                                <span class="icon_ul"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    @if (Products == null)
+                    {<p class="text-danger mx-md-auto" style="font-family: 'Arial Rounded MT'; text-align: center">Cargando</p>}
+                    else if (Products.Count == 0)
+                    {
+                        <p class="text-danger mx-md-auto" style="font-family: 'Arial Rounded MT'; text-align: center">N/A</p>
+                    }
+                    else
+                    {
+                        @foreach (var item in Products)
+                        {
+                            <div class="col-lg-4 col-md-6 col-sm-6">
+                                <div class="product__item">
+                                    <a href="/shop-details?id=@item.Id">
+                                        <div class="product__item__pic set-bg" style="background-image: url(@item.Image_url);">
+                                            <div class="triangle">@(item.Is_new?"N":"R")</div>
+                                            <ul class="product__item__pic__hover">
+                                                @if (item.Qty <= 0)
+                                                {
+                                                    <li class=" w-100">
+                                                        <span class="warning-bg-label w-100" style="font-weight: 900">AGOTADO</span>
+                                                    </li>
+                                                }
+                                                else
+                                                {
+                                                    <li>
+                                                        <a href=""><i class="fa fa-shopping-cart"></i></a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </a>
+                                    <div class="product__item__text">
+                                        <h6><a href="/shop-details?id=@item.Id">@item.Name</a></h6>
+                                        @if (item.Original_price > item.Price)
+                                        {
+                                            <div class="product__discount__item__text" style="padding-top: 0">
+                                                <div class="product__item__price">
+                                                    $@item.Price
+                                                    <span>$@item.Original_price</span>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <h5>$@item.Price</h5>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="product__pagination">
+                    <PaginationComponent TotaPagesQuantity="totalPageQuantity" CurrentPage="currentPage" Radius="3" SelectedPage="SelectedPage"></PaginationComponent>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Product Section End -->
+
+
+
+@code{
+
+    private SearchFilter Search_filter { get; set; } = new SearchFilter();
+
+    public List<Product> Products { get; set; } = new List<Product>();
+    public List<Category> Categories { get; set; } = new List<Category>();
+
+    private int totalPageQuantity;
+    private int itemsTotal;
+    private int currentPage = 1;
+    string campoSorteoActual = "Nombre";
+    string ordenSorteoActual = "Asc";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+        await LoadParameters();
+    }
+
+    private async Task LoadParameters()
+    {
+        var uri = navi.ToAbsoluteUri(navi.Uri);
+        if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("category", out var _cat))
+        {
+            Search_filter.Category = _cat;
+        }
+        if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("search_text", out var _txt))
+        {
+            Search_filter.Search_text = _txt;
+        }
+        await LoadData();
+    }
+
+    private async Task LoadData(int page = 1, string campoSorteo = "Created_at", string ordenSorteo = "Desc")
+    {
+        var result = await productService.GetPag(new Pagination() { Page = page, QuantityPerPage = 21 }, Search_filter, campoSorteo, ordenSorteo);
+        totalPageQuantity = result.CantPorPag;
+        itemsTotal = result.ItemsTotal;
+        Products = result.ListaObjetos.ToList();
+        Categories = await categoryService.GetAll();
+    }
+
+    private async Task SelectedPage(int page)
+    {
+        currentPage = page;
+        await LoadData(page);
+    }
+
+    private string OrderIndicator(string campoSorteo)
+    {
+        if (campoSorteo.Equals(campoSorteoActual))
+        {
+            return ordenSorteoActual.Equals("Asc") ? "oi oi-arrow-top" : "oi oi-arrow-bottom";
+        }
+        return string.Empty;
+    }
+
+    private async Task Order(string campoSorteo)
+    {
+        if (campoSorteo.Equals(campoSorteoActual))
+        {
+            ordenSorteoActual = ordenSorteoActual.Equals("Asc") ? "Desc" : "Asc";
+        }
+        else
+        {
+            campoSorteoActual = campoSorteo;
+            ordenSorteoActual = "Asc";
+        }
+        await LoadData(1, campoSorteoActual, ordenSorteoActual);
+    }
+
+    public async Task OnFilterChange(ChangeEventArgs e)
+    {
+        Search_filter.Condition = e.Value.ToString();
+        await LoadData();
+    }
+
+    public async Task ApplyPriceRange()
+    {
+        if (Search_filter.Price_range.Max < 2)
+            return;
+        Search_filter.Price_range.Is_active = true;
+        await LoadData();
+    }
+}

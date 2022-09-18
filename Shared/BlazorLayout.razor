@@ -1,0 +1,34 @@
+﻿@inherits LayoutComponentBase
+@using Blazored.Toast.Configuration
+
+    <style>
+        @@media (min-width: 768px) {
+            app {
+                flex-direction: row;
+            }
+        }
+    </style>
+
+<div class="sidebar">
+    <NavMenu />
+</div>
+
+<div class="main">
+    <div class="top-row px-4">
+        <LoginDisplay />
+        <AuthorizeView>
+            @if (context.User.Identity.IsAuthenticated)
+            {
+                <AutoLogout Roles="@(new List<string>() { "Admin", "User" })" />
+            }
+        </AuthorizeView>
+        <a href="/about" target="_self"><span class="oi oi-code" aria-hidden="true"></span></a>
+    </div>
+
+    <div class="content px-4">
+        @Body
+    </div>
+</div>
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="3"
+                ShowProgressBar="true" />
