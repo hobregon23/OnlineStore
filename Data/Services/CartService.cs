@@ -49,9 +49,13 @@ namespace OnlineStore.Data.Services
         {
             var cart = await _localStorage.GetItemAsync<Cart>("cart");
             if (cart == null)
-                return 0;
-
-            return cart != null ? cart.Items.Count : 0;
+                return 0m;
+            decimal res = 0m;
+            foreach (var item in cart.Items)
+            {
+                res += item.Qty * item.Price;
+            }
+            return res;
         }
 
         public async Task Add(Product item, int qty)

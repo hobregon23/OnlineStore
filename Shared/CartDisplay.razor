@@ -28,6 +28,7 @@
         InvokeAsync(async () =>
         {
             qty = await cartService.GetCount();
+            total_amount = await cartService.GetTotalAmount();
             StateHasChanged();
         });
 
