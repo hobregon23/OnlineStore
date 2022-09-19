@@ -1,0 +1,42 @@
+﻿@inject NavigationManager navi
+@inject IJSRuntime JS
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="header__logo">
+                <a href="./"><img src="img/logo.png" alt=""></a>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <nav class="header__menu">
+                <ul>
+                    <li class="@(navi.Uri.Length == navi.BaseUri.Length ? "active" : "")"><a href="./" @onclick="@(()=>navi.NavigateTo("", true))">Inicio</a></li>
+                    <li class="@(navi.Uri.Contains("shop-grid") ? "active" : "")"><a href="/shop-grid" @onclick="@(()=>navi.NavigateTo("shop-grid", true))">Tienda</a></li>
+                    <li class="@(navi.Uri.Contains("contact") ? "active" : "")"><a href="/contact" @onclick="@(()=>navi.NavigateTo("contact", true))">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-lg-3">
+            <div class="header__cart">
+                <ul>
+                    <li><a href="shopping-cart"><i class="fa fa-shopping-bag"></i> <span>0</span></a></li>
+                </ul>
+                <div class="header__cart__price">total: <span>$0.00</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="humberger__open" @onclick="MobileMenuOpen">
+        <i class="fa fa-bars"></i>
+    </div>
+</div>
+
+@code{
+
+    private async Task MobileMenuOpen()
+    {
+        await JS.InvokeVoidAsync("humberger__open");
+    }
+
+}

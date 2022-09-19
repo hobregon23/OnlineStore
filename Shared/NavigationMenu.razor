@@ -1,0 +1,68 @@
+﻿@inject IJSRuntime JS
+@inject ICategoryService categoryService
+@inject NavigationManager navi
+
+<section class="hero hero-normal">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="hero__categories" @onclick="ShowHide">
+                    <div class="hero__categories__all">
+                        <i class="fa fa-bars"></i>
+                        <span>Categorías</span>
+                    </div>
+                    <ul>
+                        @foreach (var item in Categories)
+                        {
+                            <li><a href="" @onclick="@(() => navi.NavigateTo("shop-grid/?category="+@item.Name, true))">@item.Name</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="hero__search">
+                    <Search Categories="@Categories" OnValidSubmit="@Search" Search_object="@Search_object" />
+                    <div class="hero__search__phone">
+                        <div class="hero__search__phone__icon">
+                            <i class="fa fa-phone"></i>
+                        </div>
+                        <div class="hero__search__phone__text">
+                            <h5>+53 53604366</h5>
+                            <span>soporte 24horas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@code{
+
+    public List<Category> Categories { get; set; } = new List<Category>();
+    public SearchObject Search_object { get; set; } = new SearchObject();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        Categories = await categoryService.GetAll();
+    }
+
+    private async Task ShowHide()
+    {
+        await JS.InvokeVoidAsync("hero__categories_ShowHide");
+    }
+
+    private void Search()
+    {
+        if (string.IsNullOrEmpty(Search_object.Text) || string.IsNullOrWhiteSpace(Search_object.Text))
+            return;
+        navi.NavigateTo("shop-grid/?category=" + Search_object.Category + "&search_text=" + Search_object.Text, true);
+    }
+}
