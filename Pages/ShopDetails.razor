@@ -159,4 +159,10 @@ else
         Product = await productService.GetById(Id);
         Related_products = await productService.GetRandom();
     }
+
+    private async Task AddToCart()
+    {
+        var cart = await JS.GetFromLocalStorage("cart");
+
+    }
 }

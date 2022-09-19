@@ -17,6 +17,7 @@ using OnlineStore.Models;
 using OnlineStore.Data.Services;
 using OnlineStore.Data.Auth;
 using OnlineStore.UoW;
+using Blazored.LocalStorage;
 
 namespace OnlineStore
 {
@@ -36,6 +37,7 @@ namespace OnlineStore
             services.AddMvc();
             services.AddSweetAlert2();
             services.AddBlazoredToast();
+            services.AddBlazoredLocalStorage();
             services.AddControllers();
             services.AddRazorPages();
             services.AddServerSideBlazor();
