@@ -42,21 +42,23 @@ else
                         <p>
                             @Product.Description
                         </p>
-                        <div class="product__details__quantity">
-                            <div class="quantity">
-                                <div class="pro-qty">
-                                    <input type="text" value="1">
+                        <EditForm Model="Product" OnValidSubmit="OnSubmit">
+                            <div class="product__details__quantity">
+                                <div class="quantity">
+                                    <div class="pro-qty">
+                                        <InputNumber @bind-Value="@Qty" />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        @if (Product.Qty <= 0)
-                        {
-                            <span class="danger-label">AGOTADO</span>
-                        }
-                        else
-                        {
-                            <span @onclick="@(()=>AddToCart(Product))" class="primary-btn" style="cursor: pointer">AÑADIR</span>
-                        }
+                            @if (Product.Qty <= 0)
+                            {
+                                <span class="danger-label">AGOTADO</span>
+                            }
+                            else
+                            {
+                                <button type="submit" class="primary-btn">AÑADIR</button>
+                            }
+                        </EditForm>
                         <ul>
                             <li><b>Disponibilidad</b> <span>@(Product.Qty > 0 ? "En Existencia " : "Agotado") <samp class="ml-5">Quedan: @Product.Qty</samp></span></li>
                             <li><b>Marca</b> <span>@Product.Brand_name</span></li>
@@ -87,24 +89,22 @@ else
                     {
                         <div class="col-lg-3 col-md-4 col-sm-6">
                             <div class="product__item">
-                                <a href="" @onclick="@(() => navi.NavigateTo("/shop-details?id="+@item.Id, true))">
-                                    <div class="product__item__pic set-bg" style="background-image: url(@item.Image_url);">
-                                        <ul class="product__item__pic__hover">
-                                            @if (item.Qty <= 0)
-                                            {
-                                                <li class=" w-100">
-                                                    <span class="warning-bg-label w-100" style="font-weight: 900">AGOTADO</span>
-                                                </li>
-                                            }
-                                            else
-                                            {
-                                                <li>
-                                                    <a href=""><i class="fa fa-shopping-cart"></i></a>
-                                                </li>
-                                            }
-                                        </ul>
-                                    </div>
-                                </a>
+                                <div class="product__item__pic set-bg" style="background-image: url(@item.Image_url);">
+                                    <ul class="product__item__pic__hover">
+                                        @if (item.Qty <= 0)
+                                        {
+                                            <li class=" w-100">
+                                                <span class="warning-bg-label w-100" style="font-weight: 900">AGOTADO</span>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <span style="cursor:pointer" @onclick="@(()=>AddToCart(item, 1))"><i class="fa fa-shopping-cart"></i></span>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
                                 <div class="product__item__text">
                                     <h6><a href="" @onclick="@(() => navi.NavigateTo("/shop-details?id="+@item.Id, true))">@item.Name</a></h6>
                                     @if (item.Original_price > item.Price)
@@ -134,12 +134,11 @@ else
 
 @code{
 
-    [Inject]
-    public ComponentStateChangedObserver Observer { get; set; } = null!;
-
     public List<Product> Related_products { get; set; } = new List<Product>();
     public int Id { get; set; }
     public Product Product { get; set; } = new Product();
+
+    public int Qty { get; set; } = 1;
 
     protected override async Task OnInitializedAsync()
     {
@@ -165,10 +164,15 @@ else
         Related_products = await productService.GetRandom();
     }
 
-    private async Task AddToCart(Product item)
+    private async Task AddToCart(Product item, int qty)
     {
-        await cartService.Add(item);
-        await Observer.NotifyStateChangedAsync();
-        StateHasChanged();
+        if (Qty < 1)
+            return;
+        await cartService.Add(item, qty);
+    }
+
+    private async Task OnSubmit()
+    {
+        await AddToCart(Product, Qty);
     }
 }

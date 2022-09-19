@@ -16,7 +16,7 @@ namespace OnlineStore.Data.Services
     {
         Task<Cart> Get();
         Task<int> GetCount();
-        Task Add(Product item);
+        Task Add(Product item, int qty);
         Task<bool> Eliminar(int id);
     }
 
@@ -24,12 +24,13 @@ namespace OnlineStore.Data.Services
     {
         private readonly ILocalStorageService _localStorage;
         private readonly IToastService _toastService;
+        private readonly ComponentStateChangedObserver _observer;
 
-
-        public CartService(ILocalStorageService localStorage, IToastService toastService)
+        public CartService(ILocalStorageService localStorage, IToastService toastService, ComponentStateChangedObserver observer)
         {
             _localStorage = localStorage;
             _toastService = toastService;
+            _observer = observer;
         }
 
         public async Task<Cart> Get()
@@ -43,15 +44,18 @@ namespace OnlineStore.Data.Services
             return cart != null ? cart.Items.Count : 0;
         }
 
-        public async Task Add(Product item)
+        public async Task Add(Product item, int qty)
         {
-            var cart_item = new CartItem() { Product_id = item.Id, Qty = item.Qty, Price = item.Price };
+            if (qty < 1)
+                return;
+            var cart_item = new CartItem() { Product_id = item.Id, Qty = qty, Price = item.Price };
             var cart = await _localStorage.GetItemAsync<Cart>("cart");
             if (cart == null)
                 cart = new Cart();
             cart.Items.Add(cart_item);
             await _localStorage.SetItemAsync("cart", cart);
             _toastService.ShowInfo(item.Name, "Añadido al carrito");
+            await _observer.NotifyStateChangedAsync();
         }
 
         public async Task<bool> Eliminar(int id)
