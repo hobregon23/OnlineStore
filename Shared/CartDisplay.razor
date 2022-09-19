@@ -4,18 +4,19 @@
         <li>
             <a href="shopping-cart">
                 <i class="fa fa-shopping-bag"></i>
-                <span>@value</span>
+                <span>@qty</span>
             </a>
         </li>
 
     </ul>
-<div class="header__cart__price">total: <span>$0.00</span></div>
+<div class="header__cart__price">total: <span>$@total_amount</span></div>
 
 @code{
     [Inject]
     public ComponentStateChangedObserver Observer { get; set; } = null!;
 
-    private int value { get; set; }
+    private int qty { get; set; }
+    private decimal total_amount { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -26,7 +27,7 @@
     Task UpdateCountAsync() =>
         InvokeAsync(async () =>
         {
-            value = await cartService.GetCount();
+            qty = await cartService.GetCount();
             StateHasChanged();
         });
 

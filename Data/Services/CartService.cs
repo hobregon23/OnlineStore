@@ -16,6 +16,7 @@ namespace OnlineStore.Data.Services
     {
         Task<Cart> Get();
         Task<int> GetCount();
+        Task<decimal> GetTotalAmount();
         Task Add(Product item, int qty);
         Task<bool> Eliminar(int id);
     }
@@ -44,6 +45,15 @@ namespace OnlineStore.Data.Services
             return cart != null ? cart.Items.Count : 0;
         }
 
+        public async Task<decimal> GetTotalAmount()
+        {
+            var cart = await _localStorage.GetItemAsync<Cart>("cart");
+            if (cart == null)
+                return 0;
+
+            return cart != null ? cart.Items.Count : 0;
+        }
+
         public async Task Add(Product item, int qty)
         {
             if (qty < 1)
@@ -51,8 +61,21 @@ namespace OnlineStore.Data.Services
             var cart_item = new CartItem() { Product_id = item.Id, Qty = qty, Price = item.Price };
             var cart = await _localStorage.GetItemAsync<Cart>("cart");
             if (cart == null)
+            {
                 cart = new Cart();
-            cart.Items.Add(cart_item);
+                cart.Items.Add(cart_item);
+                goto end;
+            }
+            var update = cart.Items.FirstOrDefault(x => x.Product_id.Equals(item.Id));
+            if (update == null)
+            {
+                cart.Items.Add(cart_item);
+            }
+            else
+            {
+                cart.Items.Find(x => x.Product_id.Equals(item.Id)).Qty += qty;
+            }
+            end:
             await _localStorage.SetItemAsync("cart", cart);
             _toastService.ShowInfo(item.Name, "Añadido al carrito");
             await _observer.NotifyStateChangedAsync();
