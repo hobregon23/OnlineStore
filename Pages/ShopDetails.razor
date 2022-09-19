@@ -1,8 +1,9 @@
 ﻿@page "/shop-details"
-@inject ILocalStorageService localStorage
+@inject ICartService cartService
 @inject IToastService toastService
 @inject IProductService productService
 @inject NavigationManager navi
+
 
 @if (Product == null)
 {
@@ -133,6 +134,9 @@ else
 
 @code{
 
+    [Inject]
+    public ComponentStateChangedObserver Observer { get; set; } = null!;
+
     public List<Product> Related_products { get; set; } = new List<Product>();
     public int Id { get; set; }
     public Product Product { get; set; } = new Product();
@@ -163,12 +167,8 @@ else
 
     private async Task AddToCart(Product item)
     {
-        var cart_item = new CartItem() { Product_id = item.Id, Qty = item.Qty, Price = item.Price };
-        var cart = await localStorage.GetItemAsync<Cart>("cart");
-        if (cart == null)
-            cart = new Cart();
-        cart.Items.Add(cart_item);
-        await localStorage.SetItemAsync("cart", cart);
-        toastService.ShowSuccess(item.Name, "Añadido al carrito");
+        await cartService.Add(item);
+        await Observer.NotifyStateChangedAsync();
+        StateHasChanged();
     }
 }

@@ -1,7 +1,33 @@
-﻿
+﻿@inject ICartService cartService
 
+    <ul>
+        <li>
+            <a href="shopping-cart">
+                <i class="fa fa-shopping-bag"></i>
+                <span>@value</span>
+            </a>
+        </li>
 
-<ul>
-    <li><a href="shopping-cart"><i class="fa fa-shopping-bag"></i> <span>0</span></a></li>
-</ul>
+    </ul>
 <div class="header__cart__price">total: <span>$0.00</span></div>
+
+@code{
+    [Inject]
+    public ComponentStateChangedObserver Observer { get; set; } = null!;
+
+    private int value { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Observer.OnStateChanged += UpdateCountAsync;
+        await UpdateCountAsync();
+    }
+
+    Task UpdateCountAsync() =>
+        InvokeAsync(async () =>
+        {
+            value = await cartService.GetCount();
+            StateHasChanged();
+        });
+
+}
