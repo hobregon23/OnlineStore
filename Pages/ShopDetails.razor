@@ -1,5 +1,6 @@
 ﻿@page "/shop-details"
-@inject IJSRuntime JS
+@inject ILocalStorageService localStorage
+@inject IToastService toastService
 @inject IProductService productService
 @inject NavigationManager navi
 
@@ -53,7 +54,7 @@ else
                         }
                         else
                         {
-                            <a href="" class="primary-btn">AÑADIR</a>
+                            <span @onclick="@(()=>AddToCart(Product))" class="primary-btn" style="cursor: pointer">AÑADIR</span>
                         }
                         <ul>
                             <li><b>Disponibilidad</b> <span>@(Product.Qty > 0 ? "En Existencia " : "Agotado") <samp class="ml-5">Quedan: @Product.Qty</samp></span></li>
@@ -160,9 +161,14 @@ else
         Related_products = await productService.GetRandom();
     }
 
-    private async Task AddToCart()
+    private async Task AddToCart(Product item)
     {
-        var cart = await JS.GetFromLocalStorage("cart");
-
+        var cart_item = new CartItem() { Product_id = item.Id, Qty = item.Qty, Price = item.Price };
+        var cart = await localStorage.GetItemAsync<Cart>("cart");
+        if (cart == null)
+            cart = new Cart();
+        cart.Items.Add(cart_item);
+        await localStorage.SetItemAsync("cart", cart);
+        toastService.ShowSuccess(item.Name, "Añadido al carrito");
     }
 }

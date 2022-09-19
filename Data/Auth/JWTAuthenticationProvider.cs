@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 using OnlineStore.Repos;
 using System;
@@ -14,20 +15,20 @@ namespace OnlineStore.Data.Auth
 {
     public class JWTAuthenticationProvider : AuthenticationStateProvider, ILoginService
     {
-        private readonly IJSRuntime js;
+        private readonly ILocalStorageService localStorage;
         private readonly HttpClient httpClient;
         public static readonly string TOKENKEY = "TOKENKEY";
         private AuthenticationState Anonimo => new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
 
-        public JWTAuthenticationProvider(IJSRuntime js, HttpClient httpClient)
+        public JWTAuthenticationProvider(ILocalStorageService localStorage, HttpClient httpClient)
         {
-            this.js = js;
+            this.localStorage = localStorage;
             this.httpClient = httpClient;
         }
 
         public async override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var token = await js.GetFromLocalStorage(TOKENKEY);
+            var token = await localStorage.GetItemAsStringAsync(TOKENKEY);
 
             if (string.IsNullOrEmpty(token))
             {
@@ -45,7 +46,7 @@ namespace OnlineStore.Data.Auth
 
         public async Task Login(string token)
         {
-            await js.SetInLocalStorage(TOKENKEY, token);
+            await localStorage.SetItemAsStringAsync(TOKENKEY, token);
             var authState = ConstruirAuthenticationState(token);
             NotifyAuthenticationStateChanged(Task.FromResult(authState));
         }
@@ -53,7 +54,7 @@ namespace OnlineStore.Data.Auth
         public async Task Logout()
         {
             httpClient.DefaultRequestHeaders.Authorization = null;
-            await js.RemoveItem(TOKENKEY);
+            await localStorage.RemoveItemAsync(TOKENKEY);
             NotifyAuthenticationStateChanged(Task.FromResult(Anonimo));
         }
 
