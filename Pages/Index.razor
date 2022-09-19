@@ -3,6 +3,7 @@
 @inject IFeaturedService featuredService
 @inject IProductService productService
 @inject ICategoryService categoryService
+@inject ICartService cartService
 @inject NavigationManager navi
 
 
@@ -71,7 +72,7 @@
                                         else
                                         {
                                             <li>
-                                                <a href=""><i class="fa fa-shopping-cart"></i></a>
+                                                <a href="javascript:;" @onclick="@(()=>AddToCart(item.Product, 1))"><i class="fa fa-shopping-cart"></i></a>
                                             </li>
                                         }
                                     </ul>
@@ -204,6 +205,13 @@
     {
         F_item_active = item;
         await JS.InvokeVoidAsync("featured__controls_click");
+    }
+
+    private async Task AddToCart(Product item, int qty)
+    {
+        if (qty < 1)
+            return;
+        await cartService.Add(item, qty);
     }
 
 }
