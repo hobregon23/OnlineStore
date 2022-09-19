@@ -50,8 +50,8 @@
             <div class="col-lg-9 col-md-7">
                 <div class="filter__item">
                     <div class="row">
-                        <div class="col-lg-4 col-md-5">
-                            <div class="filter__sort">
+                        <div class="col-lg-7 col-md-5 row">
+                            <div class="filter__sort mr-3">
                                 <span>Filtrar por</span>
                                 <select @onchange="OnFilterChange">
                                     <option value="all">Todos</option>
@@ -59,18 +59,27 @@
                                     <option value="repaired">Reparado</option>
                                 </select>
                             </div>
+                            <div class="filter__sort">
+                                <span>Ordenar por</span>
+                                <select @onchange="OnOrderChange">
+                                    <option value="date_down">Fecha Desc</option>
+                                    <option value="date_up">Fecha Asc</option>
+                                    <option value="price_up">Precio Asc</option>
+                                    <option value="price_down">Precio Desc</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-lg-4 col-md-4">
-                            <div class="filter__found">
+                        <div class="col-lg-5 col-md-4">
+                            <div class="filter__found" style="text-align: right">
                                 <h6><span>@Products.Count de @itemsTotal</span> Productos encontrados</h6>
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-3">
+                        @*<div class="col-lg-4 col-md-3">
                             <div class="filter__option">
                                 <span class="icon_grid-2x2"></span>
                                 <span class="icon_ul"></span>
                             </div>
-                        </div>
+                        </div>*@
                     </div>
                 </div>
                 <div class="row">
@@ -147,8 +156,8 @@
     private int totalPageQuantity;
     private int itemsTotal;
     private int currentPage = 1;
-    string campoSorteoActual = "Nombre";
-    string ordenSorteoActual = "Asc";
+    string campoSorteoActual = "Created_at";
+    string ordenSorteoActual = "Desc";
 
     protected override async Task OnInitializedAsync()
     {
@@ -170,9 +179,9 @@
         await LoadData();
     }
 
-    private async Task LoadData(int page = 1, string campoSorteo = "Created_at", string ordenSorteo = "Desc")
+    private async Task LoadData(int page = 1)
     {
-        var result = await productService.GetPag(new Pagination() { Page = page, QuantityPerPage = 21 }, Search_filter, campoSorteo, ordenSorteo);
+        var result = await productService.GetPag(new Pagination() { Page = page, QuantityPerPage = 21 }, Search_filter, campoSorteoActual, ordenSorteoActual);
         totalPageQuantity = result.CantPorPag;
         itemsTotal = result.ItemsTotal;
         Products = result.ListaObjetos.ToList();
@@ -185,32 +194,37 @@
         await LoadData(page);
     }
 
-    private string OrderIndicator(string campoSorteo)
-    {
-        if (campoSorteo.Equals(campoSorteoActual))
-        {
-            return ordenSorteoActual.Equals("Asc") ? "oi oi-arrow-top" : "oi oi-arrow-bottom";
-        }
-        return string.Empty;
-    }
-
-    private async Task Order(string campoSorteo)
-    {
-        if (campoSorteo.Equals(campoSorteoActual))
-        {
-            ordenSorteoActual = ordenSorteoActual.Equals("Asc") ? "Desc" : "Asc";
-        }
-        else
-        {
-            campoSorteoActual = campoSorteo;
-            ordenSorteoActual = "Asc";
-        }
-        await LoadData(1, campoSorteoActual, ordenSorteoActual);
-    }
-
     public async Task OnFilterChange(ChangeEventArgs e)
     {
         Search_filter.Condition = e.Value.ToString();
+        await LoadData();
+    }
+
+    public async Task OnOrderChange(ChangeEventArgs e)
+    {
+        var value = e.Value.ToString();
+        if (value.Equals(campoSorteoActual))
+            return;
+        if (value.Equals("date_up"))
+        {
+            campoSorteoActual = "Created_at";
+            ordenSorteoActual = "Asc";
+        }
+        else if (value.Equals("date_down"))
+        {
+            campoSorteoActual = "Created_at";
+            ordenSorteoActual = "Desc";
+        }
+        else if (value.Equals("price_up"))
+        {
+            campoSorteoActual = "Price";
+            ordenSorteoActual = "Asc";
+        }
+        else if (value.Equals("price_down"))
+        {
+            campoSorteoActual = "Price";
+            ordenSorteoActual = "Desc";
+        }
         await LoadData();
     }
 
