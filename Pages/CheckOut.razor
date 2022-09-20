@@ -140,7 +140,7 @@
             Need_shipping = false;
         else
             Need_shipping = true;
-        Shipping_price = Need_shipping ? 10 : 0;
+        Shipping_price = Need_shipping ? Province_ship_price : 0;
         Total_amount = SubTotal_amount + Shipping_price;
     }
 
