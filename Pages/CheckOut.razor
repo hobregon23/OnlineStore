@@ -1,5 +1,6 @@
 ﻿@page "/checkout"
 @inject NavigationManager navi
+@inject ICartService cartService
 
 
 <!-- Checkout Section Begin -->
@@ -102,6 +103,10 @@
 
 @code{
 
+    public List<CartItem> Items { get; set; } = new List<CartItem>();
+    public Cart Cart { get; set; }
+    public decimal Total_amount { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         await LoadData();
@@ -109,6 +114,10 @@
 
     private async Task LoadData()
     {
-        //
+        Cart = await cartService.Get();
+        if (Cart != null)
+            Items = (await cartService.Get()).Items;
+        Total_amount = await cartService.GetTotalAmount();
     }
+
 }

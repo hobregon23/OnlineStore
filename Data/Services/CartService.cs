@@ -18,7 +18,7 @@ namespace OnlineStore.Data.Services
         Task<int> GetCount();
         Task<decimal> GetTotalAmount();
         Task Add(Product item, int qty);
-        Task<bool> Eliminar(int id);
+        Task Eliminar(int id);
     }
 
     public class CartService : ICartService
@@ -62,7 +62,7 @@ namespace OnlineStore.Data.Services
         {
             if (qty < 1)
                 return;
-            var cart_item = new CartItem() { Product_id = item.Id, Qty = qty, Price = item.Price };
+            var cart_item = new CartItem() { Product_id = item.Id, Qty = qty, Price = item.Price, Product_name = item.Name, Image_url = item.Image_url };
             var cart = await _localStorage.GetItemAsync<Cart>("cart");
             if (cart == null)
             {
@@ -72,22 +72,25 @@ namespace OnlineStore.Data.Services
             }
             var update = cart.Items.FirstOrDefault(x => x.Product_id.Equals(item.Id));
             if (update == null)
-            {
                 cart.Items.Add(cart_item);
-            }
             else
-            {
                 cart.Items.Find(x => x.Product_id.Equals(item.Id)).Qty += qty;
-            }
             end:
             await _localStorage.SetItemAsync("cart", cart);
             _toastService.ShowInfo(item.Name, "Añadido al carrito");
             await _observer.NotifyStateChangedAsync();
         }
 
-        public async Task<bool> Eliminar(int id)
+        public async Task Eliminar(int id)
         {
-            return true;
+            var cart = await _localStorage.GetItemAsync<Cart>("cart");
+            if (cart == null)
+                return;
+            var cartItem = cart.Items.Find(x => x.Product_id.Equals(id));
+            cart.Items.Remove(cartItem);
+            await _localStorage.SetItemAsync("cart", cart);
+            _toastService.ShowInfo("Producto eliminado del carrito", "Eliminado");
+            await _observer.NotifyStateChangedAsync();
         }
 
     }
