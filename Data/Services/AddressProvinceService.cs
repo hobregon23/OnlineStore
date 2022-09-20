@@ -1,0 +1,32 @@
+﻿using OnlineStore.UoW;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace OnlineStore.Data.Services
+{
+    public interface IAddressProvinceService
+    {
+        Task<decimal> GetShipPrice(string name);
+    }
+
+    public class AddressProvinceService : IAddressProvinceService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly JwtAuthService _jwtAuthService;
+
+        public AddressProvinceService(
+            JwtAuthService jwtAuthService,
+            IUnitOfWork unitOfWork)
+        {
+            _jwtAuthService = jwtAuthService;
+            _unitOfWork = unitOfWork;
+        }
+
+        public async Task<decimal> GetShipPrice(string name)
+        {
+            return await _unitOfWork.Provinces.GetShipPrice(name);
+        }
+    }
+}

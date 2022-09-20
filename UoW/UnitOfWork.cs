@@ -15,6 +15,8 @@ namespace OnlineStore.UoW
         ICategoryRepository Categories { get; }
         IFeaturedRepository FeaturedProducts { get; }
         IUserRepository Users { get; }
+        IAddressRepository Addresses { get; }
+        IAddressProvinceRepository Provinces { get; }
         Task<bool> SaveChangesAsync();
     }
 
@@ -27,6 +29,8 @@ namespace OnlineStore.UoW
         public ICategoryRepository Categories { get; }
         public IFeaturedRepository FeaturedProducts { get; }
         public IUserRepository Users { get; }
+        public IAddressRepository Addresses { get; }
+        public IAddressProvinceRepository Provinces { get; }
 
         public UnitOfWork(ApplicationDbContext context, UserManager<User> userManager)
         {
