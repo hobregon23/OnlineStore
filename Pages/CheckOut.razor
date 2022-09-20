@@ -10,7 +10,7 @@
             <h4>Detalles del Pago</h4>
             <form action="#">
                 <div class="row">
-                    <div class="col-lg-8 col-md-6">
+                    <div class="col-lg-7 col-md-6">
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="checkout__input">
@@ -60,37 +60,40 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6">
+                    <div class="col-lg-5 col-md-6">
                         <div class="checkout__order">
                             <h4>Tu orden</h4>
                             <div class="checkout__order__products">Productos <span>Total</span></div>
                             <ul>
-                                <li>Vegetable’s Package <span>$75.99</span></li>
-                                <li>Fresh Vegetable <span>$151.99</span></li>
-                                <li>Organic Bananas <span>$53.99</span></li>
+                                @foreach (var item in Items)
+                                {
+                                    <li>@(GetProductNameShort(item.Product_name)) <span>$@(item.Price * item.Qty)</span></li>
+                                }
                             </ul>
-                            <div class="checkout__order__subtotal">Subtotal <span>$750.99</span></div>
-                            <div class="checkout__order__shipping">Envío <span>$10.00</span></div>
-                            <div class="checkout__order__total">Total <span>$760.99</span></div>
-                            <div class="checkout__input__checkbox">
-                                <label for="shipping">
-                                    Recoger en la Tienda
-                                    <input type="checkbox" id="shipping">
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                            <div class="checkout__input__checkbox">
-                                <label for="inperson">
-                                    Presencial
-                                    <input type="checkbox" checked disabled id="inperson">
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                            <p>
-                                El pago se realizará de forma presencial, en efectivo o mediante transferencia bancaria
-                                a la cuenta que aparece en la factura una vez haya examinado los productos recibidos.
-                            </p>
-                            <button type="submit" class="site-btn">CREAR ORDEN</button>
+                            <div class="checkout__order__subtotal">Subtotal <span>$@SubTotal_amount</span></div>
+                            <div class="checkout__order__shipping">Envío <span>$@Shipping_price</span></div>
+                            <div class="checkout__order__total">Total <span>$@Total_amount</span></div>
+                            <EditForm Model="@Cart" OnValidSubmit="@OnSubmit">
+                                <div class="checkout__input__checkbox">
+                                    <label for="shipping">
+                                        Recoger en la Tienda
+                                        <input type="checkbox" id="shipping">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="checkout__input__checkbox">
+                                    <label for="inperson">
+                                        Presencial
+                                        <input type="checkbox" checked disabled id="inperson">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <p>
+                                    El pago se realizará de forma presencial, en efectivo o mediante transferencia bancaria
+                                    a la cuenta que aparece en la factura una vez haya examinado los productos recibidos.
+                                </p>
+                                <button type="submit" class="site-btn">CREAR ORDEN</button>
+                            </EditForm>
                         </div>
                     </div>
                 </div>
@@ -104,7 +107,9 @@
 @code{
 
     public List<CartItem> Items { get; set; } = new List<CartItem>();
-    public Cart Cart { get; set; }
+    public Cart Cart { get; set; } = new Cart();
+    public decimal SubTotal_amount { get; set; }
+    public decimal Shipping_price { get; set; }
     public decimal Total_amount { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -117,7 +122,19 @@
         Cart = await cartService.Get();
         if (Cart != null)
             Items = (await cartService.Get()).Items;
-        Total_amount = await cartService.GetTotalAmount();
+        SubTotal_amount = await cartService.GetTotalAmount();
+        Shipping_price = 10;
+        Total_amount = SubTotal_amount + Shipping_price;
+    }
+
+    private string GetProductNameShort(string name)
+    {
+        return name.Length > 30 ? name.Substring(0, 30) + "..." : name;
+    }
+
+    private async Task OnSubmit()
+    {
+
     }
 
 }
