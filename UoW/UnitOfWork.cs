@@ -40,6 +40,8 @@ namespace OnlineStore.UoW
             Categories = new CategoryRepository(context, userManager);
             FeaturedProducts = new FeaturedRepository(context, userManager);
             Users = new UserRepository(context, userManager);
+            Addresses = new AddressRepository(context, userManager);
+            Provinces = new AddressProvinceRepository(context, userManager);
         }
 
         public async Task<bool> SaveChangesAsync()

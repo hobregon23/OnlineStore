@@ -9,7 +9,7 @@
     <div class="container">
         <div class="checkout__form">
             <h4>Detalles del Pago</h4>
-            <form action="#">
+            <EditForm Model="@Cart" OnValidSubmit="@OnSubmit">
                 <div class="row">
                     <div class="col-lg-7 col-md-6">
                         <div class="row">
@@ -74,32 +74,29 @@
                             <div class="checkout__order__subtotal">Subtotal <span>$@SubTotal_amount</span></div>
                             <div class="checkout__order__shipping">Envío <span>$@Shipping_price</span></div>
                             <div class="checkout__order__total">Total <span>$@Total_amount</span></div>
-                            <EditForm Model="@Cart" OnValidSubmit="@OnSubmit">
-                                <div class="checkout__input__checkbox">
-                                    <label for="shipping">
-                                        Recoger en la Tienda
-                                        <input type="checkbox" id="shipping" @onchange="eventArgs => { OnPickUpChange(eventArgs.Value); }">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
-                                <div class="checkout__input__checkbox">
-                                    <label for="inperson">
-                                        Presencial
-                                        <input type="checkbox" checked disabled id="inperson">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
-                                <p>
-                                    El pago se realizará de forma presencial, en efectivo o mediante transferencia bancaria
-                                    a la cuenta que aparece en la factura una vez haya examinado los productos recibidos.
-                                </p>
-                                <button type="submit" class="site-btn">CREAR ORDEN</button>
-                            </EditForm>
-                            @Need_shipping.ToString()
+                            <div class="checkout__input__checkbox">
+                                <label for="shipping">
+                                    Recoger en la Tienda
+                                    <input type="checkbox" id="shipping" @onchange="eventArgs => { OnPickUpChange(eventArgs.Value); }">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="checkout__input__checkbox">
+                                <label for="inperson">
+                                    Presencial
+                                    <input type="checkbox" checked disabled id="inperson">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <p>
+                                El pago se realizará de forma presencial, en efectivo o mediante transferencia bancaria
+                                a la cuenta que aparece en la factura una vez haya examinado los productos recibidos.
+                            </p>
+                            <button type="submit" class="site-btn">CREAR ORDEN</button>
                         </div>
                     </div>
                 </div>
-            </form>
+            </EditForm>
         </div>
     </div>
 </section>
