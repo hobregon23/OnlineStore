@@ -1,4 +1,5 @@
-﻿using OnlineStore.Models;
+﻿using Blazored.LocalStorage;
+using OnlineStore.Models;
 using OnlineStore.UoW;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace OnlineStore.Data.Services
 
         public Task<string> GetUserRol(string userId);
 
-        public Task<UserDto> GetUserInfo(string username);
+        public Task<UserDto> GetUserInfo();
 
         public Task<bool> AddNormalUser(UserDto model);
 
@@ -24,14 +25,17 @@ namespace OnlineStore.Data.Services
 
     public class UserService : IUserService
     {
+        private readonly ILocalStorageService _localStorage;
         private readonly IUnitOfWork _unitOfWork;
         private readonly JwtAuthService _jwtAuthService;
 
         public UserService(
+            ILocalStorageService localStorage,
             JwtAuthService jwtAuthService,
             IUnitOfWork unitOfWork)
         {
             _jwtAuthService = jwtAuthService;
+            _localStorage = localStorage;
             _unitOfWork = unitOfWork;
         }
 
@@ -47,8 +51,10 @@ namespace OnlineStore.Data.Services
             return await _unitOfWork.Users.GetUserRol(userId);
         }
 
-        public async Task<UserDto> GetUserInfo(string username)
+        public async Task<UserDto> GetUserInfo()
         {
+            var token = await _localStorage.GetItemAsStringAsync("TOKENKEY");
+            var username = _jwtAuthService.GetUsername(token);
             return await _unitOfWork.Users.GetUserInfo(username);
         }
 

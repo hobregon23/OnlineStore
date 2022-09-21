@@ -22,6 +22,8 @@ namespace OnlineStore
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
             base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfiguration(new ProvincesConfiguration());
+            modelBuilder.ApplyConfiguration(new AddressesConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new UserInRoleConfiguration());
@@ -30,7 +32,6 @@ namespace OnlineStore
             modelBuilder.ApplyConfiguration(new ModelConfiguration());
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new FeaturedConfiguration());
-            modelBuilder.ApplyConfiguration(new ProvincesConfiguration());
         }
 
         public DbSet<Address> Addresses { get; set; }

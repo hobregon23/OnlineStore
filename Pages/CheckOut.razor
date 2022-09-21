@@ -2,6 +2,8 @@
 @inject NavigationManager navi
 @inject ICartService cartService
 @inject IAddressProvinceService provinceService
+@inject IRequestService requestService
+@inject IUserService userService
 
 
 <!-- Checkout Section Begin -->
@@ -9,54 +11,54 @@
     <div class="container">
         <div class="checkout__form">
             <h4>Detalles del Pago</h4>
-            <EditForm Model="@Cart" OnValidSubmit="@OnSubmit">
+            <EditForm Model="@Request" OnValidSubmit="@OnSubmit">
                 <div class="row">
                     <div class="col-lg-7 col-md-6">
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="checkout__input">
                                     <p>Nombre<span>*</span></p>
-                                    <input type="text">
+                                    <InputText @bind-Value="User.Name" />
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="checkout__input">
                                     <p>Apellidos<span>*</span></p>
-                                    <input type="text">
+                                    <InputText @bind-Value="User.LastName" />
                                 </div>
                             </div>
                         </div>
                         <div class="checkout__input">
                             <p>Provincia es un select<span>*</span></p>
-                            <input type="text">
+                            <InputText @bind-Value="User.Address.Province.Name" />
                         </div>
                         <div class="checkout__input">
                             <p>Dirección<span>*</span></p>
-                            <input type="text" class="checkout__input__add">
+                            <InputText @bind-Value="User.Address.Address_line" />
                         </div>
                         <div class="checkout__input">
                             <p>Pueblo/Ciudad<span>*</span></p>
-                            <input type="text">
+                            <InputText @bind-Value="User.Address.City" />
                         </div>
                         <div class="checkout__input">
                             <p>Municipio<span>*</span></p>
-                            <input type="text">
+                            <InputText @bind-Value="User.Address.State" />
                         </div>
                         <div class="checkout__input">
                             <p>Código Postal<span>*</span></p>
-                            <input type="text">
+                            <InputText @bind-Value="User.Address.Postal_code" />
                         </div>
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="checkout__input">
                                     <p>Teléfono<span>*</span></p>
-                                    <input type="text">
+                                    <InputText @bind-Value="User.PhoneNumber" />
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="checkout__input">
                                     <p>Correo<span>*</span></p>
-                                    <input type="text">
+                                    <InputText @bind-Value="User.Email" />
                                 </div>
                             </div>
                         </div>
@@ -106,7 +108,10 @@
 @code{
 
     public List<CartItem> Items { get; set; } = new List<CartItem>();
-    public Cart Cart { get; set; } = new Cart();
+    public Cart Cart { get; set; }
+    public UserDto User { get; set; } = new UserDto();
+    public Address Address { get; set; } = new Address();
+    public Request Request { get; set; } = new Request();
     public decimal SubTotal_amount { get; set; }
     public decimal Shipping_price { get; set; }
     public decimal Province_ship_price { get; set; }
@@ -120,6 +125,7 @@
 
     private async Task LoadData()
     {
+        User = await userService.GetUserInfo();
         Cart = await cartService.Get();
         if (Cart != null)
             Items = (await cartService.Get()).Items;
@@ -147,6 +153,8 @@
     private async Task OnSubmit()
     {
 
+
+        //localstorage remove cart
     }
 
 }

@@ -8,6 +8,8 @@ namespace OnlineStore.Models
     {
         [Key]
         public int Id { get; set; }
+
+        [Required(ErrorMessage = "{0} es requerido.")]
         public string Serial { get; set; }
 
         [ForeignKey("User_id")]
@@ -21,7 +23,14 @@ namespace OnlineStore.Models
 
         [Required(ErrorMessage = "{0} es requerido.")]
         public int Address_id { get; set; }
+
+        [Required(ErrorMessage = "{0} es requerido.")]
+        public bool Need_shipping { get; set; }
+
+        [Required(ErrorMessage = "{0} es requerido.")]
         public string Status { get; set; }
+
+        [Required(ErrorMessage = "{0} es requerido.")]
         public decimal Request_price { get; set; }
         public string Details { get; set; }
         public virtual List<Request_Item> Request_item_list { get; set; } = new List<Request_Item>();

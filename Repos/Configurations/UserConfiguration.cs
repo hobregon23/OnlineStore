@@ -22,7 +22,8 @@ namespace OnlineStore.Repos
                     PhoneNumber = "53604366",
                     LastName = "del Sistema",
                     PasswordHash = "AQAAAAEAACcQAAAAEDsAtWGJgjqyvMqMcQVOGaZ0HReabnNrmol+mpQK+2gZJzyVr+s0A7xbT8OIYs9yyw==",
-                    IsActive = true
+                    IsActive = true,
+                    Address_id = 1
                 },
                 new User
                 {
@@ -36,7 +37,8 @@ namespace OnlineStore.Repos
                     PhoneNumber = "53604366",
                     LastName = "Obregon Mena",
                     PasswordHash = "AQAAAAEAACcQAAAAEDsAtWGJgjqyvMqMcQVOGaZ0HReabnNrmol+mpQK+2gZJzyVr+s0A7xbT8OIYs9yyw==",
-                    IsActive = true
+                    IsActive = true,
+                    Address_id = 3
                 }
             );
         }

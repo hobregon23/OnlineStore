@@ -30,6 +30,8 @@ namespace OnlineStore.Data.Services
 
         public string GetUsername(string token)
         {
+            if (string.IsNullOrEmpty(token))
+                return "";
             var tokenHandler = new JwtSecurityTokenHandler();
             tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
@@ -42,6 +44,8 @@ namespace OnlineStore.Data.Services
             }, out SecurityToken validatedToken);
 
             var jwtToken = (JwtSecurityToken)validatedToken;
+            if (DateTime.UtcNow.CompareTo(Convert.ToDateTime(jwtToken.Claims.First(x => x.Type.Contains("piration")).Value)) > 0)
+                return "";
             var username = jwtToken.Claims.First(x => x.Type == "unique_name").Value;
 
             return username;
@@ -49,24 +53,9 @@ namespace OnlineStore.Data.Services
 
         public async Task<bool> IsAuthorized(string token, List<string> roles)
         {
-            //var token = await JS.GetFromLocalStorage("TOKENKEY");
             try
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
-                {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(_configuration["jwt:key"]))
-                }, out SecurityToken validatedToken);
-
-                var jwtToken = (JwtSecurityToken)validatedToken;
-                if (DateTime.UtcNow.CompareTo(Convert.ToDateTime(jwtToken.Claims.First(x => x.Type.Contains("piration")).Value)) > 0)
-                    return false;
-                var username = jwtToken.Claims.First(x => x.Type == "unique_name").Value;
+                var username = GetUsername(token);
                 if (username == null)
                     return false;
 

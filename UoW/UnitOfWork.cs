@@ -17,6 +17,7 @@ namespace OnlineStore.UoW
         IUserRepository Users { get; }
         IAddressRepository Addresses { get; }
         IAddressProvinceRepository Provinces { get; }
+        IRequestRepository Requests { get; }
         Task<bool> SaveChangesAsync();
     }
 
@@ -31,6 +32,7 @@ namespace OnlineStore.UoW
         public IUserRepository Users { get; }
         public IAddressRepository Addresses { get; }
         public IAddressProvinceRepository Provinces { get; }
+        public IRequestRepository Requests { get; }
 
         public UnitOfWork(ApplicationDbContext context, UserManager<User> userManager)
         {
@@ -42,6 +44,7 @@ namespace OnlineStore.UoW
             Users = new UserRepository(context, userManager);
             Addresses = new AddressRepository(context, userManager);
             Provinces = new AddressProvinceRepository(context, userManager);
+            Requests = new RequestRepository(context, userManager);
         }
 
         public async Task<bool> SaveChangesAsync()

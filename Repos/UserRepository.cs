@@ -25,7 +25,7 @@ namespace OnlineStore.Repos
 
         public async Task<PaginationResponse<User>> GetPag(Pagination pagination, string name)
         {
-            var queryable = _context.Users.AsQueryable();
+            var queryable = _context.Users.Include(x => x.Address).ThenInclude(x => x.Province).AsQueryable();
             if (!string.IsNullOrEmpty(name) || !string.IsNullOrWhiteSpace(name))
             {
                 queryable = queryable.Where(x => x.Name.Contains(name) || x.Email.Contains(name) || x.UserName.Contains(name) || x.LastName.Contains(name));
@@ -55,7 +55,7 @@ namespace OnlineStore.Repos
         {
             try
             {
-                var user = await _context.Users.Where(x => x.UserName.Equals(username)).FirstAsync();
+                var user = await _context.Users.Include(x => x.Address).ThenInclude(x => x.Province).Where(x => x.UserName.Equals(username)).FirstAsync();
                 if (user == null)
                 {
                     return new UserDto();
@@ -68,7 +68,12 @@ namespace OnlineStore.Repos
                     LastName = user.LastName,
                     Name = user.Name,
                     PhoneNumber = user.PhoneNumber,
-                    UserName = user.UserName
+                    UserName = user.UserName,
+                    Deleted_at = user.Deleted_at,
+                    Updated_at = user.Updated_at,
+                    Is_deleted = user.Is_deleted,
+                    IsActive = user.IsActive,
+                    Address = user.Address
                 };
                 return userInfo;
             }

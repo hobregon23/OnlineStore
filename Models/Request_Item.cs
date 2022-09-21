@@ -7,7 +7,11 @@ namespace OnlineStore.Models
     {
         [Key]
         public int Id { get; set; }
+
+        [Required(ErrorMessage = "{0} es requerido.")]
         public int Qty { get; set; }
+
+        [Required(ErrorMessage = "{0} es requerido.")]
         public decimal Import { get; set; }
         public string Details { get; set; }
 

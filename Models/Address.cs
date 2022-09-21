@@ -14,8 +14,6 @@ namespace OnlineStore.Models
 
         [ForeignKey("Province_id")]
         public virtual Address_Province Province { get; set; }
-
-        [Required(ErrorMessage = "{0} es requerido.")]
         public int Province_id { get; set; }
     }
 }

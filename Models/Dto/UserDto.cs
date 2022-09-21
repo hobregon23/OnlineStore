@@ -37,5 +37,14 @@ namespace OnlineStore.Models
 
         [DataType(DataType.DateTime)]
         public DateTime Created_at { get; set; }
+
+        [DataType(DataType.DateTime)]
+        public DateTime Updated_at { get; set; }
+
+        [DataType(DataType.DateTime)]
+        public DateTime Deleted_at { get; set; }
+        public bool IsActive { get; set; }
+        public bool Is_deleted { get; set; }
+        public Address Address { get; set; } = new Address() { Province = new Address_Province() };
     }
 }
