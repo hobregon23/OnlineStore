@@ -9,113 +9,112 @@
 <!-- Checkout Section Begin -->
 <section class="checkout spad" style="padding-top: 30px">
     <div class="container">
-        <div class="checkout__form">
-            <h4>Detalles del Pago</h4>
-            <EditForm Model="@Request" OnValidSubmit="@OnSubmit">
-                <div class="row">
-                    <div class="col-lg-7 col-md-6">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="checkout__input">
-                                    <p>Nombre<span>*</span></p>
-                                    <InputText @bind-Value="User.Name" />
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="checkout__input">
-                                    <p>Apellidos<span>*</span></p>
-                                    <InputText @bind-Value="User.LastName" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="checkout__input">
-                            <p>Provincia es un select<span>*</span></p>
-                            <InputText @bind-Value="User.Address.Province.Name" />
-                        </div>
-                        <div class="checkout__input">
-                            <p>Dirección<span>*</span></p>
-                            <InputText @bind-Value="User.Address.Address_line" />
-                        </div>
-                        <div class="checkout__input">
-                            <p>Pueblo/Ciudad<span>*</span></p>
-                            <InputText @bind-Value="User.Address.City" />
-                        </div>
-                        <div class="checkout__input">
-                            <p>Municipio<span>*</span></p>
-                            <InputText @bind-Value="User.Address.State" />
-                        </div>
-                        <div class="checkout__input">
-                            <p>Código Postal<span>*</span></p>
-                            <InputText @bind-Value="User.Address.Postal_code" />
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="checkout__input">
-                                    <p>Teléfono<span>*</span></p>
-                                    <InputText @bind-Value="User.PhoneNumber" />
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="checkout__input">
-                                    <p>Correo<span>*</span></p>
-                                    <InputText @bind-Value="User.Email" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 col-md-6">
-                        <div class="checkout__order">
-                            <h4>Tu orden</h4>
-                            <div class="checkout__order__products">Productos <span>Total</span></div>
-                            <ul>
-                                @foreach (var item in Items)
-                                {
-                                    <li>@(GetProductNameShort(item.Product_name)) <span>$@(item.Price * item.Qty)</span></li>
-                                }
-                            </ul>
-                            <div class="checkout__order__subtotal">Subtotal <span>$@SubTotal_amount</span></div>
-                            <div class="checkout__order__shipping">Envío <span>$@Shipping_price</span></div>
-                            <div class="checkout__order__total">Total <span>$@Total_amount</span></div>
-                            <div class="checkout__input__checkbox">
-                                <label for="shipping">
-                                    Recoger en la Tienda
-                                    <input type="checkbox" id="shipping" @onchange="eventArgs => { OnPickUpChange(eventArgs.Value); }">
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                            <div class="checkout__input__checkbox">
-                                <label for="inperson">
-                                    Presencial
-                                    <input type="checkbox" checked disabled id="inperson">
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                            <p>
-                                El pago se realizará de forma presencial, en efectivo o mediante transferencia bancaria
-                                a la cuenta que aparece en la factura una vez haya examinado los productos recibidos.
-                            </p>
-                            <button type="submit" class="site-btn">CREAR ORDEN</button>
-                        </div>
-                    </div>
-                </div>
-            </EditForm>
+        @if (Cart == null)
+        {
+        <div class="w-100" style="text-align: center">
+            <p>El carrito está vacío.</p><br />
+            <a href="javascript:;" @onclick="@(()=>navi.NavigateTo("/shop-grid", true))" class="primary-btn">COMPRE AQUÍ</a>
         </div>
+        }
+        else
+        {
+            <div class="checkout__form">
+                <h4>Detalles del Pago</h4>
+                <EditForm Model="@Check_out" OnValidSubmit="@OnSubmit">
+                    <div class="row">
+                        <DataAnnotationsValidator />
+                        <div class="col-lg-7 col-md-6">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="checkout__input">
+                                        <p>Nombre<span>*</span></p>
+                                        <InputText @bind-Value="Check_out.Full_name" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="checkout__input">
+                                <select @onchange="OnProvinceChange" required>
+                                    @foreach (var item in Provinces)
+                                    {
+                                        <option value="@item.Id">
+                                            @item.Name
+                                        </option>
+                                    }
+                                    <span class="arrow_carrot-down"></span>
+                                </select>
+                            </div>
+                            <div class="checkout__input">
+                                <p>Dirección<span>*</span></p>
+                                <InputText @bind-Value="Check_out.Address.Address_line" />
+                            </div>
+                            <div class="checkout__input">
+                                <p>Pueblo/Ciudad<span>*</span></p>
+                                <InputText @bind-Value="Check_out.Address.City" />
+                            </div>
+                            <div class="checkout__input">
+                                <p>Municipio<span>*</span></p>
+                                <InputText @bind-Value="Check_out.Address.State" />
+                            </div>
+                            <div class="checkout__input">
+                                <p>Código Postal<span>*</span></p>
+                                <InputText @bind-Value="Check_out.Address.Postal_code" />
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-md-6">
+                            <div class="checkout__order">
+                                <h4>Tu orden</h4>
+                                <div class="checkout__order__products">Productos <span>Total</span></div>
+                                <ul>
+                                    @foreach (var item in Cart_items)
+                                    {
+                                        <li>@(GetProductNameShort(item.Product_name)) <span>$@(item.Price * item.Qty)</span></li>
+                                    }
+                                </ul>
+                                <div class="checkout__order__subtotal">Subtotal <span>$@SubTotal_amount</span></div>
+                                <div class="checkout__order__shipping">Envío <span>$@Check_out.Shipping_price</span></div>
+                                <div class="checkout__order__total">Total <span>$@Cart.Total_amount</span></div>
+                                <div class="checkout__input__checkbox">
+                                    <label for="shipping">
+                                        Recoger en la Tienda
+                                        <input type="checkbox" id="shipping" @onchange="eventArgs => { OnPickUpChange(eventArgs.Value); }">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="checkout__input__checkbox">
+                                    <label for="inperson">
+                                        Presencial
+                                        <input type="checkbox" checked disabled id="inperson">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <p>
+                                    El pago se realizará de forma presencial, en efectivo o mediante transferencia bancaria
+                                    a la cuenta que aparece en la factura una vez haya examinado los productos recibidos.
+                                </p>
+                                <button type="submit" class="site-btn">CREAR ORDEN</button>
+                                @hit
+                            </div>
+                        </div>
+                    </div>
+                </EditForm>
+            </div>
+        }
     </div>
 </section>
 <!-- Checkout Section End -->
 
 
-@code{
+@code{public string hit { get; set; }
 
-    public List<CartItem> Items { get; set; } = new List<CartItem>();
-    public Cart Cart { get; set; }
+    public List<CartItem> Cart_items { get; set; } = new List<CartItem>();
+    public Cart Cart { get; set; } = new Cart();
     public UserDto User { get; set; } = new UserDto();
     public Address Address { get; set; } = new Address();
-    public Request Request { get; set; } = new Request();
+    public List<Address_Province> Provinces { get; set; } = new List<Address_Province>();
+    public Check_Out Check_out { get; set; } = new Check_Out();
+    public List<Request_Item> Request_items { get; set; } = new List<Request_Item>();
     public decimal SubTotal_amount { get; set; }
-    public decimal Shipping_price { get; set; }
     public decimal Province_ship_price { get; set; }
-    public decimal Total_amount { get; set; }
     public bool Need_shipping { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
@@ -128,11 +127,21 @@
         User = await userService.GetUserInfo();
         Cart = await cartService.Get();
         if (Cart != null)
-            Items = (await cartService.Get()).Items;
-        SubTotal_amount = await cartService.GetTotalAmount();
-        Province_ship_price = await provinceService.GetShipPrice("");
-        Shipping_price = Province_ship_price;
-        Total_amount = SubTotal_amount + Shipping_price;
+        {
+            Cart_items = (await cartService.Get()).Items;
+            SubTotal_amount = await cartService.GetTotalAmount();
+            Province_ship_price = await provinceService.GetShipPrice(User.Address.Province.Name);
+            Check_out.Shipping_price = Province_ship_price;
+            Cart.Total_amount = SubTotal_amount + Check_out.Shipping_price;
+            Provinces = await provinceService.GetAll();
+            FillRequestData();
+        }
+    }
+
+    private void FillRequestData()
+    {
+        Check_out.Full_name = User.Name;
+        Check_out.Address = User.Address;
     }
 
     private string GetProductNameShort(string name)
@@ -146,15 +155,26 @@
             Need_shipping = false;
         else
             Need_shipping = true;
-        Shipping_price = Need_shipping ? Province_ship_price : 0;
-        Total_amount = SubTotal_amount + Shipping_price;
+        Check_out.Shipping_price = Need_shipping ? Province_ship_price : 0;
+        Cart.Total_amount = SubTotal_amount + Check_out.Shipping_price;
+    }
+
+    public void OnProvinceChange(ChangeEventArgs e)
+    {
+        //Request.Address.Province_id = Convert.ToInt32(e.Value);
     }
 
     private async Task OnSubmit()
     {
+        await requestService.Add(Check_out, Cart, Need_shipping);
+        await cartService.WipeCart();
+        await LoadData();
+    }
 
-
-        //localstorage remove cart
+    private async Task OnSub()
+    {
+        hit = "true";
+        await LoadData();
     }
 
 }

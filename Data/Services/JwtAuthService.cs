@@ -32,6 +32,15 @@ namespace OnlineStore.Data.Services
             _localStorage = localStorage;
         }
 
+        public async Task<string> GetUserId()
+        {
+            var username = await GetUsername();
+            if (username == null)
+                return "";
+            var user = await _context.Users.Where(x => x.UserName.Equals(username)).FirstAsync();
+            return user.Id;
+        }
+
         public async Task<string> GetUsername()
         {
             var token = await _localStorage.GetItemAsStringAsync("TOKENKEY");

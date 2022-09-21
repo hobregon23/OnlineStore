@@ -19,6 +19,7 @@ namespace OnlineStore.UoW
         IAddressRepository Addresses { get; }
         IAddressProvinceRepository Provinces { get; }
         IRequestRepository Requests { get; }
+        IRequest_ItemRepository Request_Items { get; }
         Task<bool> SaveChangesAsync();
     }
 
@@ -35,6 +36,7 @@ namespace OnlineStore.UoW
         public IAddressRepository Addresses { get; }
         public IAddressProvinceRepository Provinces { get; }
         public IRequestRepository Requests { get; }
+        public IRequest_ItemRepository Request_Items { get; }
 
         public UnitOfWork(ApplicationDbContext context, UserManager<User> userManager, IMapper mapper)
         {
@@ -47,6 +49,7 @@ namespace OnlineStore.UoW
             Addresses = new AddressRepository(context, userManager);
             Provinces = new AddressProvinceRepository(context, userManager);
             Requests = new RequestRepository(context, userManager);
+            Request_Items = new Request_ItemRepository(context, userManager);
         }
 
         public async Task<bool> SaveChangesAsync()

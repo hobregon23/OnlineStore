@@ -1,12 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Blazored.Toast.Services;
-using Microsoft.JSInterop;
-using Newtonsoft.Json;
 using OnlineStore.Models;
-using OnlineStore.Repos;
-using OnlineStore.UoW;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,6 +13,7 @@ namespace OnlineStore.Data.Services
         Task<decimal> GetTotalAmount();
         Task Add(Product item, int qty);
         Task Eliminar(int id);
+        Task WipeCart();
     }
 
     public class CartService : ICartService
@@ -91,6 +86,11 @@ namespace OnlineStore.Data.Services
             await _localStorage.SetItemAsync("cart", cart);
             _toastService.ShowInfo("Producto eliminado del carrito", "Eliminado");
             await _observer.NotifyStateChangedAsync();
+        }
+
+        public async Task WipeCart()
+        {
+            await _localStorage.RemoveItemAsync("cart");
         }
 
     }

@@ -12,8 +12,7 @@ namespace OnlineStore.Models
         public int Qty { get; set; }
 
         [Required(ErrorMessage = "{0} es requerido.")]
-        public decimal Import { get; set; }
-        public string Details { get; set; }
+        public decimal Total_import { get; set; }
 
         [ForeignKey("Product_id")]
         public virtual Product Product { get; set; }
