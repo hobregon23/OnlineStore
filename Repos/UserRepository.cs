@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.Models;
 using System;
@@ -19,8 +20,11 @@ namespace OnlineStore.Repos
 
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
-        public UserRepository(ApplicationDbContext context, UserManager<User> userManager) : base(context, userManager)
+        private readonly IMapper _mapper;
+
+        public UserRepository(ApplicationDbContext context, UserManager<User> userManager, IMapper mapper) : base(context, userManager)
         {
+            _mapper = mapper;
         }
 
         public async Task<PaginationResponse<User>> GetPag(Pagination pagination, string name)
@@ -60,22 +64,7 @@ namespace OnlineStore.Repos
                 {
                     return new UserDto();
                 }
-
-                UserDto userInfo = new UserDto
-                {
-                    Created_at = user.Created_at,
-                    Email = user.Email,
-                    LastName = user.LastName,
-                    Name = user.Name,
-                    PhoneNumber = user.PhoneNumber,
-                    UserName = user.UserName,
-                    Deleted_at = user.Deleted_at,
-                    Updated_at = user.Updated_at,
-                    Is_deleted = user.Is_deleted,
-                    IsActive = user.IsActive,
-                    Address = user.Address
-                };
-                return userInfo;
+                return _mapper.Map<UserDto>(user);
             }
             catch
             {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using OnlineStore.Models;
 using OnlineStore.Repos;
 using System;
@@ -25,6 +26,7 @@ namespace OnlineStore.UoW
     {
         protected readonly ApplicationDbContext _context;
         protected readonly UserManager<User> _userManager;
+        protected readonly IMapper _mapper;
         // add all repositories below
         public IProductRepository Products { get; }
         public ICategoryRepository Categories { get; }
@@ -34,14 +36,14 @@ namespace OnlineStore.UoW
         public IAddressProvinceRepository Provinces { get; }
         public IRequestRepository Requests { get; }
 
-        public UnitOfWork(ApplicationDbContext context, UserManager<User> userManager)
+        public UnitOfWork(ApplicationDbContext context, UserManager<User> userManager, IMapper mapper)
         {
             _context = context;
             _userManager = userManager;
             Products = new ProductRepository(context, userManager); // define clase que implementa la interfaz
             Categories = new CategoryRepository(context, userManager);
             FeaturedProducts = new FeaturedRepository(context, userManager);
-            Users = new UserRepository(context, userManager);
+            Users = new UserRepository(context, userManager, mapper);
             Addresses = new AddressRepository(context, userManager);
             Provinces = new AddressProvinceRepository(context, userManager);
             Requests = new RequestRepository(context, userManager);

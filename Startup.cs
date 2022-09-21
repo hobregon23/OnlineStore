@@ -38,6 +38,7 @@ namespace OnlineStore
             services.AddSweetAlert2();
             services.AddBlazoredToast();
             services.AddBlazoredLocalStorage();
+            services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddControllers();
             services.AddRazorPages();
             services.AddServerSideBlazor();
