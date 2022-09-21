@@ -1,5 +1,4 @@
 ﻿@inject JwtAuthService _jwtAuthService
-@inject ILocalStorageService localStorage
 @inject NavigationManager navi
 
 @code {
@@ -8,8 +7,7 @@
 
     protected async override Task OnInitializedAsync()
     {
-        var token = await localStorage.GetItemAsStringAsync("TOKENKEY");
-        if (!await _jwtAuthService.IsAuthorized(token, Roles))
+        if (!await _jwtAuthService.IsAuthorized(Roles))
         {
             navi.NavigateTo("/salir", true);
         }

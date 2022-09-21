@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -17,19 +18,23 @@ namespace OnlineStore.Data.Services
         private readonly UserManager<User> _userManager;
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly ILocalStorageService _localStorage;
 
         public JwtAuthService(
             UserManager<User> userManager,
             IConfiguration configuration,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            ILocalStorageService localStorage)
         {
             _configuration = configuration;
             _userManager = userManager;
             _context = context;
+            _localStorage = localStorage;
         }
 
-        public string GetUsername(string token)
+        public async Task<string> GetUsername()
         {
+            var token = await _localStorage.GetItemAsStringAsync("TOKENKEY");
             if (string.IsNullOrEmpty(token))
                 return "";
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -51,11 +56,11 @@ namespace OnlineStore.Data.Services
             return username;
         }
 
-        public async Task<bool> IsAuthorized(string token, List<string> roles)
+        public async Task<bool> IsAuthorized(List<string> roles)
         {
             try
             {
-                var username = GetUsername(token);
+                var username = await GetUsername();
                 if (username == null)
                     return false;
 

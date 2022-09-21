@@ -8,7 +8,7 @@ namespace OnlineStore.Data.Services
 {
     public interface IUserService
     {
-        public Task<PaginationResponse<User>> GetPag(Pagination pagination, string name, string token);
+        public Task<PaginationResponse<User>> GetPag(Pagination pagination, string name);
 
         public Task<string> GetUserRol(string userId);
 
@@ -16,32 +16,29 @@ namespace OnlineStore.Data.Services
 
         public Task<bool> AddNormalUser(UserDto model);
 
-        public Task<bool> AddAppUser(UserDto model, string rol, string token);
+        public Task<bool> AddAppUser(UserDto model, string rol);
 
-        public Task<bool> ActualizarCuenta(string token, UserUpdate userUpdate);
+        public Task<bool> ActualizarCuenta(UserUpdate userUpdate);
 
         public Task<bool> Eliminar(string userId);
     }
 
     public class UserService : IUserService
     {
-        private readonly ILocalStorageService _localStorage;
         private readonly IUnitOfWork _unitOfWork;
         private readonly JwtAuthService _jwtAuthService;
 
         public UserService(
-            ILocalStorageService localStorage,
             JwtAuthService jwtAuthService,
             IUnitOfWork unitOfWork)
         {
             _jwtAuthService = jwtAuthService;
-            _localStorage = localStorage;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<PaginationResponse<User>> GetPag(Pagination pagination, string name, string token)
+        public async Task<PaginationResponse<User>> GetPag(Pagination pagination, string name)
         {
-            if (!await _jwtAuthService.IsAuthorized(token, new List<string>() { "Admin" }))
+            if (!await _jwtAuthService.IsAuthorized(new List<string>() { "Admin" }))
                 return null;
             return await _unitOfWork.Users.GetPag(pagination, name);
         }
@@ -53,8 +50,7 @@ namespace OnlineStore.Data.Services
 
         public async Task<UserDto> GetUserInfo()
         {
-            var token = await _localStorage.GetItemAsStringAsync("TOKENKEY");
-            var username = _jwtAuthService.GetUsername(token);
+            var username = await _jwtAuthService.GetUsername();
             return await _unitOfWork.Users.GetUserInfo(username);
         }
 
@@ -63,16 +59,16 @@ namespace OnlineStore.Data.Services
             return await _unitOfWork.Users.AddNormalUser(model);
         }
 
-        public async Task<bool> AddAppUser(UserDto model, string rol, string token)
+        public async Task<bool> AddAppUser(UserDto model, string rol)
         {
-            if (!await _jwtAuthService.IsAuthorized(token, new List<string>() { "Admin" }))
+            if (!await _jwtAuthService.IsAuthorized(new List<string>() { "Admin" }))
                 return false;
             return await _unitOfWork.Users.AddAppUser(model, rol);
         }
 
-        public async Task<bool> ActualizarCuenta(string token, UserUpdate userUpdate)
+        public async Task<bool> ActualizarCuenta(UserUpdate userUpdate)
         {
-            if (!await _jwtAuthService.IsAuthorized(token, new List<string>() { "Admin", "User", "Delivery" }))
+            if (!await _jwtAuthService.IsAuthorized(new List<string>() { "Admin", "User", "Delivery" }))
                 return false;
             return await _unitOfWork.Users.ActualizarCuenta(userUpdate);
         }

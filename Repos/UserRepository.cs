@@ -74,16 +74,7 @@ namespace OnlineStore.Repos
 
         public async Task<bool> AddNormalUser(UserDto model)
         {
-            var user = new User
-            {
-                UserName = model.UserName,
-                Email = model.Email,
-                PhoneNumber = model.PhoneNumber,
-                Name = model.Name,
-                LastName = model.LastName,
-                Created_at = DateTime.Now,
-                IsActive = true
-            };
+            var user = _mapper.Map<User>(model);
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -100,17 +91,7 @@ namespace OnlineStore.Repos
         {
             if (string.IsNullOrEmpty(rol) || string.IsNullOrWhiteSpace(rol))
                 return false;
-
-            var user = new User
-            {
-                UserName = model.UserName,
-                Email = model.Email,
-                PhoneNumber = model.PhoneNumber,
-                Name = model.Name,
-                LastName = model.LastName,
-                Created_at = DateTime.Now,
-                IsActive = true
-            };
+            var user = _mapper.Map<User>(model);
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -138,6 +119,9 @@ namespace OnlineStore.Repos
                 {
                     user.Email = userUpdate.Email;
                     user.PhoneNumber = userUpdate.PhoneNumber;
+                    user.Name = userUpdate.Name;
+                    user.LastName = userUpdate.LastName;
+                    user.PhoneNumber = userUpdate.PhoneNumber;
                     _context.Entry(user).State = EntityState.Modified;
                     try
                     {
@@ -145,6 +129,7 @@ namespace OnlineStore.Repos
                     }
                     catch
                     {
+                        _context.Entry(user).State = EntityState.Detached;
                         return false;
                     }
                     return true;
@@ -154,9 +139,10 @@ namespace OnlineStore.Repos
             {
                 user.Email = userUpdate.Email;
                 user.PhoneNumber = userUpdate.PhoneNumber;
-
+                user.Name = userUpdate.Name;
+                user.LastName = userUpdate.LastName;
+                user.PhoneNumber = userUpdate.PhoneNumber;
                 _context.Entry(user).State = EntityState.Modified;
-
                 var result = await _userManager.ChangePasswordAsync(user, userUpdate.OldPassword, userUpdate.NewPassword);
                 if (result.Succeeded)
                 {
@@ -172,6 +158,7 @@ namespace OnlineStore.Repos
                 }
                 else
                 {
+                    _context.Entry(user).State = EntityState.Detached;
                     return false;
                 }
             }
