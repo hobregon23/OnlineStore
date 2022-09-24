@@ -166,6 +166,9 @@
 
     private async Task OnSubmit()
     {
+        var goodToGo = await requestService.VerifyItemQty(Cart.Items);
+        if (!goodToGo)
+            return;
         await requestService.Add(Check_out, Cart, Need_shipping);
         await cartService.WipeCart();
         await LoadData();

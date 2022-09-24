@@ -12,6 +12,7 @@ namespace OnlineStore.Data.Services
     {
         Task Add(Check_Out item, Cart cart, bool need_shipping);
         Task<List<Request>> GetAll();
+        Task<bool> VerifyItemQty(List<CartItem> items);
     }
 
     public class RequestService : IRequestService
@@ -28,6 +29,28 @@ namespace OnlineStore.Data.Services
             _jwtAuthService = jwtAuthService;
             _toastService = toastService;
             _unitOfWork = unitOfWork;
+        }
+
+        public async Task<bool> VerifyItemQty(List<CartItem> items)
+        {
+            var withProblem = new List<string>();
+            foreach (var item in items)
+            {
+                var prod = await _unitOfWork.Products.GetById(item.Product_id);
+                if (prod.Qty < item.Qty)
+                {
+                    withProblem.Add(item.Product_name.Length > 30 ? item.Product_name.Substring(0, 30) + "..." : item.Product_name + " solo quedan " + item.Qty);
+                }
+            }
+            if (withProblem.Count > 0)
+            {
+                foreach (var item in withProblem)
+                {
+                    _toastService.ShowError(item, "Cantidad insuficiente");
+                }
+                return false;
+            }
+            return true;
         }
 
         public async Task Add(Check_Out item, Cart cart, bool need_shipping)

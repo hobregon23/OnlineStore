@@ -3,7 +3,6 @@
 @inject ILoginService loginService
 @inject HttpClient http
 @attribute [AllowAnonymous]
-@layout BlazorLayout
 
 <div class="main">
     <div class="content px-4">
@@ -17,8 +16,7 @@
                 <EditForm class="w-md-75 w-lg-50 mx-md-auto" Model="userLogin" OnValidSubmit="LoginUser">
                     <!-- Title -->
                     <div class="mb-7">
-                        <h2 class="h3 text-primary font-weight-normal mb-0">Bienvenido</h2>
-                        <p>Acceda para administrar su negocio.</p>
+                        <h2 class="h3 text-primary font-weight-normal mb-3 mt-3">LOGIN</h2>
                     </div>
                     <!-- End Title -->
                     <DataAnnotationsValidator />
@@ -46,7 +44,7 @@
                         </div>
 
                         <div class="col-7 col-sm-6 text-right">
-                            <button type="submit" class="btn btn-primary transition-3d-hover">Acceder</button>
+                            <button type="submit" class="primary-btn transition-3d-hover" style="border:0">Acceder</button>
                         </div>
                     </div>
                 </EditForm>

@@ -39,7 +39,7 @@
                                             $@(item.Qty * item.Price)
                                         </td>
                                         <td class="shoping__cart__item__close transition-3d-hover">
-                                            <span @onclick="@(()=>Eliminar(item.Product_id))" class="icon_close" style="color: red"></span>
+                                            <span @onclick="@(()=>Remove(item.Product_id))" class="icon_close" style="color: red"></span>
                                         </td>
                                     </tr>
                                 }
@@ -96,9 +96,9 @@
         Total_amount = await cartService.GetTotalAmount();
     }
 
-    private async Task Eliminar(int id)
+    private async Task Remove(int id)
     {
-        await cartService.Eliminar(id);
+        await cartService.RemoveProduct(id);
         await LoadData();
     }
 }

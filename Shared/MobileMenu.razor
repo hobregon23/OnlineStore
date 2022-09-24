@@ -11,7 +11,19 @@
     </div>
     <div class="humberger__menu__widget">
         <div class="header__top__right__auth">
-            <a href="#"><i class="fa fa-user"></i> Login</a>
+            <AuthorizeView>
+                <Authorized>
+                    <div>
+                        <a href="/editar-cuenta">Hola, <strong>@Name!</strong> </a>
+                    </div>
+                    <div class="mt-2">
+                        <a href="/salir" style="color: red; font-weight:bold">Salir <i class="fa fa-sign-out"></i></a>
+                    </div>
+                </Authorized>
+                <NotAuthorized>
+                    <a href="login"><i class="fa fa-user"></i> Login</a>
+                </NotAuthorized>
+            </AuthorizeView>
         </div>
     </div>
     <nav class="humberger__menu__nav mobile-menu">
@@ -40,6 +52,24 @@
 </div>
 
 @code{
+
+    [CascadingParameter] protected Task<AuthenticationState> AuthStat { get; set; }
+
+    private string Name { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var user = (await AuthStat).User;
+        var claims = user.Claims;
+        try
+        {
+            Name = claims.First(x => x.Type.Contains("givenname")).Value;
+        }
+        catch
+        {
+            Name = "";
+        }
+    }
 
     private async Task MobileMenuClose()
     {

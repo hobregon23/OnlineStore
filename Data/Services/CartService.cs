@@ -12,7 +12,7 @@ namespace OnlineStore.Data.Services
         Task<int> GetCount();
         Task<decimal> GetTotalAmount();
         Task Add(Product item, int qty);
-        Task Eliminar(int id);
+        Task RemoveProduct(int id);
         Task WipeCart();
     }
 
@@ -42,7 +42,7 @@ namespace OnlineStore.Data.Services
 
         public async Task<decimal> GetTotalAmount()
         {
-            var cart = await _localStorage.GetItemAsync<Cart>("cart");
+            var cart = await Get();
             if (cart == null)
                 return 0m;
             decimal res = 0m;
@@ -53,13 +53,35 @@ namespace OnlineStore.Data.Services
             return res;
         }
 
+        public async Task<int> GetActualQty(int product_id)
+        {
+            var cart = await Get();
+            if (cart == null)
+                return 0;
+            var item = cart.Items.FirstOrDefault(x => x.Product_id.Equals(product_id));
+            return item == null ? 0 : item.Qty;
+        }
+
+        public async Task<bool> VerifyQty(Product item, int qty)
+        {
+            var actual_qty = await GetActualQty(item.Id);
+            if (qty > item.Qty - actual_qty)
+                return true;
+            return false;
+        }
+
         public async Task Add(Product item, int qty)
         {
             if (qty < 1)
                 return;
             // verificar q no se añadan mas de la existencia
+            if (await VerifyQty(item, qty))
+            {
+                _toastService.ShowError("No quedan más en existencia", "Error");
+                return;
+            }
             var cart_item = new CartItem() { Product_id = item.Id, Qty = qty, Price = item.Price, Product_name = item.Name, Image_url = item.Image_url };
-            var cart = await _localStorage.GetItemAsync<Cart>("cart");
+            var cart = await Get();
             if (cart == null)
             {
                 cart = new Cart();
@@ -77,9 +99,9 @@ namespace OnlineStore.Data.Services
             await _observer.NotifyStateChangedAsync();
         }
 
-        public async Task Eliminar(int id)
+        public async Task RemoveProduct(int id)
         {
-            var cart = await _localStorage.GetItemAsync<Cart>("cart");
+            var cart = await Get();
             if (cart == null)
                 return;
             var cartItem = cart.Items.Find(x => x.Product_id.Equals(id));
