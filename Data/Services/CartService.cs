@@ -57,6 +57,7 @@ namespace OnlineStore.Data.Services
         {
             if (qty < 1)
                 return;
+            // verificar q no se añadan mas de la existencia
             var cart_item = new CartItem() { Product_id = item.Id, Qty = qty, Price = item.Price, Product_name = item.Name, Image_url = item.Image_url };
             var cart = await _localStorage.GetItemAsync<Cart>("cart");
             if (cart == null)

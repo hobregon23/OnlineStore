@@ -13,6 +13,8 @@ namespace OnlineStore.Repos
         Task<PaginationResponse<Product>> GetPag(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo);
         Task<List<Product>> GetRecents(int qty);
         Task<List<Product>> GetRandom();
+        Task<string> Eliminar(int id);
+        Task<string> Rebajar(int id, int qty);
     }
 
     public class ProductRepository : GenericRepository<Product>, IProductRepository
@@ -76,6 +78,45 @@ namespace OnlineStore.Repos
             double pagesQuantity = Math.Ceiling(count / pagination.QuantityPerPage);
 
             return new PaginationResponse<Product>() { ListaObjetos = await queryable.Paginate(pagination).ToListAsync(), CantPorPag = (int)pagesQuantity, ItemsTotal = queryable.Count() };
+        }
+
+        public async Task<string> Rebajar(int id, int qty)
+        {
+            try
+            {
+                var item = await GetById(id);
+                if (item == null)
+                    return "Error, no existe.";
+                item.Qty -= qty;
+                if (item.Qty < 1)
+                    item.IsActive = false;
+                Update(item);
+                await _context.SaveChangesAsync();
+                return "Ok";
+            }
+            catch
+            {
+                return "Error inesperado.";
+            }
+        }
+
+        public async Task<string> Eliminar(int id)
+        {
+            try
+            {
+                var item = await GetById(id);
+                if (item == null)
+                    return "Error, no existe.";
+                item.IsActive = false;
+
+                Update(item);
+                await _context.SaveChangesAsync();
+                return "Ok";
+            }
+            catch
+            {
+                return "Error inesperado.";
+            }
         }
     }
 }

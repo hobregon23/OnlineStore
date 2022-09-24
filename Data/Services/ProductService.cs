@@ -13,6 +13,7 @@ namespace OnlineStore.Data.Services
         Task<List<Product>> GetRecents(int qty);
         Task<List<Product>> GetRandom();
         Task<string> Eliminar(int id);
+        Task<string> Rebajar(int id, int qty);
     }
 
     public class ProductService : IProductService
@@ -67,24 +68,14 @@ namespace OnlineStore.Data.Services
             return await _unitOfWork.Products.GetRandom();
         }
 
+        public async Task<string> Rebajar(int id, int qty)
+        {
+            return await _unitOfWork.Products.Rebajar(id, qty);
+        }
+
         public async Task<string> Eliminar(int id)
         {
-            try
-            {
-                var item = await GetById(id);
-                if (item == null)
-                    return "Error, no existe.";
-                item.IsActive = false;
-                item.Is_deleted = true;
-
-                _unitOfWork.Products.Update(item);
-                await _unitOfWork.SaveChangesAsync();
-                return "Ok";
-            }
-            catch
-            {
-                return "Error inesperado.";
-            }
+            return await _unitOfWork.Products.Eliminar(id);
         }
     }
 }

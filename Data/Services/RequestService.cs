@@ -59,13 +59,13 @@ namespace OnlineStore.Data.Services
             {
                 await _unitOfWork.Request_Items.Add(item);
                 await _unitOfWork.SaveChangesAsync();
-                //rebajar la qty de la tabla productos
+                await RebajarProducto(item.Product_id, item.Qty);
             }
         }
 
-        private async Task RebajarProducto(int id)
+        private async Task RebajarProducto(int id, int qty)
         {
-            
+            await _unitOfWork.Products.Rebajar(id, qty);
         }
 
         private List<Request_Item> FillListItems(List<CartItem> items, int req_id)
