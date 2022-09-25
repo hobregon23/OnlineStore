@@ -36,7 +36,7 @@
                                 <div class="col-lg-6">
                                     <div class="checkout__input">
                                         <label>Provincia<span>*</span></label><br />
-                                        <select class="custom-select-primary" @bind="Province" required>
+                                        <select class="custom-select-primary" value="@Province" @onchange="OnProvinceChange" required>
                                             @foreach (var item in Provinces)
                                             {
                                                 <option value="@item.Id">
@@ -176,6 +176,14 @@
         {
             Check_out.Address.Province_id = int.Parse(value);
         }
+    }
+
+    private async Task OnProvinceChange(ChangeEventArgs e)
+    {
+        Province_ship_price = await provinceService.GetShipPrice(int.Parse(e.Value.ToString()));
+        Check_out.Shipping_price = Need_shipping ? Province_ship_price : 0;
+        Cart.Total_amount = SubTotal_amount + Check_out.Shipping_price;
+        Check_out.Address.Province_id = int.Parse(e.Value.ToString());
     }
 
     private async Task OnSubmit()

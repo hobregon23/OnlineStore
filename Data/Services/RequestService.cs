@@ -56,6 +56,7 @@ namespace OnlineStore.Data.Services
         public async Task Add(Check_Out item, Cart cart, bool need_shipping)
         {
             var userAddress = await _unitOfWork.Addresses.GetById(item.Address.Id);
+            var ship_price = await _unitOfWork.Provinces.GetShipPrice(item.Address.Province_id);
             var request = new Request
             {
                 Full_name_receptor = item.Full_name,
@@ -63,7 +64,7 @@ namespace OnlineStore.Data.Services
                 Address_id = item.Address.Id,
                 Status = "Pendiente",
                 Price = cart.Total_amount - item.Shipping_price,
-                Shipping_price = item.Shipping_price,
+                Shipping_price = need_shipping ? ship_price : 0,
                 Created_at = DateTime.Now,
                 IsActive = true,
                 Need_shipping = need_shipping

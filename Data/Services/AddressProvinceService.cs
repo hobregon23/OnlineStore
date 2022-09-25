@@ -10,6 +10,7 @@ namespace OnlineStore.Data.Services
     public interface IAddressProvinceService
     {
         Task<decimal> GetShipPrice(string name);
+        Task<decimal> GetShipPrice(int id);
         Task<List<Address_Province>> GetAll();
     }
 
@@ -29,6 +30,11 @@ namespace OnlineStore.Data.Services
         public async Task<decimal> GetShipPrice(string name)
         {
             return await _unitOfWork.Provinces.GetShipPrice(name);
+        }
+
+        public async Task<decimal> GetShipPrice(int id)
+        {
+            return await _unitOfWork.Provinces.GetShipPrice(id);
         }
 
         public async Task<List<Address_Province>> GetAll()
