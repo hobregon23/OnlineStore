@@ -4,6 +4,10 @@
     font-weight: bold;
 }
 
+.checkout__input label span {
+    color: red;
+}
+
 .triangle {
     height: 100px;
     background: linear-gradient(135deg,#36b9cc 35px,#0000 0);

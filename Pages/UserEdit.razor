@@ -21,14 +21,14 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="checkout__input">
-                                <label>Usuario <span style="color:red">*</span></label>
+                                <label>Usuario<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.UserName" />
                                 <ValidationMessage For="@(() => userUpdate.UserName)" />
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="checkout__input">
-                                <label>Correo <span style="color:red">*</span></label>
+                                <label>Correo<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.Email" />
                                 <ValidationMessage For="@(() => userUpdate.Email)" />
                             </div>
@@ -37,14 +37,14 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="checkout__input">
-                                <label>Nombre <span style="color:red">*</span></label>
+                                <label>Nombre<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.Name" />
                                 <ValidationMessage For="@(() => userUpdate.Name)" />
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="checkout__input">
-                                <label>Apellidos <span style="color:red">*</span></label>
+                                <label>Apellidos<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.LastName" />
                                 <ValidationMessage For="@(() => userUpdate.LastName)" />
                             </div>
@@ -53,14 +53,14 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="checkout__input">
-                                <label>Teléfono <span style="color:red">*</span></label>
+                                <label>Teléfono<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.PhoneNumber" />
                                 <ValidationMessage For="@(() => userUpdate.PhoneNumber)" />
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="checkout__input">
-                                <label>Dirección <span style="color:red">*</span></label>
+                                <label>Dirección<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.Address.Address_line" />
                                 <ValidationMessage For="@(() => userUpdate.Address.Address_line)" />
                             </div>
@@ -69,14 +69,14 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="checkout__input">
-                                <label>Ciudad <span style="color:red">*</span></label>
+                                <label>Ciudad<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.Address.City" />
                                 <ValidationMessage For="@(() => userUpdate.Address.City)" />
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="checkout__input">
-                                <label>Municipio <span style="color:red">*</span></label>
+                                <label>Municipio<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.Address.State" />
                                 <ValidationMessage For="@(() => userUpdate.Address.State)" />
                             </div>
@@ -85,14 +85,14 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="checkout__input">
-                                <label>Código Postal <span style="color:red">*</span></label>
+                                <label>Código Postal<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.Address.Postal_code" />
                                 <ValidationMessage For="@(() => userUpdate.Address.Postal_code)" />
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="checkout__input">
-                                <label>Provincia <span style="color:red">*</span></label><br />
+                                <label>Provincia<span>*</span></label><br />
                                 <select class="custom-select-primary" @bind="Province" required>
                                     @foreach (var item in Provinces)
                                     {
@@ -108,7 +108,7 @@
                     <div class="row">
                         <div class="col-lg-4">
                             <div class="checkout__input">
-                                <label>Contraseña Anterior <span style="color:red">*</span></label>
+                                <label>Contraseña Anterior<span>*</span></label>
                                 <InputPassword Class="form-control" @bind-Value="@userUpdate.OldPassword" />
                                 <ValidationMessage For="@(() => userUpdate.OldPassword)" />
                             </div>
