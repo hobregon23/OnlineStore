@@ -22,6 +22,18 @@
     text-decoration: line-through;
 }
 
+.custom-select-primary {
+    display: inline-block;
+    font-size: 14px;
+    padding: 10px 28px 10px;
+    color: #000;
+    text-transform: uppercase;
+    font-weight: 700;
+    background: #c8c8c8;
+    letter-spacing: 2px;
+    border: 0;
+}
+
 .custom1-select {
     position: relative;
     font-family: Arial;

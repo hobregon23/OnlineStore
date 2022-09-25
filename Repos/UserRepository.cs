@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.Models;
@@ -21,10 +22,12 @@ namespace OnlineStore.Repos
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
         private readonly IMapper _mapper;
+        private readonly IToastService _toastService;
 
-        public UserRepository(ApplicationDbContext context, UserManager<User> userManager, IMapper mapper) : base(context, userManager)
+        public UserRepository(ApplicationDbContext context, UserManager<User> userManager, IMapper mapper, IToastService toastService) : base(context, userManager)
         {
             _mapper = mapper;
+            _toastService = toastService;
         }
 
         public async Task<PaginationResponse<User>> GetPag(Pagination pagination, string name)
@@ -75,14 +78,19 @@ namespace OnlineStore.Repos
         public async Task<bool> AddNormalUser(UserDto model)
         {
             var user = _mapper.Map<User>(model);
+            user.IsActive = true;
+            user.Created_at = DateTime.Now;
+            user.Address = new Address() { Province = null, Address_line = model.Address.Address_line, City = model.Address.City, Postal_code = model.Address.Postal_code, State = model.Address.State, Province_id = model.Address.Province_id };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, "User");
+                _toastService.ShowSuccess("Usuario creado exitosamente", "Genial");
                 return true;
             }
             else
             {
+                _toastService.ShowError("Recargue la página", "Error");
                 return false;
             }
         }
@@ -92,6 +100,7 @@ namespace OnlineStore.Repos
             if (string.IsNullOrEmpty(rol) || string.IsNullOrWhiteSpace(rol))
                 return false;
             var user = _mapper.Map<User>(model);
+            user.IsActive = true;
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {

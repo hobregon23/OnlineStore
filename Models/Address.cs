@@ -14,6 +14,8 @@ namespace OnlineStore.Models
 
         [ForeignKey("Province_id")]
         public virtual Address_Province Province { get; set; }
+        [Required]
+        [Range(1, int.MaxValue)]
         public int Province_id { get; set; }
     }
 }

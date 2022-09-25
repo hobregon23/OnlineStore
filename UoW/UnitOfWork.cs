@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Identity;
 using OnlineStore.Models;
 using OnlineStore.Repos;
@@ -28,6 +29,7 @@ namespace OnlineStore.UoW
         protected readonly ApplicationDbContext _context;
         protected readonly UserManager<User> _userManager;
         protected readonly IMapper _mapper;
+        protected readonly IToastService _toastService;
         // add all repositories below
         public IProductRepository Products { get; }
         public ICategoryRepository Categories { get; }
@@ -38,14 +40,14 @@ namespace OnlineStore.UoW
         public IRequestRepository Requests { get; }
         public IRequest_ItemRepository Request_Items { get; }
 
-        public UnitOfWork(ApplicationDbContext context, UserManager<User> userManager, IMapper mapper)
+        public UnitOfWork(ApplicationDbContext context, UserManager<User> userManager, IMapper mapper, IToastService toastService)
         {
             _context = context;
             _userManager = userManager;
             Products = new ProductRepository(context, userManager); // define clase que implementa la interfaz
             Categories = new CategoryRepository(context, userManager);
             FeaturedProducts = new FeaturedRepository(context, userManager);
-            Users = new UserRepository(context, userManager, mapper);
+            Users = new UserRepository(context, userManager, mapper, toastService);
             Addresses = new AddressRepository(context, userManager);
             Provinces = new AddressProvinceRepository(context, userManager);
             Requests = new RequestRepository(context, userManager);
