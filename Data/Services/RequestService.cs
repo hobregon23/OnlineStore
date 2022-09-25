@@ -55,6 +55,7 @@ namespace OnlineStore.Data.Services
 
         public async Task Add(Check_Out item, Cart cart, bool need_shipping)
         {
+            var userAddress = await _unitOfWork.Addresses.GetById(item.Address.Id);
             var request = new Request
             {
                 Full_name_receptor = item.Full_name,
@@ -67,6 +68,23 @@ namespace OnlineStore.Data.Services
                 IsActive = true,
                 Need_shipping = need_shipping
             };
+            if (userAddress.Address_line != item.Address.Address_line ||
+                userAddress.City != item.Address.City ||
+                userAddress.State != item.Address.State ||
+                userAddress.Postal_code != item.Address.Postal_code ||
+                userAddress.Province_id != item.Address.Province_id)
+            {
+                request.Address = new Address()
+                {
+                    Address_line = item.Address.Address_line,
+                    City = item.Address.City,
+                    State = item.Address.State,
+                    Postal_code = item.Address.Postal_code,
+                    Province_id = item.Address.Province_id,
+                    Province = null
+                };
+                request.Address_id = request.Address.Id;
+            }
             var req = await _unitOfWork.Requests.Add(request);
             await _unitOfWork.SaveChangesAsync();
 
