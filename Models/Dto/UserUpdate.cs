@@ -37,5 +37,6 @@ namespace OnlineStore.Models
         [Compare("NewPassword")]
         [DataType(DataType.Password)]
         public string ConfirmNewPassword { get; set; }
+        public Address Address { get; set; } = new Address() { Province = new Address_Province() };
     }
 }

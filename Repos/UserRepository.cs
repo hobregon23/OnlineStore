@@ -16,7 +16,7 @@ namespace OnlineStore.Repos
         Task<UserDto> GetUserInfo(string username);
         Task<bool> AddNormalUser(UserDto model);
         Task<bool> AddAppUser(UserDto model, string rol);
-        Task<bool> ActualizarCuenta(UserUpdate userUpdate);
+        Task<bool> UpdateUser(UserUpdate userUpdate);
     }
 
     public class UserRepository : GenericRepository<User>, IUserRepository
@@ -101,20 +101,24 @@ namespace OnlineStore.Repos
                 return false;
             var user = _mapper.Map<User>(model);
             user.IsActive = true;
+            user.Created_at = DateTime.Now;
+            user.Address = new Address() { Province = null, Address_line = model.Address.Address_line, City = model.Address.City, Postal_code = model.Address.Postal_code, State = model.Address.State, Province_id = model.Address.Province_id };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, rol);
+                _toastService.ShowSuccess("Usuario creado exitosamente", "Genial");
                 return true;
             }
             else
             {
+                _toastService.ShowError("Recargue la página", "Error");
                 return false;
             }
 
         }
 
-        public async Task<bool> ActualizarCuenta(UserUpdate userUpdate)
+        public async Task<bool> UpdateUser(UserUpdate userUpdate)
         {
             var user = await _context.Users.Where(x => x.UserName.Equals(userUpdate.UserName)).FirstAsync();
             if (string.IsNullOrEmpty(userUpdate.NewPassword) || string.IsNullOrWhiteSpace(userUpdate.NewPassword))
@@ -126,19 +130,22 @@ namespace OnlineStore.Repos
                 }
                 else
                 {
+                    user.Updated_at = DateTime.Now;
                     user.Email = userUpdate.Email;
                     user.PhoneNumber = userUpdate.PhoneNumber;
                     user.Name = userUpdate.Name;
                     user.LastName = userUpdate.LastName;
                     user.PhoneNumber = userUpdate.PhoneNumber;
-                    _context.Entry(user).State = EntityState.Modified;
+                    Update(user);
                     try
                     {
                         await _context.SaveChangesAsync();
+                        _toastService.ShowSuccess("Usuario actualizado exitosamente", "Genial");
                     }
                     catch
                     {
                         _context.Entry(user).State = EntityState.Detached;
+                        _toastService.ShowError("Recargue la página", "Error");
                         return false;
                     }
                     return true;
@@ -146,21 +153,24 @@ namespace OnlineStore.Repos
             }
             else
             {
+                user.Updated_at = DateTime.Now;
                 user.Email = userUpdate.Email;
                 user.PhoneNumber = userUpdate.PhoneNumber;
                 user.Name = userUpdate.Name;
                 user.LastName = userUpdate.LastName;
                 user.PhoneNumber = userUpdate.PhoneNumber;
-                _context.Entry(user).State = EntityState.Modified;
+                Update(user);
                 var result = await _userManager.ChangePasswordAsync(user, userUpdate.OldPassword, userUpdate.NewPassword);
                 if (result.Succeeded)
                 {
                     try
                     {
                         await _context.SaveChangesAsync();
+                        _toastService.ShowSuccess("Usuario actualizado exitosamente", "Genial");
                     }
                     catch
                     {
+                        _toastService.ShowError("Recargue la página", "Error");
                         return false;
                     }
                     return true;

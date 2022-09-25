@@ -18,7 +18,7 @@ namespace OnlineStore.Data.Services
 
         public Task<bool> AddAppUser(UserDto model, string rol);
 
-        public Task<bool> ActualizarCuenta(UserUpdate userUpdate);
+        public Task<bool> UpdateUser(UserUpdate userUpdate);
 
         public Task<bool> Eliminar(string userId);
     }
@@ -66,11 +66,13 @@ namespace OnlineStore.Data.Services
             return await _unitOfWork.Users.AddAppUser(model, rol);
         }
 
-        public async Task<bool> ActualizarCuenta(UserUpdate userUpdate)
+        public async Task<bool> UpdateUser(UserUpdate userUpdate)
         {
             if (!await _jwtAuthService.IsAuthorized(new List<string>() { "Admin", "User", "Delivery" }))
                 return false;
-            return await _unitOfWork.Users.ActualizarCuenta(userUpdate);
+            _unitOfWork.Addresses.Update(userUpdate.Address);
+            await _unitOfWork.SaveChangesAsync();
+            return await _unitOfWork.Users.UpdateUser(userUpdate);
         }
 
         public async Task<bool> Eliminar(string userId)

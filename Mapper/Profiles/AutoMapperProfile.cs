@@ -9,6 +9,7 @@ namespace OnlineStore.Mapper.Profiles
         {
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
+            CreateMap<UserDto, UserUpdate>();
         }
     }
 }

@@ -1,5 +1,213 @@
-﻿<h3>UserEdit</h3>
+﻿@page "/user_ed"
+@inject IUserService userService
+@inject IToastService toastService
+@inject IAddressProvinceService provinceService
+@inject IMapper mapper
+
+
+    <div class="content px-4">
+        <div class="container space-top-2 space-top-md-3">
+            <div class="row px-5">
+                <EditForm class="col-lg-10 col-md-10 mx-md-auto" Model="userUpdate" OnValidSubmit="UpdateUser">
+                    <!-- Title -->
+                    <div class="mb-7">
+                        <h2 class="h3 text-primary font-weight-normal mb-3 mt-3">Actualizar información</h2>
+                    </div>
+                    <!-- End Title -->
+                    <!-- Errors here -->
+                    <DataAnnotationsValidator />
+                    <!-- End Errors -->
+                    <!-- Form Group -->
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <label>Usuario <span style="color:red">*</span></label>
+                                <InputText Class="form-control" @bind-Value="@userUpdate.UserName" />
+                                <ValidationMessage For="@(() => userUpdate.UserName)" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <label>Correo <span style="color:red">*</span></label>
+                                <InputText Class="form-control" @bind-Value="@userUpdate.Email" />
+                                <ValidationMessage For="@(() => userUpdate.Email)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <label>Nombre <span style="color:red">*</span></label>
+                                <InputText Class="form-control" @bind-Value="@userUpdate.Name" />
+                                <ValidationMessage For="@(() => userUpdate.Name)" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <label>Apellidos <span style="color:red">*</span></label>
+                                <InputText Class="form-control" @bind-Value="@userUpdate.LastName" />
+                                <ValidationMessage For="@(() => userUpdate.LastName)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <label>Teléfono <span style="color:red">*</span></label>
+                                <InputText Class="form-control" @bind-Value="@userUpdate.PhoneNumber" />
+                                <ValidationMessage For="@(() => userUpdate.PhoneNumber)" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <label>Dirección <span style="color:red">*</span></label>
+                                <InputText Class="form-control" @bind-Value="@userUpdate.Address.Address_line" />
+                                <ValidationMessage For="@(() => userUpdate.Address.Address_line)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <label>Ciudad <span style="color:red">*</span></label>
+                                <InputText Class="form-control" @bind-Value="@userUpdate.Address.City" />
+                                <ValidationMessage For="@(() => userUpdate.Address.City)" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <label>Municipio <span style="color:red">*</span></label>
+                                <InputText Class="form-control" @bind-Value="@userUpdate.Address.State" />
+                                <ValidationMessage For="@(() => userUpdate.Address.State)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <label>Código Postal <span style="color:red">*</span></label>
+                                <InputText Class="form-control" @bind-Value="@userUpdate.Address.Postal_code" />
+                                <ValidationMessage For="@(() => userUpdate.Address.Postal_code)" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <label>Provincia <span style="color:red">*</span></label><br />
+                                <select class="custom-select-primary" @bind="Province" required>
+                                    @foreach (var item in Provinces)
+                                    {
+                                        <option value="@item.Id">
+                                            @item.Name
+                                        </option>
+                                    }
+                                    <span class="arrow_carrot-down"></span>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label>Contraseña Anterior <span style="color:red">*</span></label>
+                                <InputPassword Class="form-control" @bind-Value="@userUpdate.OldPassword" />
+                                <ValidationMessage For="@(() => userUpdate.OldPassword)" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label>Nueva Contraseña</label>
+                                <InputPassword Class="form-control" @bind-Value="@userUpdate.NewPassword" />
+                                <ValidationMessage For="@(() => userUpdate.NewPassword)" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label>Confirmar Nueva Contraseña</label>
+                                <InputPassword Class="form-control" @bind-Value="@userUpdate.ConfirmNewPassword" />
+                                <ValidationMessage For="@(() => userUpdate.ConfirmNewPassword)" />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Checkbox -->
+                    <div class="jcheckout__input mb-5">
+                        <div class="custom-control custom-checkbox d-flex align-items-center text-muted">
+
+                            <input type="checkbox" class="custom-control-input" id="termsCheckbox" name="agree" required data-msg="Please accept our Terms and Conditions." data-error-class="u-has-error" data-success-class="u-has-success">
+                            <label class="custom-control-label" for="termsCheckbox">
+                                <small>
+                                    Estoy de acuerdo con los
+                                    <a class="link-muted" href="/legal">Términos y Condiciones</a>
+                                </small>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- End Checkbox -->
+                    <!-- Button -->
+                    <div class="row align-items-center mb-5">
+                        <div class="col-5 col-sm-6">
+                        </div>
+                        <div class="col-7 col-sm-6 text-right">
+                            <button type="submit" class="primary-btn transition-3d-hover" style="border:0">Actualizar</button>
+                        </div>
+                    </div>
+                    <!-- End Button -->
+                </EditForm>
+
+            </div>
+        </div>
+    </div>
+
 
 @code {
 
+    private UserUpdate userUpdate = new UserUpdate();
+    private List<Address_Province> Provinces = new List<Address_Province>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadInfo();
+    }
+
+    private async Task LoadInfo()
+    {
+        Provinces = await provinceService.GetAll();
+        var userInfo = await userService.GetUserInfo();
+        userUpdate = mapper.Map<UserUpdate>(userInfo);
+        Province = userUpdate.Address.Province_id.ToString();
+    }
+
+    private async Task UpdateUser()
+    {
+        if (!AddressFullfill())
+        {
+            toastService.ShowWarning("Complete su dirección", "Advertencia");
+            return;
+        }
+        var resp = await userService.UpdateUser(userUpdate);
+        await LoadInfo();
+    }
+
+    private bool AddressFullfill()
+    {
+        if (string.IsNullOrWhiteSpace(userUpdate.Address.Address_line) || string.IsNullOrEmpty(userUpdate.Address.Address_line) ||
+            string.IsNullOrWhiteSpace(userUpdate.Address.City) || string.IsNullOrEmpty(userUpdate.Address.City) ||
+            string.IsNullOrWhiteSpace(userUpdate.Address.State) || string.IsNullOrEmpty(userUpdate.Address.State) ||
+            string.IsNullOrWhiteSpace(userUpdate.Address.Postal_code) || string.IsNullOrEmpty(userUpdate.Address.Postal_code))
+            return false;
+        return true;
+    }
+
+    private string Province
+    {
+        get
+        {
+            return userUpdate.Address.Province_id.ToString();
+        }
+        set
+        {
+            userUpdate.Address.Province_id = int.Parse(value);
+        }
+    }
+
 }
+

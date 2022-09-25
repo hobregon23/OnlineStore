@@ -4,150 +4,154 @@
 @inject IAddressProvinceService provinceService
 @attribute [AllowAnonymous]
 
+<div class="content px-4">
+    <div class="container space-top-2 space-top-md-3">
+        <div class="container row px-5">
+            <EditForm class="col-lg-10 col-md-10 mx-md-auto" Model="userInfo" OnValidSubmit="CreateUser">
+                <!-- Title -->
+                <div class="mb-7">
+                    <h2 class="h3 text-primary font-weight-normal mb-3 mt-3">REGISTRO</h2>
+                </div>
+                <!-- End Title -->
+                <!-- Errors here -->
+                <DataAnnotationsValidator />
+                <!-- End Errors -->
+                <!-- Form Group -->
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <label>Usuario <span style="color:red">*</span></label>
+                            <InputText Class="form-control" @bind-Value="@userInfo.UserName" />
+                            <ValidationMessage For="@(() => userInfo.UserName)" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <label>Correo <span style="color:red">*</span></label>
+                            <InputText Class="form-control" @bind-Value="@userInfo.Email" />
+                            <ValidationMessage For="@(() => userInfo.Email)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <label>Nombre <span style="color:red">*</span></label>
+                            <InputText Class="form-control" @bind-Value="@userInfo.Name" />
+                            <ValidationMessage For="@(() => userInfo.Name)" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <label>Apellidos <span style="color:red">*</span></label>
+                            <InputText Class="form-control" @bind-Value="@userInfo.LastName" />
+                            <ValidationMessage For="@(() => userInfo.LastName)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <label>Contraseña <span style="color:red">*</span></label>
+                            <InputPassword Class="form-control" @bind-Value="@userInfo.Password" />
+                            <ValidationMessage For="@(() => userInfo.Password)" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <label>Confirmar contraseña <span style="color:red">*</span></label>
+                            <InputPassword Class="form-control" @bind-Value="@userInfo.ConfirmPassword" />
+                            <ValidationMessage For="@(() => userInfo.ConfirmPassword)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <label>Teléfono <span style="color:red">*</span></label>
+                            <InputText Class="form-control" @bind-Value="@userInfo.PhoneNumber" />
+                            <ValidationMessage For="@(() => userInfo.PhoneNumber)" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <label>Dirección <span style="color:red">*</span></label>
+                            <InputText Class="form-control" @bind-Value="@userInfo.Address.Address_line" />
+                            <ValidationMessage For="@(() => userInfo.Address.Address_line)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <label>Ciudad <span style="color:red">*</span></label>
+                            <InputText Class="form-control" @bind-Value="@userInfo.Address.City" />
+                            <ValidationMessage For="@(() => userInfo.Address.City)" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <label>Municipio <span style="color:red">*</span></label>
+                            <InputText Class="form-control" @bind-Value="@userInfo.Address.State" />
+                            <ValidationMessage For="@(() => userInfo.Address.State)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <label>Código Postal <span style="color:red">*</span></label>
+                            <InputText Class="form-control" @bind-Value="@userInfo.Address.Postal_code" />
+                            <ValidationMessage For="@(() => userInfo.Address.Postal_code)" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="checkout__input">
+                            <label>Provincia <span style="color:red">*</span></label><br />
+                            <select class="custom-select-primary" @onchange="OnProvinceChange" required>
+                                @foreach (var item in Provinces)
+                                {
+                                    <option value="@item.Id">
+                                        @item.Name
+                                    </option>
+                                }
+                                <span class="arrow_carrot-down"></span>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!-- Checkbox -->
+                <div class="jcheckout__input mb-5">
+                    <div class="custom-control custom-checkbox d-flex align-items-center text-muted">
 
-    <div class="row px-5">
-        <EditForm class="col-lg-10 col-md-10 mx-md-auto" Model="userInfo" OnValidSubmit="CreateUser">
-            <!-- Title -->
-            <div class="mb-7">
-                <h2 class="h3 text-primary font-weight-normal mb-3 mt-3">REGISTRO</h2>
-            </div>
-            <!-- End Title -->
-            <!-- Errors here -->
-            <DataAnnotationsValidator />
-            <!-- End Errors -->
-            <!-- Form Group -->
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="checkout__input">
-                        <label>Usuario <span style="color:red">*</span></label>
-                        <InputText Class="form-control" @bind-Value="@userInfo.UserName" />
-                        <ValidationMessage For="@(() => userInfo.UserName)" />
+                        <input type="checkbox" class="custom-control-input" id="termsCheckbox" name="agree" required data-msg="Please accept our Terms and Conditions." data-error-class="u-has-error" data-success-class="u-has-success">
+                        <label class="custom-control-label" for="termsCheckbox">
+                            <small>
+                                Estoy de acuerdo con los
+                                <a class="link-muted" href="/legal">Términos y Condiciones</a>
+                            </small>
+                        </label>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="checkout__input">
-                        <label>Correo <span style="color:red">*</span></label>
-                        <InputText Class="form-control" @bind-Value="@userInfo.Email" />
-                        <ValidationMessage For="@(() => userInfo.Email)" />
+                <!-- End Checkbox -->
+                <!-- Button -->
+                <div class="row align-items-center mb-5">
+                    <div class="col-5 col-sm-6">
+                        <span class="small text-muted">¿Ya tienes una cuenta?</span>
+                        <a class="small" href="/login">Acceda</a>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="checkout__input">
-                        <label>Nombre <span style="color:red">*</span></label>
-                        <InputText Class="form-control" @bind-Value="@userInfo.Name" />
-                        <ValidationMessage For="@(() => userInfo.Name)" />
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="checkout__input">
-                        <label>Apellidos <span style="color:red">*</span></label>
-                        <InputText Class="form-control" @bind-Value="@userInfo.LastName" />
-                        <ValidationMessage For="@(() => userInfo.LastName)" />
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="checkout__input">
-                        <label>Contraseña <span style="color:red">*</span></label>
-                        <InputPassword Class="form-control" @bind-Value="@userInfo.Password" />
-                        <ValidationMessage For="@(() => userInfo.Password)" />
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="checkout__input">
-                        <label>Confirmar contraseña <span style="color:red">*</span></label>
-                        <InputPassword Class="form-control" @bind-Value="@userInfo.ConfirmPassword" />
-                        <ValidationMessage For="@(() => userInfo.ConfirmPassword)" />
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="checkout__input">
-                        <label>Teléfono <span style="color:red">*</span></label>
-                        <InputText Class="form-control" @bind-Value="@userInfo.PhoneNumber" />
-                        <ValidationMessage For="@(() => userInfo.PhoneNumber)" />
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="checkout__input">
-                        <label>Dirección <span style="color:red">*</span></label>
-                        <InputText Class="form-control" @bind-Value="@userInfo.Address.Address_line" />
-                        <ValidationMessage For="@(() => userInfo.Address.Address_line)" />
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="checkout__input">
-                        <label>Ciudad <span style="color:red">*</span></label>
-                        <InputText Class="form-control" @bind-Value="@userInfo.Address.City" />
-                        <ValidationMessage For="@(() => userInfo.Address.City)" />
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="checkout__input">
-                        <label>Municipio <span style="color:red">*</span></label>
-                        <InputText Class="form-control" @bind-Value="@userInfo.Address.State" />
-                        <ValidationMessage For="@(() => userInfo.Address.State)" />
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="checkout__input">
-                        <label>Código Postal <span style="color:red">*</span></label>
-                        <InputText Class="form-control" @bind-Value="@userInfo.Address.Postal_code" />
-                        <ValidationMessage For="@(() => userInfo.Address.Postal_code)" />
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="checkout__input">
-                        <label>Provincia <span style="color:red">*</span></label><br/>
-                        <select class="custom-select-primary" @onchange="OnProvinceChange" required>
-                            @foreach (var item in Provinces)
-                            {
-                                <option value="@item.Id">
-                                    @item.Name
-                                </option>
-                            }
-                            <span class="arrow_carrot-down"></span>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <!-- Checkbox -->
-            <div class="jcheckout__input mb-5">
-                <div class="custom-control custom-checkbox d-flex align-items-center text-muted">
 
-                    <input type="checkbox" class="custom-control-input" id="termsCheckbox" name="agree" required data-msg="Please accept our Terms and Conditions." data-error-class="u-has-error" data-success-class="u-has-success">
-                    <label class="custom-control-label" for="termsCheckbox">
-                        <small>
-                            Estoy de acuerdo con los
-                            <a class="link-muted" href="/legal">Términos y Condiciones</a>
-                        </small>
-                    </label>
+                    <div class="col-7 col-sm-6 text-right">
+                        <button type="submit" class="primary-btn transition-3d-hover" style="border:0">Crear usuario</button>
+                    </div>
                 </div>
-            </div>
-            <!-- End Checkbox -->
-            <!-- Button -->
-            <div class="row align-items-center mb-5">
-                <div class="col-5 col-sm-6">
-                    <span class="small text-muted">¿Ya tienes una cuenta?</span>
-                    <a class="small" href="/login">Acceda</a>
-                </div>
+                <!-- End Button -->
+            </EditForm>
 
-                <div class="col-7 col-sm-6 text-right">
-                    <button type="submit" class="primary-btn transition-3d-hover" style="border:0">Crear cuenta</button>
-                </div>
-            </div>
-            <!-- End Button -->
-        </EditForm>
-
+        </div>
     </div>
+</div>
+
 
 
 @code {
