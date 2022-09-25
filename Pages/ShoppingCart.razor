@@ -1,6 +1,7 @@
 ﻿@page "/shopping-cart"
 @inject NavigationManager navi
 @inject ICartService cartService
+@attribute [AllowAnonymous]
 
 
 <!-- Shoping Cart Section Begin -->
@@ -51,7 +52,8 @@
                                     <td>
                                         <span class="danger-label">VACÍO</span>
                                     </td>
-                                    <td></td><td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                             }
                         </tbody>

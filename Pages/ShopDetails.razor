@@ -3,6 +3,7 @@
 @inject IToastService toastService
 @inject IProductService productService
 @inject NavigationManager navi
+@attribute [AllowAnonymous]
 
 
 @if (Product == null)
@@ -46,7 +47,7 @@ else
                             <div class="product__details__quantity">
                                 <div class="quantity">
                                     <div class="pro-qty">
-                                        <input type="number" @bind-value="@Qty" style="width: 90%"  />
+                                        <input type="number" @bind-value="@Qty" style="width: 90%" />
                                     </div>
                                 </div>
                             </div>
