@@ -32,29 +32,35 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="checkout__input">
-                                <label>Provincia<span>*</span></label><br />
-                                <select class="custom-select-primary" @bind="Province" required>
-                                    @foreach (var item in Provinces)
-                                    {
-                                        <option value="@item.Id">
-                                            @item.Name
-                                        </option>
-                                    }
-                                    <span class="arrow_carrot-down"></span>
-                                </select>
-                            </div>
-                            <div class="checkout__input">
-                                <label>Dirección<span>*</span></label>
-                                <InputText @bind-Value="Check_out.Address.Address_line" />
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="checkout__input">
+                                        <label>Provincia<span>*</span></label><br />
+                                        <select class="custom-select-primary" @bind="Province" required>
+                                            @foreach (var item in Provinces)
+                                            {
+                                                <option value="@item.Id">
+                                                    @item.Name
+                                                </option>
+                                            }
+                                            <span class="arrow_carrot-down"></span>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="checkout__input">
+                                        <label>Municipio<span>*</span></label>
+                                        <InputText @bind-Value="Check_out.Address.State" />
+                                    </div>
+                                </div>
                             </div>
                             <div class="checkout__input">
                                 <label>Pueblo/Ciudad<span>*</span></label>
                                 <InputText @bind-Value="Check_out.Address.City" />
                             </div>
                             <div class="checkout__input">
-                                <label>Municipio<span>*</span></label>
-                                <InputText @bind-Value="Check_out.Address.State" />
+                                <label>Dirección<span>*</span></label>
+                                <InputText @bind-Value="Check_out.Address.Address_line" />
                             </div>
                             <div class="checkout__input">
                                 <label>Código Postal<span>*</span></label>
