@@ -81,7 +81,7 @@
         {
             var result = await http.PostJsonAsync<UserToken>($"{navi.BaseUri}api/login", userLogin);
             await loginService.Login(result.Token);
-            navi.NavigateTo("/");
+            navi.NavigateTo("/", true);
             BadResponse = false;
         }
         catch
