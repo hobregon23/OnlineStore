@@ -5,24 +5,33 @@
 
 
 <!-- Shoping Cart Section Begin -->
-<section class="shoping-cart spad">
+<section class="shoping-cart">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="shoping__cart__table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="shoping__product">Productos</th>
-                                <th>Precio</th>
-                                <th>Cantidad</th>
-                                <th>Total</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Cart != null && Cart.Items.Count > 0)
-                            {
+        @if (Cart == null || Cart.Items.Count < 1)
+        {
+            <div class="row" style="margin-top:-80px">
+                <div class="col-lg-12" style="text-align:center">
+                    <img src="/img/empty_cart.jpg" /><br />
+                    <a href="javascript:;" @onclick="@(()=>navi.NavigateTo("/shop-grid", true))" class="primary-btn transition-3d-hover">COMPRE AQUÍ</a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shoping__cart__table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="shoping__product">Productos</th>
+                                    <th>Precio</th>
+                                    <th>Cantidad</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 @foreach (var item in Items)
                                 {
                                     <tr>
@@ -44,36 +53,25 @@
                                         </td>
                                     </tr>
                                 }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                        <span class="danger-label">VACÍO</span>
-                                    </td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-            </div>
-            <div class="col-lg-6">
-                <div class="shoping__checkout">
-                    <h5>Total del Carrito</h5>
-                    <ul>
-                        <li>Total a Pagar <span>$@Total_amount</span></li>
-                    </ul>
-                    <a href="@(Cart != null && Cart.Items.Count > 0 ? "/checkout" : "javascript:;")" class="primary-btn">PROCEDER A PAGAR</a>
+            <div class="row">
+                <div class="col-lg-6">
+                </div>
+                <div class="col-lg-6">
+                    <div class="shoping__checkout">
+                        <h5>Total del Carrito</h5>
+                        <ul>
+                            <li>Total a Pagar <span>$@Total_amount</span></li>
+                        </ul>
+                        <a href="@(Cart != null && Cart.Items.Count > 0 ? "/checkout" : "javascript:;")" class="primary-btn">PROCEDER A PAGAR</a>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
     </div>
 </section>
 <!-- Shoping Cart Section End -->
