@@ -9,7 +9,7 @@
 
 <div class="container space-1 mb-5">
     <div class="d-sm-flex align-items-center justify-content-between mb-3">
-        <h4 class="text-secondary font-weight-normal mb-0">Id: @userInfo.Id</h4>
+        <h4 class="text-secondary font-weight-normal mb-0">Id: @userInfo.Id <span style="font-size: small; font-weight: bold" class="@(userInfo.IsActive ? "text-success" : "text-danger")"> @(userInfo.IsActive ? "Activo" : "Inactivo")</span></h4>
     </div><hr />
     <div class="col-md-12">
         <div class="row">
