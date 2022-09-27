@@ -93,7 +93,7 @@
                         <div class="col-lg-6">
                             <div class="checkout__input">
                                 <label>Provincia<span>*</span></label><br />
-                                <InputSelect Class="form-control" @bind-Value="@ProvinceId">
+                                <InputSelect Class="form-control" @bind-Value="@ProvinceId" required>
                                     @foreach (var item in Provinces)
                                     {
                                         <option value="@item.Id">

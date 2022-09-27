@@ -141,7 +141,7 @@
             Province_ship_price = await provinceService.GetShipPrice(User.Address.Province.Name);
             Check_out.Shipping_price = Province_ship_price;
             Cart.Total_amount = SubTotal_amount + Check_out.Shipping_price;
-            Provinces = await provinceService.GetAll();
+            Provinces = await provinceService.GetAllActive();
             Province = User.Address.Province_id.ToString();
             FillRequestData();
         }
