@@ -16,12 +16,14 @@ namespace OnlineStore.Data.Services
         public Task<UserDto> GetUserInfo();
 
         public Task<User> GetById(string id);
+        public Task<User> GetByIdIncluding(string id);
 
         public Task<bool> AddNormalUser(UserDto model);
 
         public Task<bool> AddAppUser(UserDto model, string rol);
 
         public Task<bool> UpdateUser(UserUpdate model);
+        public Task<bool> Update(User user);
 
         public Task<bool> Eliminar(string id);
         public Task<bool> Activar(string id);
@@ -66,6 +68,11 @@ namespace OnlineStore.Data.Services
             return await _unitOfWork.Users.GetById(id);
         }
 
+        public async Task<User> GetByIdIncluding(string id)
+        {
+            return await _unitOfWork.Users.GetByIdIncluding(id);
+        }
+
         public async Task<bool> AddNormalUser(UserDto model)
         {
             return await _unitOfWork.Users.AddNormalUser(model);
@@ -85,6 +92,20 @@ namespace OnlineStore.Data.Services
             _unitOfWork.Addresses.Update(model.Address);
             await _unitOfWork.SaveChangesAsync();
             return await _unitOfWork.Users.UpdateUser(model);
+        }
+
+        public async Task<bool> Update(User user)
+        {
+            if (!await _jwtAuthService.IsAuthorized(new List<string>() { "Admin" }))
+                return false;
+            var old_user = await _unitOfWork.Users.GetById(user.Id);
+            user.UserName = old_user.UserName;
+            _unitOfWork.Addresses.Update(user.Address);
+            await _unitOfWork.SaveChangesAsync();
+            _unitOfWork.Users.Update(user);
+            await _unitOfWork.SaveChangesAsync();
+            _toastService.ShowSuccess("Usuario actualizado exitosamente", "Genial");
+            return true;
         }
 
         public async Task<bool> Eliminar(string id)

@@ -14,6 +14,7 @@ namespace OnlineStore.Repos
         Task<PaginationResponse<User>> GetPag(Pagination pagination, string name, string campoSorteo, string ordenSorteo);
         Task<string> GetUserRol(string id);
         Task<UserDto> GetUserInfo(string username);
+        Task<User> GetByIdIncluding(string id);
         Task<bool> AddNormalUser(UserDto model);
         Task<bool> AddAppUser(UserDto model, string rol);
         Task<bool> UpdateUser(UserUpdate model);
@@ -72,6 +73,23 @@ namespace OnlineStore.Repos
             catch
             {
                 return new UserDto();
+            }
+        }
+
+        public async Task<User> GetByIdIncluding(string id)
+        {
+            try
+            {
+                var user = await _context.Users.Include(x => x.Address).ThenInclude(x => x.Province).Where(x => x.Id.Equals(id)).FirstAsync();
+                if (user == null)
+                {
+                    return new User();
+                }
+                return user;
+            }
+            catch
+            {
+                return new User();
             }
         }
 

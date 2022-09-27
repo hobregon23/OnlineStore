@@ -1,31 +1,42 @@
-﻿@page "/signup"
+﻿@page "/admin/user"
+@layout BlazorLayout
+@attribute [Authorize(Roles = "Admin")]
 @inject IUserService userService
+@inject NavigationManager navi
 @inject IToastService toastService
 @inject IAddressProvinceService provinceService
-@attribute [AllowAnonymous]
 
-<div class="content px-4">
-    <div class="container space-top-2 space-top-md-3">
-        <div class="container row px-5">
-            <EditForm class="col-lg-10 col-md-10 mx-md-auto" Model="userInfo" OnValidSubmit="CreateUser">
-                <!-- Title -->
-                <div class="mb-7">
-                    <h2 class="h3 text-primary font-weight-normal mb-3 mt-3">REGISTRO</h2>
-                </div>
-                <!-- End Title -->
+
+<div class="container space-1 mb-5">
+    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+        <h4 class="text-secondary font-weight-normal mb-0">Id: @userInfo.Id</h4>
+    </div><hr />
+    <div class="col-md-12">
+        <div class="row">
+            <EditForm class="col-lg-10 col-md-10 mx-md-auto" Model="userInfo" OnValidSubmit="UpdateUser">
                 <!-- Errors here -->
                 <DataAnnotationsValidator />
                 <!-- End Errors -->
                 <!-- Form Group -->
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
+                        <div class="checkout__input">
+                            <label>Rol<span>*</span></label>
+                            <InputSelect Class="form-control" @bind-Value="@userRol" disabled>
+                                <option value="Delivery">Repartidor</option>
+                                <option value="User">Usuario</option>
+                                <option value="Admin">Administrador</option>
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
                         <div class="checkout__input">
                             <label>Usuario<span>*</span></label>
-                            <InputText Class="form-control" @bind-Value="@userInfo.UserName" />
+                            <InputText Class="form-control" @bind-Value="@userInfo.UserName" disabled />
                             <ValidationMessage For="@(() => userInfo.UserName)" />
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="checkout__input">
                             <label>Correo<span>*</span></label>
                             <InputText Class="form-control" @bind-Value="@userInfo.Email" />
@@ -34,62 +45,46 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="checkout__input">
                             <label>Nombre<span>*</span></label>
                             <InputText Class="form-control" @bind-Value="@userInfo.Name" />
                             <ValidationMessage For="@(() => userInfo.Name)" />
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="checkout__input">
                             <label>Apellidos<span>*</span></label>
                             <InputText Class="form-control" @bind-Value="@userInfo.LastName" />
                             <ValidationMessage For="@(() => userInfo.LastName)" />
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="checkout__input">
-                            <label>Contraseña<span>*</span></label>
-                            <InputPassword Class="form-control" @bind-Value="@userInfo.Password" />
-                            <ValidationMessage For="@(() => userInfo.Password)" />
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="checkout__input">
-                            <label>Confirmar contraseña<span>*</span></label>
-                            <InputPassword Class="form-control" @bind-Value="@userInfo.ConfirmPassword" />
-                            <ValidationMessage For="@(() => userInfo.ConfirmPassword)" />
+                            <div class="checkout__input">
+                                <label>Teléfono<span>*</span></label>
+                                <InputText Class="form-control" @bind-Value="@userInfo.PhoneNumber" />
+                                <ValidationMessage For="@(() => userInfo.PhoneNumber)" />
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-6">
-                        <div class="checkout__input">
-                            <label>Teléfono<span>*</span></label>
-                            <InputText Class="form-control" @bind-Value="@userInfo.PhoneNumber" />
-                            <ValidationMessage For="@(() => userInfo.PhoneNumber)" />
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="checkout__input">
                             <label>Dirección<span>*</span></label>
                             <InputText Class="form-control" @bind-Value="@userInfo.Address.Address_line" />
                             <ValidationMessage For="@(() => userInfo.Address.Address_line)" />
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="checkout__input">
                             <label>Ciudad<span>*</span></label>
                             <InputText Class="form-control" @bind-Value="@userInfo.Address.City" />
                             <ValidationMessage For="@(() => userInfo.Address.City)" />
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="checkout__input">
                             <label>Municipio <span>*</span></label>
                             <InputText Class="form-control" @bind-Value="@userInfo.Address.State" />
@@ -98,14 +93,14 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="checkout__input">
                             <label>Código Postal<span>*</span></label>
                             <InputText Class="form-control" @bind-Value="@userInfo.Address.Postal_code" />
                             <ValidationMessage For="@(() => userInfo.Address.Postal_code)" />
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="checkout__input">
                             <label>Provincia<span>*</span></label><br />
                             <InputSelect Class="form-control" @bind-Value="@userInfo.Address.Province_id">
@@ -119,58 +114,57 @@
                         </div>
                     </div>
                 </div>
-                <!-- Checkbox -->
-                <div class="jcheckout__input mb-5">
-                    <div class="custom-control custom-checkbox d-flex align-items-center text-muted">
-
-                        <input type="checkbox" class="custom-control-input" id="termsCheckbox" name="agree" required data-msg="Please accept our Terms and Conditions." data-error-class="u-has-error" data-success-class="u-has-success">
-                        <label class="custom-control-label" for="termsCheckbox">
-                            <small>
-                                Estoy de acuerdo con los
-                                <a class="link-muted" href="/legal">Términos y Condiciones</a>
-                            </small>
-                        </label>
-                    </div>
-                </div>
-                <!-- End Checkbox -->
                 <!-- Button -->
-                <div class="row align-items-center mb-5">
-                    <div class="col-lg-5 col-sm-6">
-                        <span class="small text-muted">¿Ya tienes una cuenta?</span>
-                        <a class="small" href="/login">Acceda</a>
-                    </div>
-                    <div class="col-lg-7 col-sm-6 text-right">
-                        <button type="submit" class="primary-btn transition-3d-hover" style="border:0">Crear usuario</button>
+                <hr />
+                <div class="row align-items-center mb-3 mt-3">
+                    <div class="col-lg-12 col-sm-6 text-right">
+                        <button type="submit" class="primary-btn transition-3d-hover">Actualizar</button>
                     </div>
                 </div>
                 <!-- End Button -->
             </EditForm>
-
         </div>
     </div>
 </div>
 
 
-
 @code {
 
-    private UserDto userInfo = new UserDto();
+    public string Id { get; set; }
+    public User userInfo { get; set; } = new User() { Address = new Address() { Province = new Address_Province() } };
     private List<Address_Province> Provinces = new List<Address_Province>();
+    private string userRol { get; set; } = "Delivery";
 
     protected override async Task OnInitializedAsync()
     {
-        Provinces = await provinceService.GetAll();
-        userInfo.Address.Province_id = 1;
+        await LoadParameters();
     }
 
-    private async Task CreateUser()
+    private async Task LoadParameters()
+    {
+        var uri = navi.ToAbsoluteUri(navi.Uri);
+        if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var _param))
+        {
+            Id = _param;
+        }
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        userInfo = await userService.GetByIdIncluding(Id);
+        Provinces = await provinceService.GetAll();
+        userRol = await userService.GetUserRol(userInfo.Id);
+    }
+
+    private async Task UpdateUser()
     {
         if (!AddressFullfill())
         {
             toastService.ShowWarning("Complete su dirección", "Advertencia");
             return;
         }
-        await userService.AddNormalUser(userInfo);
+        await userService.Update(userInfo);
     }
 
     private bool AddressFullfill()
@@ -182,6 +176,4 @@
             return false;
         return true;
     }
-
 }
-
