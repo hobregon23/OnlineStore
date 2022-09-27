@@ -13,7 +13,7 @@
     </div><hr />
     <div class="col-md-12">
         <div class="row">
-            <EditForm class="col-lg-10 col-md-10 mx-md-auto" Model="userInfo" OnValidSubmit="UpdateUser">
+            <EditForm class="col-lg-11 col-md-11 mx-md-auto" Model="userInfo" OnValidSubmit="UpdateUser">
                 <!-- Errors here -->
                 <DataAnnotationsValidator />
                 <!-- End Errors -->
@@ -61,11 +61,9 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="checkout__input">
-                            <div class="checkout__input">
-                                <label>Teléfono<span>*</span></label>
-                                <InputText Class="form-control" @bind-Value="@userInfo.PhoneNumber" />
-                                <ValidationMessage For="@(() => userInfo.PhoneNumber)" />
-                            </div>
+                            <label>Teléfono<span>*</span></label>
+                            <InputText Class="form-control" @bind-Value="@userInfo.PhoneNumber" />
+                            <ValidationMessage For="@(() => userInfo.PhoneNumber)" />
                         </div>
                     </div>
                 </div>
