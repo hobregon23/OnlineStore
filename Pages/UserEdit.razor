@@ -93,7 +93,7 @@
                         <div class="col-lg-6">
                             <div class="checkout__input">
                                 <label>Provincia<span>*</span></label><br />
-                                <InputSelect Class="form-control" @bind-Value="@userUpdate.Address.Province_id">
+                                <InputSelect Class="form-control" @bind-Value="@ProvinceId">
                                     @foreach (var item in Provinces)
                                     {
                                         <option value="@item.Id">
@@ -147,6 +147,17 @@
 
     private UserUpdate userUpdate = new UserUpdate();
     private List<Address_Province> Provinces = new List<Address_Province>();
+    private string ProvinceId
+    {
+        get
+        {
+            return userUpdate.Address.Province_id.ToString();
+        }
+        set
+        {
+            userUpdate.Address.Province_id = int.Parse(value);
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
