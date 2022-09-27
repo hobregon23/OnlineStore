@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using Blazored.Toast.Services;
 using OnlineStore.Models;
 using OnlineStore.UoW;
 using System.Collections.Generic;
@@ -23,19 +24,23 @@ namespace OnlineStore.Data.Services
         public Task<bool> UpdateUser(UserUpdate model);
 
         public Task<bool> Eliminar(string id);
+        public Task<bool> Activar(string id);
     }
 
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly JwtAuthService _jwtAuthService;
+        private readonly IToastService _toastService;
 
         public UserService(
             JwtAuthService jwtAuthService,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IToastService toastService)
         {
             _jwtAuthService = jwtAuthService;
             _unitOfWork = unitOfWork;
+            _toastService = toastService;
         }
 
         public async Task<PaginationResponse<User>> GetPag(Pagination pagination, string name, string campoSorteo, string ordenSorteo)
@@ -93,6 +98,27 @@ namespace OnlineStore.Data.Services
                 user.Is_deleted = true;
                 _unitOfWork.Users.Update(user);
                 await _unitOfWork.SaveChangesAsync();
+                _toastService.ShowSuccess("Usuario desactivado exitosamente", "Hecho");
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> Activar(string id)
+        {
+            try
+            {
+                var user = await _unitOfWork.Users.GetById(id);
+                if (user.UserName.Equals("admin"))
+                    return false;
+                user.IsActive = true;
+                user.Is_deleted = false;
+                _unitOfWork.Users.Update(user);
+                await _unitOfWork.SaveChangesAsync();
+                _toastService.ShowSuccess("Usuario activado exitosamente", "Hecho");
                 return true;
             }
             catch

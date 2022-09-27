@@ -5,10 +5,10 @@
 
 
 <div class="modal" tabindex="-1" role="dialog" id="taskModal">
-    <div class="modal-dialog" style="max-width: 800px" role="document">
+    <div class="modal-dialog" style="max-width: 1000px" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Agregar</h5>
+                <h5 class="modal-title font-weight-bold">Agregar</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -19,23 +19,25 @@
                     <DataAnnotationsValidator />
                     <!-- End Errors -->
                     <!-- Form Group -->
-                    <div class="checkout__input">
-                        <label>Rol<span>*</span></label>
-                        <InputSelect Class="form-control" @bind-Value="@userRol">
-                            <option value="Delivery">Repartidor</option>
-                            <option value="User">Usuario</option>
-                            <option value="Admin">Administrador</option>
-                        </InputSelect>
-                    </div>
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label>Rol<span>*</span></label>
+                                <InputSelect Class="form-control" @bind-Value="@userRol">
+                                    <option value="Delivery">Repartidor</option>
+                                    <option value="User">Usuario</option>
+                                    <option value="Admin">Administrador</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Usuario<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userInfo.UserName" />
                                 <ValidationMessage For="@(() => userInfo.UserName)" />
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Correo<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userInfo.Email" />
@@ -44,46 +46,44 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Nombre<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userInfo.Name" />
                                 <ValidationMessage For="@(() => userInfo.Name)" />
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Apellidos<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userInfo.LastName" />
                                 <ValidationMessage For="@(() => userInfo.LastName)" />
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Contraseña<span>*</span></label>
                                 <InputPassword Class="form-control" @bind-Value="@userInfo.Password" />
                                 <ValidationMessage For="@(() => userInfo.Password)" />
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Confirmar contraseña<span>*</span></label>
                                 <InputPassword Class="form-control" @bind-Value="@userInfo.ConfirmPassword" />
                                 <ValidationMessage For="@(() => userInfo.ConfirmPassword)" />
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Teléfono<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userInfo.PhoneNumber" />
                                 <ValidationMessage For="@(() => userInfo.PhoneNumber)" />
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Dirección<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userInfo.Address.Address_line" />
@@ -92,48 +92,47 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Ciudad<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userInfo.Address.City" />
                                 <ValidationMessage For="@(() => userInfo.Address.City)" />
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Municipio <span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userInfo.Address.State" />
                                 <ValidationMessage For="@(() => userInfo.Address.State)" />
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Código Postal<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userInfo.Address.Postal_code" />
                                 <ValidationMessage For="@(() => userInfo.Address.Postal_code)" />
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Provincia<span>*</span></label><br />
-                                <select class="custom-select-primary" @onchange="OnProvinceChange" required>
+                                <InputSelect Class="form-control" @bind-Value="@userInfo.Address.Province_id">
                                     @foreach (var item in Provinces)
                                     {
                                         <option value="@item.Id">
                                             @item.Name
                                         </option>
                                     }
-                                    <span class="arrow_carrot-down"></span>
-                                </select>
+                                </InputSelect>
                             </div>
                         </div>
                     </div>
                     <!-- Button -->
                     <hr />
                     <div class="row align-items-center mb-3 mt-3">
-                        <div class="col-7 col-sm-6">
+                        <div class="col-lg-12 col-sm-6 text-right">
                             <button type="button" class="secondary-btn transition-3d-hover" data-dismiss="modal">Cancelar</button>
                             <button type="submit" class="primary-btn transition-3d-hover">Crear</button>
                         </div>
@@ -190,11 +189,6 @@
             string.IsNullOrWhiteSpace(userInfo.Address.Postal_code) || string.IsNullOrEmpty(userInfo.Address.Postal_code))
             return false;
         return true;
-    }
-
-    private void OnProvinceChange(ChangeEventArgs e)
-    {
-        userInfo.Address.Province_id = Convert.ToInt32(e.Value);
     }
 
 }

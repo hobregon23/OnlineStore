@@ -108,15 +108,14 @@
                     <div class="col-lg-6">
                         <div class="checkout__input">
                             <label>Provincia<span>*</span></label><br />
-                            <select class="custom-select-primary" @onchange="OnProvinceChange" required>
+                            <InputSelect Class="form-control" @bind-Value="@userInfo.Address.Province_id">
                                 @foreach (var item in Provinces)
                                 {
                                     <option value="@item.Id">
                                         @item.Name
                                     </option>
                                 }
-                                <span class="arrow_carrot-down"></span>
-                            </select>
+                            </InputSelect>
                         </div>
                     </div>
                 </div>
@@ -136,12 +135,12 @@
                 <!-- End Checkbox -->
                 <!-- Button -->
                 <div class="row align-items-center mb-5">
-                    <div class="col-5 col-sm-6">
+                    <div class="col-lg-5 col-sm-6">
                         <span class="small text-muted">¿Ya tienes una cuenta?</span>
                         <a class="small" href="/login">Acceda</a>
                     </div>
 
-                    <div class="col-7 col-sm-6 text-right">
+                    <div class="col-lg-7 col-sm-6 text-right">
                         <button type="submit" class="primary-btn transition-3d-hover" style="border:0">Crear usuario</button>
                     </div>
                 </div>
@@ -183,11 +182,6 @@
             string.IsNullOrWhiteSpace(userInfo.Address.Postal_code) || string.IsNullOrEmpty(userInfo.Address.Postal_code))
             return false;
         return true;
-    }
-
-    private void OnProvinceChange(ChangeEventArgs e)
-    {
-        userInfo.Address.Province_id = Convert.ToInt32(e.Value);
     }
 
 }

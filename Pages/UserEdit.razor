@@ -93,15 +93,14 @@
                         <div class="col-lg-6">
                             <div class="checkout__input">
                                 <label>Provincia<span>*</span></label><br />
-                                <select class="custom-select-primary" @bind="Province" required>
+                                <InputSelect Class="form-control" @bind-Value="@userUpdate.Address.Province_id">
                                     @foreach (var item in Provinces)
                                     {
                                         <option value="@item.Id">
                                             @item.Name
                                         </option>
                                     }
-                                    <span class="arrow_carrot-down"></span>
-                                </select>
+                                </InputSelect>
                             </div>
                         </div>
                     </div>
@@ -159,7 +158,6 @@
         Provinces = await provinceService.GetAll();
         var userInfo = await userService.GetUserInfo();
         userUpdate = mapper.Map<UserUpdate>(userInfo);
-        Province = userUpdate.Address.Province_id.ToString();
     }
 
     private async Task UpdateUser()
@@ -181,18 +179,6 @@
             string.IsNullOrWhiteSpace(userUpdate.Address.Postal_code) || string.IsNullOrEmpty(userUpdate.Address.Postal_code))
             return false;
         return true;
-    }
-
-    private string Province
-    {
-        get
-        {
-            return userUpdate.Address.Province_id.ToString();
-        }
-        set
-        {
-            userUpdate.Address.Province_id = int.Parse(value);
-        }
     }
 
 }

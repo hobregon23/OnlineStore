@@ -7,6 +7,12 @@
 <!-- Header Section Begin -->
 <header class="header" style="border-bottom: 0px">
     <LoginMenu />
+    <AuthorizeView>
+        @if (context.User.Identity.IsAuthenticated)
+        {
+            <AutoLogout Roles="@(new List<string>() { "Admin", "User", "Delivery" })" />
+        }
+    </AuthorizeView>
     <MainMenu />
 </header>
 <!-- Header Section End -->

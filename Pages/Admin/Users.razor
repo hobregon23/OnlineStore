@@ -50,7 +50,7 @@
                                         <td class="align-middle"><span style="font-size: small" class="@(item.IsActive ? "text-success" : "text-danger")"> @(item.IsActive ? "Activo" : "Inactivo")</span></td>
                                         <td>
                                             <mark @onclick="@(() => navi.NavigateTo("/admin/user?id="+item.Id, true))" class="bg-primary" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="oi oi-pencil" aria-hidden="true"></span></mark>
-                                            <mark @onclick="@(() => Eliminar(item))" class="bg-danger" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="oi oi-trash" aria-hidden="true"></span></mark>
+                                            <mark @onclick="@(() => Activar_Desactivar(item))" class="@(item.IsActive ? "bg-danger" : "bg-success")" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="oi @(item.IsActive ? "oi-x" : "oi-check")" aria-hidden="true"></span></mark>
                                         </td>
                                     </tr>
                                 }
@@ -138,19 +138,24 @@
         await JS.InvokeAsync<object>("ShowModal", "taskModal");
     }
 
-    private async Task Eliminar(User user)
+    private async Task Activar_Desactivar(User user)
     {
-        //if (await JS.ConfirmSinResp($"Eliminar", $"Esto eliminará permanentemente al usuario."))
-        //{
-        //    var resp = await cuentasService.Eliminar(id, Token);
-        //    if (resp.ToString().Contains("Bad"))
-        //        await JS.MostrarMensaje("Error", "Trate de nuevo", IJSExtensions.TipoMensajeSweetAlert.error);
-        //    else if (resp.ToString().Contains("Conflict"))
-        //        await JS.MostrarMensaje("Error", "No permitido", IJSExtensions.TipoMensajeSweetAlert.error);
-        //    else if (resp.ToString().Contains("Ok"))
-        //        await JS.MostrarMensaje("Éxito", "Realizado exitosamente", IJSExtensions.TipoMensajeSweetAlert.success);
-        //}
-        //await LoadItems(currentPage);
+        if (user.IsActive)
+        {
+            if (await JS.ConfirmSinResp($"Desactivar", $"Esto desactivará al usuario."))
+            {
+                var resp = await userService.Eliminar(user.Id);
+                await LoadItems(PagParam.CurrentPage);
+            }
+        }
+        else
+        {
+            if (await JS.ConfirmSinResp($"Activar", $"Esto activará al usuario."))
+            {
+                var resp = await userService.Activar(user.Id);
+                await LoadItems(PagParam.CurrentPage);
+            }
+        }
     }
 
     private async void DataChanged()
