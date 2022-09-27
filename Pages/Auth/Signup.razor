@@ -172,7 +172,7 @@
             toastService.ShowWarning("Complete su dirección", "Advertencia");
             return;
         }
-        var resp = await userService.AddNormalUser(userInfo);
+        await userService.AddNormalUser(userInfo);
     }
 
     private bool AddressFullfill()

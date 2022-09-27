@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager navi
 
 <div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="" @onclick="@(()=>HandleClick(""))">OnlineStore</a>
+    <a class="navbar-brand" href="" @onclick="@(()=>HandleClick(""))"><i class="rzi rz-navigation-item-icon" style="width: 1em">storefront</i>OnlineStore</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -9,21 +9,21 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" @onclick="@(()=>HandleClick(""))" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </li>
+        <RadzenPanelMenu Style="border-bottom: none">
+            <RadzenPanelMenuItem Text="Home" Path="/admin" Icon="home" Style="border-bottom: none" />
+            <RadzenPanelMenuItem Text="Órdenes" Path="/admin/orders" Icon="local_shipping" Style="border-bottom: none"></RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Pagos" Path="/admin/payments" Icon="payment" Style="border-bottom: none"></RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Usuarios" Path="/admin/users" Icon="account_box" Style="border-bottom: none"></RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Almacén" Icon="warehouse" Style="border-bottom: none">
+                <RadzenPanelMenuItem Text="Categorías" Path="/admin/categories" Icon="category"></RadzenPanelMenuItem>
+                <RadzenPanelMenuItem Text="Marcas" Path="/admin/brands" Icon="sell"></RadzenPanelMenuItem>
+                <RadzenPanelMenuItem Text="Modelos" Path="/admin/models" Icon="device_unknown"></RadzenPanelMenuItem>
+                <RadzenPanelMenuItem Text="Productos" Path="/admin/products" Icon="list_alt"></RadzenPanelMenuItem>
+                <RadzenPanelMenuItem Text="Productos Destacados" Path="/admin/featured-products" Icon="stars"></RadzenPanelMenuItem>
+            </RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Gráficas" Path="/admin/analytics" Icon="analytics" Style="border-bottom: none"></RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Provincias" Path="/admin/provinces" Icon="location_on" Style="border-bottom: none"></RadzenPanelMenuItem>
+        </RadzenPanelMenu>
     </ul>
 </div>
 

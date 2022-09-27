@@ -8,19 +8,21 @@ namespace OnlineStore.Data.Services
 {
     public interface IUserService
     {
-        public Task<PaginationResponse<User>> GetPag(Pagination pagination, string name);
+        public Task<PaginationResponse<User>> GetPag(Pagination pagination, string name, string campoSorteo, string ordenSorteo);
 
-        public Task<string> GetUserRol(string userId);
+        public Task<string> GetUserRol(string id);
 
         public Task<UserDto> GetUserInfo();
+
+        public Task<User> GetById(string id);
 
         public Task<bool> AddNormalUser(UserDto model);
 
         public Task<bool> AddAppUser(UserDto model, string rol);
 
-        public Task<bool> UpdateUser(UserUpdate userUpdate);
+        public Task<bool> UpdateUser(UserUpdate model);
 
-        public Task<bool> Eliminar(string userId);
+        public Task<bool> Eliminar(string id);
     }
 
     public class UserService : IUserService
@@ -36,22 +38,27 @@ namespace OnlineStore.Data.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<PaginationResponse<User>> GetPag(Pagination pagination, string name)
+        public async Task<PaginationResponse<User>> GetPag(Pagination pagination, string name, string campoSorteo, string ordenSorteo)
         {
             if (!await _jwtAuthService.IsAuthorized(new List<string>() { "Admin" }))
                 return null;
-            return await _unitOfWork.Users.GetPag(pagination, name);
+            return await _unitOfWork.Users.GetPag(pagination, name, campoSorteo, ordenSorteo);
         }
 
-        public async Task<string> GetUserRol(string userId)
+        public async Task<string> GetUserRol(string id)
         {
-            return await _unitOfWork.Users.GetUserRol(userId);
+            return await _unitOfWork.Users.GetUserRol(id);
         }
 
         public async Task<UserDto> GetUserInfo()
         {
             var username = await _jwtAuthService.GetUsername();
             return await _unitOfWork.Users.GetUserInfo(username);
+        }
+
+        public async Task<User> GetById(string id)
+        {
+            return await _unitOfWork.Users.GetById(id);
         }
 
         public async Task<bool> AddNormalUser(UserDto model)
@@ -66,20 +73,20 @@ namespace OnlineStore.Data.Services
             return await _unitOfWork.Users.AddAppUser(model, rol);
         }
 
-        public async Task<bool> UpdateUser(UserUpdate userUpdate)
+        public async Task<bool> UpdateUser(UserUpdate model)
         {
             if (!await _jwtAuthService.IsAuthorized(new List<string>() { "Admin", "User", "Delivery" }))
                 return false;
-            _unitOfWork.Addresses.Update(userUpdate.Address);
+            _unitOfWork.Addresses.Update(model.Address);
             await _unitOfWork.SaveChangesAsync();
-            return await _unitOfWork.Users.UpdateUser(userUpdate);
+            return await _unitOfWork.Users.UpdateUser(model);
         }
 
-        public async Task<bool> Eliminar(string userId)
+        public async Task<bool> Eliminar(string id)
         {
             try
             {
-                var user = await _unitOfWork.Users.GetById(userId);
+                var user = await _unitOfWork.Users.GetById(id);
                 if (user.UserName.Equals("admin"))
                     return false;
                 user.IsActive = false;

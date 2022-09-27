@@ -11,12 +11,12 @@ namespace OnlineStore.Repos
 {
     public interface IUserRepository : IGenericRepository<User>
     {
-        Task<PaginationResponse<User>> GetPag(Pagination pagination, string name);
-        Task<string> GetUserRol(string userId);
+        Task<PaginationResponse<User>> GetPag(Pagination pagination, string name, string campoSorteo, string ordenSorteo);
+        Task<string> GetUserRol(string id);
         Task<UserDto> GetUserInfo(string username);
         Task<bool> AddNormalUser(UserDto model);
         Task<bool> AddAppUser(UserDto model, string rol);
-        Task<bool> UpdateUser(UserUpdate userUpdate);
+        Task<bool> UpdateUser(UserUpdate model);
     }
 
     public class UserRepository : GenericRepository<User>, IUserRepository
@@ -30,9 +30,9 @@ namespace OnlineStore.Repos
             _toastService = toastService;
         }
 
-        public async Task<PaginationResponse<User>> GetPag(Pagination pagination, string name)
+        public async Task<PaginationResponse<User>> GetPag(Pagination pagination, string name, string campoSorteo, string ordenSorteo)
         {
-            var queryable = _context.Users.Include(x => x.Address).ThenInclude(x => x.Province).AsQueryable();
+            var queryable = _context.Users.Include(x => x.Address).ThenInclude(x => x.Province).OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
             if (!string.IsNullOrEmpty(name) || !string.IsNullOrWhiteSpace(name))
             {
                 queryable = queryable.Where(x => x.Name.Contains(name) || x.Email.Contains(name) || x.UserName.Contains(name) || x.LastName.Contains(name));
@@ -44,12 +44,12 @@ namespace OnlineStore.Repos
             return new PaginationResponse<User>() { ListaObjetos = await queryable.Paginate(pagination).ToListAsync(), CantPorPag = (int)pagesQuantity };
         }
 
-        public async Task<string> GetUserRol(string userId)
+        public async Task<string> GetUserRol(string id)
         {
             try
             {
-                var user = await _context.Users.Where(x => x.Id.Equals(userId)).FirstAsync();
-                var roleId = (await _context.UserRoles.Where(x => x.UserId.Equals(userId)).FirstAsync()).RoleId;
+                var user = await _context.Users.Where(x => x.Id.Equals(id)).FirstAsync();
+                var roleId = (await _context.UserRoles.Where(x => x.UserId.Equals(id)).FirstAsync()).RoleId;
                 return (await _context.Roles.Where(x => x.Id.Equals(roleId)).FirstAsync()).Name;
             }
             catch
@@ -90,7 +90,7 @@ namespace OnlineStore.Repos
             }
             else
             {
-                _toastService.ShowError("Recargue la página", "Error");
+                _toastService.ShowError("Revise los datos introducidos", "Error");
                 return false;
             }
         }
@@ -112,18 +112,18 @@ namespace OnlineStore.Repos
             }
             else
             {
-                _toastService.ShowError("Recargue la página", "Error");
+                _toastService.ShowError("Revise los datos introducidos", "Error");
                 return false;
             }
 
         }
 
-        public async Task<bool> UpdateUser(UserUpdate userUpdate)
+        public async Task<bool> UpdateUser(UserUpdate model)
         {
-            var user = await _context.Users.Where(x => x.UserName.Equals(userUpdate.UserName)).FirstAsync();
-            if (string.IsNullOrEmpty(userUpdate.NewPassword) || string.IsNullOrWhiteSpace(userUpdate.NewPassword))
+            var user = await _context.Users.Where(x => x.UserName.Equals(model.UserName)).FirstAsync();
+            if (string.IsNullOrEmpty(model.NewPassword) || string.IsNullOrWhiteSpace(model.NewPassword))
             {
-                var resultCheckPass = await _userManager.CheckPasswordAsync(user, userUpdate.OldPassword);
+                var resultCheckPass = await _userManager.CheckPasswordAsync(user, model.OldPassword);
                 if (!resultCheckPass)
                 {
                     return false;
@@ -131,11 +131,11 @@ namespace OnlineStore.Repos
                 else
                 {
                     user.Updated_at = DateTime.Now;
-                    user.Email = userUpdate.Email;
-                    user.PhoneNumber = userUpdate.PhoneNumber;
-                    user.Name = userUpdate.Name;
-                    user.LastName = userUpdate.LastName;
-                    user.PhoneNumber = userUpdate.PhoneNumber;
+                    user.Email = model.Email;
+                    user.PhoneNumber = model.PhoneNumber;
+                    user.Name = model.Name;
+                    user.LastName = model.LastName;
+                    user.PhoneNumber = model.PhoneNumber;
                     Update(user);
                     try
                     {
@@ -154,13 +154,13 @@ namespace OnlineStore.Repos
             else
             {
                 user.Updated_at = DateTime.Now;
-                user.Email = userUpdate.Email;
-                user.PhoneNumber = userUpdate.PhoneNumber;
-                user.Name = userUpdate.Name;
-                user.LastName = userUpdate.LastName;
-                user.PhoneNumber = userUpdate.PhoneNumber;
+                user.Email = model.Email;
+                user.PhoneNumber = model.PhoneNumber;
+                user.Name = model.Name;
+                user.LastName = model.LastName;
+                user.PhoneNumber = model.PhoneNumber;
                 Update(user);
-                var result = await _userManager.ChangePasswordAsync(user, userUpdate.OldPassword, userUpdate.NewPassword);
+                var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                 if (result.Succeeded)
                 {
                     try

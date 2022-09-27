@@ -1,0 +1,41 @@
+﻿@page "/admin/user"
+@layout BlazorLayout
+@attribute [Authorize(Roles = "Admin")]
+@inject IUserService userService
+@inject NavigationManager navi
+
+
+<div class="container space-1 mb-5">
+    <div class="col-md-12">
+        <div class="row">
+            Hi @User.Name
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    public string Id { get; set; }
+    public User User { get; set; } = new User();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadParameters();
+    }
+
+    private async Task LoadParameters()
+    {
+        var uri = navi.ToAbsoluteUri(navi.Uri);
+        if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var _param))
+        {
+            Id = _param;
+        }
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        User = await userService.GetById(Id);
+    }
+}

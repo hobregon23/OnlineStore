@@ -67,7 +67,7 @@
                         </div>
                         <div class="col-lg-5 col-md-4">
                             <div class="filter__found" style="text-align: right">
-                                <h6><span>@Products.Count de @itemsTotal</span> Productos encontrados</h6>
+                                <h6><span>@Products.Count de @PagParam.itemsTotal</span> Productos encontrados</h6>
                             </div>
                         </div>
                     </div>
@@ -126,7 +126,7 @@
                     }
                 </div>
                 <div class="product__pagination">
-                    <PaginationComponent TotaPagesQuantity="totalPageQuantity" CurrentPage="currentPage" Radius="3" SelectedPage="SelectedPage"></PaginationComponent>
+                    <PaginationComponent TotaPagesQuantity="PagParam.TotalPageQuantity" CurrentPage="PagParam.CurrentPage" Radius="3" SelectedPage="SelectedPage"></PaginationComponent>
                 </div>
             </div>
         </div>
@@ -142,12 +142,7 @@
 
     public List<Product> Products { get; set; } = new List<Product>();
     public List<Category> Categories { get; set; } = new List<Category>();
-
-    private int totalPageQuantity;
-    private int itemsTotal;
-    private int currentPage = 1;
-    string campoSorteoActual = "Created_at";
-    string ordenSorteoActual = "Desc";
+    private PaginationParameters PagParam { get; set; } = new PaginationParameters() { QuantityPerPage = 21, FieldActualSort = "Created_at" };
 
     protected override async Task OnInitializedAsync()
     {
@@ -171,16 +166,16 @@
 
     private async Task LoadData(int page = 1)
     {
-        var result = await productService.GetPag(new Pagination() { Page = page, QuantityPerPage = 21 }, Search_filter, campoSorteoActual, ordenSorteoActual);
-        totalPageQuantity = result.CantPorPag;
-        itemsTotal = result.ItemsTotal;
-        Products = result.ListaObjetos.ToList();
+        var data = await productService.GetPag(new Pagination() { Page = page, QuantityPerPage = PagParam.QuantityPerPage }, Search_filter, PagParam.FieldActualSort, PagParam.OrderActualSort);
+        PagParam.TotalPageQuantity = data.CantPorPag;
+        PagParam.itemsTotal = data.ItemsTotal;
+        Products = data.ListaObjetos.ToList();
         Categories = await categoryService.GetAll();
     }
 
     private async Task SelectedPage(int page)
     {
-        currentPage = page;
+        PagParam.CurrentPage = page;
         await LoadData(page);
     }
 
@@ -193,27 +188,27 @@
     public async Task OnOrderChange(ChangeEventArgs e)
     {
         var value = e.Value.ToString();
-        if (value.Equals(campoSorteoActual))
+        if (value.Equals(PagParam.FieldActualSort))
             return;
         if (value.Equals("date_up"))
         {
-            campoSorteoActual = "Created_at";
-            ordenSorteoActual = "Asc";
+            PagParam.FieldActualSort = "Created_at";
+            PagParam.OrderActualSort = "Asc";
         }
         else if (value.Equals("date_down"))
         {
-            campoSorteoActual = "Created_at";
-            ordenSorteoActual = "Desc";
+            PagParam.FieldActualSort = "Created_at";
+            PagParam.OrderActualSort = "Desc";
         }
         else if (value.Equals("price_up"))
         {
-            campoSorteoActual = "Price";
-            ordenSorteoActual = "Asc";
+            PagParam.FieldActualSort = "Price";
+            PagParam.OrderActualSort = "Asc";
         }
         else if (value.Equals("price_down"))
         {
-            campoSorteoActual = "Price";
-            ordenSorteoActual = "Desc";
+            PagParam.FieldActualSort = "Price";
+            PagParam.OrderActualSort = "Desc";
         }
         await LoadData();
     }

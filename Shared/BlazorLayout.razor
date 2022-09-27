@@ -14,7 +14,7 @@
 </div>
 
 <div class="main">
-    <div class="top-row px-4">
+    <div class="top-row px-4" style="z-index:100">
         <LoginDisplay />
         <AuthorizeView>
             @if (context.User.Identity.IsAuthenticated)
@@ -29,5 +29,7 @@
         @Body
     </div>
 </div>
-<BlazoredToasts Position="ToastPosition.BottomRight"
-                Timeout="3" />
+<div style="z-index:10000000000">
+    <BlazoredToasts Position="ToastPosition.BottomRight"
+                    Timeout="3" />
+</div>
