@@ -12,6 +12,7 @@ namespace OnlineStore.Data.Services
         Task<decimal> GetShipPrice(string name);
         Task<decimal> GetShipPrice(int id);
         Task<List<Address_Province>> GetAll();
+        Task Update(Address_Province item);
     }
 
     public class AddressProvinceService : IAddressProvinceService
@@ -40,6 +41,12 @@ namespace OnlineStore.Data.Services
         public async Task<List<Address_Province>> GetAll()
         {
             return (await _unitOfWork.Provinces.GetAll()).ToList();
+        }
+
+        public async Task Update(Address_Province item)
+        {
+            _unitOfWork.Provinces.Update(item);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

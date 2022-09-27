@@ -1,0 +1,110 @@
+﻿@page "/admin/provinces"
+@layout BlazorLayout
+@attribute [Authorize(Roles = "Admin")]
+@inject IAddressProvinceService provinceService
+@inject NavigationManager navi
+@inject IJSRuntime JS
+
+
+<div class="container space-1 mb-5">
+    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+        <h3 class="text-secondary font-weight-normal mb-0">Provincias</h3>
+    </div>
+    <div class="col-md-12">
+        <div class="row">
+
+            <div class="col-md-12 w-md-75 w-lg-40 mx-md-auto">
+                <div class="table-responsive-sm">
+
+                    @if (Province_list.Count.Equals(0))
+                    {
+                        <p class="text-danger" style="text-align: center">N/A</p>
+                    }
+                    else
+                    {
+                        <table class="table table-light">
+                            <thead>
+                                <tr style="font-size: small; color: white; background-image: linear-gradient(182deg, rgb(8, 38, 123) 0%, #4f1056 90%);">
+                                    <th>Id</th>
+                                    <th>Nombre</th>
+                                    <th>Precio</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="font-size-1" style="font-family: 'Arial Rounded MT'">
+                                @foreach (var item in Province_list)
+                                {
+                                <tr class="my-transition-3d-hover">
+                                    <td class="align-middle"><a style="font-size: small">@item.Id</a></td>
+                                    <td class="align-middle"><a style="font-size: small">@item.Name</a></td>
+                                    <td class="align-middle"><a style="font-size: small">$@item.Shipping_price</a></td>
+                                    <td class="align-middle"><span style="font-size: small" class="@(item.IsActive ? "text-success" : "text-danger")"> @(item.IsActive ? "Activo" : "Inactivo")</span></td>
+                                    <td>
+                                        <mark @onclick="@(() => Edit(item))" class="bg-primary" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="oi oi-pencil" aria-hidden="true"></span></mark>
+                                        <mark @onclick="@(() => Activar_Desactivar(item))" class="@(item.IsActive ? "bg-danger" : "bg-success")" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="oi @(item.IsActive ? "oi-x" : "oi-check")" aria-hidden="true"></span></mark>
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<EditProvince Province="Province" DataChanged="DataChanged" ></EditProvince>
+
+
+@code {
+
+    private Address_Province Province { get; set; } = new Address_Province();
+    private List<Address_Province> Province_list { get; set; } = new List<Address_Province>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await LoadItems();
+    }
+
+    async Task LoadItems(int page = 1)
+    {
+        Province_list = await provinceService.GetAll();
+    }
+
+    private async Task Edit(Address_Province item)
+    {
+        Province = item;
+        await JS.InvokeAsync<object>("ShowModal", "taskModal-edit");
+    }
+
+    private async void DataChanged()
+    {
+        await LoadItems();
+        StateHasChanged();
+    }
+
+    private async Task Activar_Desactivar(Address_Province item)
+    {
+        if (item.IsActive)
+        {
+            if (await JS.ConfirmSinResp($"Desactivar", $"Esto desactivará la provincia."))
+            {
+                item.IsActive = false;
+                await provinceService.Update(item);
+                await LoadItems();
+            }
+        }
+        else
+        {
+            if (await JS.ConfirmSinResp($"Activar", $"Esto activará la provincia."))
+            {
+                item.IsActive = true;
+                await provinceService.Update(item);
+                await LoadItems();
+            }
+        }
+    }
+
+}
