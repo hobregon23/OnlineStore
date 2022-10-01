@@ -59,6 +59,11 @@
                     }
                 </div>
                 <PaginationComponent TotaPagesQuantity="PagParam.TotalPageQuantity" CurrentPage="PagParam.CurrentPage" Radius="3" SelectedPage="SelectedPage"></PaginationComponent>
+                <div class="col-lg-12 col-md-4 mt-2">
+                    <div class="filter__found" style="text-align: right">
+                        <h6><span>@UsersList.Count de @PagParam.itemsTotal</span> encontrados</h6>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -86,6 +91,7 @@
         var data = await userService.GetPag(new Pagination() { Page = page, QuantityPerPage = PagParam.QuantityPerPage }, search_obj.Search_text, PagParam.FieldActualSort, PagParam.OrderActualSort);
         PagParam.TotalPageQuantity = data.CantPorPag;
         UsersList = data.ListaObjetos.ToList();
+        PagParam.itemsTotal = data.ItemsTotal;
         await GetUserRol();
     }
 
