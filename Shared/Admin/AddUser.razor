@@ -14,7 +14,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <EditForm class="col-lg-10 col-md-10 mx-md-auto" Model="userInfo" OnValidSubmit="CreateUser">
+                <EditForm class="col-lg-10 col-md-10 mx-md-auto" Model="Item" OnValidSubmit="Submit">
                     <!-- Errors here -->
                     <DataAnnotationsValidator />
                     <!-- End Errors -->
@@ -33,15 +33,15 @@
                         <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Usuario<span>*</span></label>
-                                <InputText Class="form-control" @bind-Value="@userInfo.UserName" />
-                                <ValidationMessage For="@(() => userInfo.UserName)" />
+                                <InputText Class="form-control" @bind-Value="@Item.UserName" />
+                                <ValidationMessage For="@(() => Item.UserName)" />
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Correo<span>*</span></label>
-                                <InputText Class="form-control" @bind-Value="@userInfo.Email" />
-                                <ValidationMessage For="@(() => userInfo.Email)" />
+                                <InputText Class="form-control" @bind-Value="@Item.Email" />
+                                <ValidationMessage For="@(() => Item.Email)" />
                             </div>
                         </div>
                     </div>
@@ -49,22 +49,22 @@
                         <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Nombre<span>*</span></label>
-                                <InputText Class="form-control" @bind-Value="@userInfo.Name" />
-                                <ValidationMessage For="@(() => userInfo.Name)" />
+                                <InputText Class="form-control" @bind-Value="@Item.Name" />
+                                <ValidationMessage For="@(() => Item.Name)" />
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Apellidos<span>*</span></label>
-                                <InputText Class="form-control" @bind-Value="@userInfo.LastName" />
-                                <ValidationMessage For="@(() => userInfo.LastName)" />
+                                <InputText Class="form-control" @bind-Value="@Item.LastName" />
+                                <ValidationMessage For="@(() => Item.LastName)" />
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Contraseña<span>*</span></label>
-                                <InputPassword Class="form-control" @bind-Value="@userInfo.Password" />
-                                <ValidationMessage For="@(() => userInfo.Password)" />
+                                <InputPassword Class="form-control" @bind-Value="@Item.Password" />
+                                <ValidationMessage For="@(() => Item.Password)" />
                             </div>
                         </div>
                     </div>
@@ -72,22 +72,22 @@
                         <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Confirmar contraseña<span>*</span></label>
-                                <InputPassword Class="form-control" @bind-Value="@userInfo.ConfirmPassword" />
-                                <ValidationMessage For="@(() => userInfo.ConfirmPassword)" />
+                                <InputPassword Class="form-control" @bind-Value="@Item.ConfirmPassword" />
+                                <ValidationMessage For="@(() => Item.ConfirmPassword)" />
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Teléfono<span>*</span></label>
-                                <InputText Class="form-control" @bind-Value="@userInfo.PhoneNumber" />
-                                <ValidationMessage For="@(() => userInfo.PhoneNumber)" />
+                                <InputText Class="form-control" @bind-Value="@Item.PhoneNumber" />
+                                <ValidationMessage For="@(() => Item.PhoneNumber)" />
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Dirección<span>*</span></label>
-                                <InputText Class="form-control" @bind-Value="@userInfo.Address.Address_line" />
-                                <ValidationMessage For="@(() => userInfo.Address.Address_line)" />
+                                <InputText Class="form-control" @bind-Value="@Item.Address.Address_line" />
+                                <ValidationMessage For="@(() => Item.Address.Address_line)" />
                             </div>
                         </div>
                     </div>
@@ -95,22 +95,22 @@
                         <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Ciudad<span>*</span></label>
-                                <InputText Class="form-control" @bind-Value="@userInfo.Address.City" />
-                                <ValidationMessage For="@(() => userInfo.Address.City)" />
+                                <InputText Class="form-control" @bind-Value="@Item.Address.City" />
+                                <ValidationMessage For="@(() => Item.Address.City)" />
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Municipio <span>*</span></label>
-                                <InputText Class="form-control" @bind-Value="@userInfo.Address.State" />
-                                <ValidationMessage For="@(() => userInfo.Address.State)" />
+                                <InputText Class="form-control" @bind-Value="@Item.Address.State" />
+                                <ValidationMessage For="@(() => Item.Address.State)" />
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Código Postal<span>*</span></label>
-                                <InputText Class="form-control" @bind-Value="@userInfo.Address.Postal_code" />
-                                <ValidationMessage For="@(() => userInfo.Address.Postal_code)" />
+                                <InputText Class="form-control" @bind-Value="@Item.Address.Postal_code" />
+                                <ValidationMessage For="@(() => Item.Address.Postal_code)" />
                             </div>
                         </div>
                     </div>
@@ -148,7 +148,7 @@
 @code {
 
     [Parameter]
-    public UserDto userInfo { get; set; }
+    public UserDto Item { get; set; }
     [Parameter]
     public Action DataChanged { get; set; }
 
@@ -158,18 +158,18 @@
     {
         get
         {
-            return userInfo.Address.Province_id.ToString();
+            return Item.Address.Province_id.ToString();
         }
         set
         {
-            userInfo.Address.Province_id = int.Parse(value);
+            Item.Address.Province_id = int.Parse(value);
         }
     }
 
     protected override async Task OnInitializedAsync()
     {
         Provinces = await provinceService.GetAll();
-        userInfo.Address.Province_id = 1;
+        Item.Address.Province_id = 1;
     }
 
     private async Task CloseTaskModal()
@@ -177,14 +177,14 @@
         await JS.InvokeAsync<object>("CloseModal", "taskModal");
     }
 
-    private async Task CreateUser()
+    private async Task Submit()
     {
         if (!AddressFullfill())
         {
             toastService.ShowWarning("Complete su dirección", "Advertencia");
             return;
         }
-        var resp = await userService.AddAppUser(userInfo, userRol);
+        var resp = await userService.AddAppUser(Item, userRol);
         if (resp)
         {
             await CloseTaskModal();
@@ -194,10 +194,10 @@
 
     private bool AddressFullfill()
     {
-        if (string.IsNullOrWhiteSpace(userInfo.Address.Address_line) || string.IsNullOrEmpty(userInfo.Address.Address_line) ||
-            string.IsNullOrWhiteSpace(userInfo.Address.City) || string.IsNullOrEmpty(userInfo.Address.City) ||
-            string.IsNullOrWhiteSpace(userInfo.Address.State) || string.IsNullOrEmpty(userInfo.Address.State) ||
-            string.IsNullOrWhiteSpace(userInfo.Address.Postal_code) || string.IsNullOrEmpty(userInfo.Address.Postal_code))
+        if (string.IsNullOrWhiteSpace(Item.Address.Address_line) || string.IsNullOrEmpty(Item.Address.Address_line) ||
+            string.IsNullOrWhiteSpace(Item.Address.City) || string.IsNullOrEmpty(Item.Address.City) ||
+            string.IsNullOrWhiteSpace(Item.Address.State) || string.IsNullOrEmpty(Item.Address.State) ||
+            string.IsNullOrWhiteSpace(Item.Address.Postal_code) || string.IsNullOrEmpty(Item.Address.Postal_code))
             return false;
         return true;
     }

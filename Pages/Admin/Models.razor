@@ -1,13 +1,24 @@
-﻿@page "/admin/categories"
+﻿@page "/admin/models"
 @layout BlazorLayout
 @attribute [Authorize(Roles = "Admin")]
-@inject ICategoryService categoryService
+@inject IBrandService brandService
+@inject IModelService modelService
 @inject IJSRuntime JS
 
 
 <div class="container space-1 mb-5">
     <div class="d-sm-flex align-items-center justify-content-between mb-3">
-        <h3 class="text-secondary font-weight-normal mb-0">Categorías</h3>
+        <h3 class="text-secondary font-weight-normal mb-0">Modelos</h3>
+        <div class="mt-3 ml-5 mb-2" style="flex:auto">
+            <span>Filtrar por</span>
+            <select class="form-control-mine" @onchange="OnSelectChange">
+                <option value="0">Todos</option>
+                @foreach (var item in Brand_list)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            </select>
+        </div>
         <div class="mr-3 ml-3 row">
             <div class="mr-5">
                 <button @onclick="@Add" type="button" class="btn admin-btn-sm btn-success transition-3d-hover"><span class="oi oi-plus" aria-hidden="true"></span></button>
@@ -21,7 +32,7 @@
             <div class="col-md-12 w-md-75 w-lg-40 mx-md-auto">
                 <div class="table-responsive-sm">
 
-                    @if (Category_list.Count.Equals(0))
+                    @if (Model_list.Count.Equals(0))
                     {
                         <p class="text-danger" style="text-align: center">N/A</p>
                     }
@@ -31,19 +42,21 @@
                             <thead>
                                 <tr style="font-size: small; color: white; background-image: linear-gradient(182deg, rgb(8, 38, 123) 0%, #4f1056 90%);">
                                     <th>Id</th>
-                                    <th>Imagen</th>
                                     <th>Nombre</th>
+                                    <th>Código</th>
+                                    <th>Marca</th>
                                     <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody class="font-size-1" style="font-family: 'Arial Rounded MT'">
-                                @foreach (var item in Category_list)
+                                @foreach (var item in Model_list)
                                 {
                                     <tr class="my-transition-3d-hover">
                                         <td class="align-middle"><a style="font-size: small">@item.Id</a></td>
-                                        <td class="align-middle"><a style="font-size: small"><img class="categories-img" src="@item.Image_url" /></a></td>
                                         <td class="align-middle"><a style="font-size: small">@item.Name</a></td>
+                                        <td class="align-middle"><a style="font-size: small">@item.Code_name</a></td>
+                                        <td class="align-middle"><a style="font-size: small">@item.Brand.Name</a></td>
                                         <td class="align-middle"><span style="font-size: small" class="@(item.IsActive ? "text-success" : "text-danger")"> @(item.IsActive ? "Activo" : "Inactivo")</span></td>
                                         <td class="align-middle">
                                             <mark @onclick="@(() => Edit(item))" class="bg-primary" style="cursor:pointer; border-radius:50px 50px 50px 20px; padding-left:5px; color:white"><span class="fa fa-pencil" aria-hidden="true"></span></mark>
@@ -58,7 +71,7 @@
                 <PaginationComponent TotaPagesQuantity="PagParam.TotalPageQuantity" CurrentPage="PagParam.CurrentPage" Radius="3" SelectedPage="SelectedPage"></PaginationComponent>
                 <div class="col-lg-12 col-md-4 mt-2">
                     <div class="filter__found" style="text-align: right">
-                        <h6><span>@Category_list.Count de @PagParam.itemsTotal</span> encontrados</h6>
+                        <h6><span>@Model_list.Count de @PagParam.itemsTotal</span> encontrados</h6>
                     </div>
                 </div>
             </div>
@@ -66,14 +79,16 @@
 
     </div>
 </div>
-<EditCategory Item="Category_item" DataChanged="DataChanged"></EditCategory>
-<AddCategory Item="Category_item" DataChanged="DataChanged" ></AddCategory>
+<AddModel Item="Model_item" Brand_list="Brand_list_all" DataChanged="DataChanged"></AddModel>
+<EditModel Item="Model_item" Brand_list="Brand_list_all" DataChanged="DataChanged"></EditModel>
 
 
 @code {
 
-    private Category Category_item { get; set; } = new Category();
-    private List<Category> Category_list { get; set; } = new List<Category>();
+    private Model Model_item { get; set; } = new Model();
+    private List<Brand> Brand_list { get; set; } = new List<Brand>();
+    private List<Brand> Brand_list_all { get; set; } = new List<Brand>();
+    private List<Model> Model_list { get; set; } = new List<Model>();
     private SearchFilter search_obj { get; set; } = new SearchFilter();
     private PaginationParameters PagParam { get; set; } = new PaginationParameters() { QuantityPerPage = 7, FieldActualSort = "Created_at" };
 
@@ -84,10 +99,18 @@
 
     async Task LoadItems(int page = 1)
     {
-        var data = await categoryService.GetPag(new Pagination() { Page = page, QuantityPerPage = PagParam.QuantityPerPage }, search_obj, PagParam.FieldActualSort, PagParam.OrderActualSort);
+        Brand_list = await brandService.GetAllNotEmpty();
+        var data = await modelService.GetPag(new Pagination() { Page = page, QuantityPerPage = PagParam.QuantityPerPage }, search_obj, PagParam.FieldActualSort, PagParam.OrderActualSort);
         PagParam.TotalPageQuantity = data.CantPorPag;
-        Category_list = data.ListaObjetos.ToList();
+        Model_list = data.ListaObjetos.ToList();
         PagParam.itemsTotal = data.ItemsTotal;
+        PagParam.CurrentPage = page;
+    }
+
+    private async Task OnSelectChange(ChangeEventArgs e)
+    {
+        search_obj.Model_brand_id = int.Parse(e.Value.ToString());
+        await LoadItems();
     }
 
     private async Task SelectedPage(int page)
@@ -121,38 +144,41 @@
 
     private async Task Search()
     {
+        search_obj.Model_brand_id = 0;
         await LoadItems();
     }
 
-    private async Task Edit(Category item)
+    private async Task Edit(Model item)
     {
-        Category_item = item;
+        Brand_list_all = await brandService.GetAll();
+        Model_item = item;
         await JS.InvokeAsync<object>("ShowModal", "taskModal-edit");
     }
 
     private async Task Add()
     {
-        Category_item = new Category();
+        Brand_list_all = await brandService.GetAll();
+        Model_item = new Model();
         await JS.InvokeAsync<object>("ShowModal", "taskModal");
     }
 
-    private async Task Activar_Desactivar(Category item)
+    private async Task Activar_Desactivar(Model item)
     {
         if (item.IsActive)
         {
-            if (await JS.ConfirmSinResp($"Desactivar", $"Esto desactivará la categoría."))
+            if (await JS.ConfirmSinResp($"Desactivar", $"Esto desactivará el modelo."))
             {
                 item.IsActive = false;
-                await categoryService.Update(item);
+                await modelService.Update(item);
                 await LoadItems();
             }
         }
         else
         {
-            if (await JS.ConfirmSinResp($"Activar", $"Esto activará la categoría."))
+            if (await JS.ConfirmSinResp($"Activar", $"Esto activará el modelo."))
             {
                 item.IsActive = true;
-                await categoryService.Update(item);
+                await modelService.Update(item);
                 await LoadItems();
             }
         }

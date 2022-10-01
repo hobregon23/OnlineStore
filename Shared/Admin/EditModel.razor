@@ -1,5 +1,5 @@
 ﻿@inject IJSRuntime JS
-@inject IAddressProvinceService provinceService
+@inject IModelService modelService
 @inject IToastService toastService
 
 
@@ -24,9 +24,20 @@
                         <ValidationMessage For="@(() => Item.Name)" />
                     </div>
                     <div class="checkout__input">
-                        <label>Precio<span>*</span></label>
-                        <InputNumber Class="form-control" @bind-Value="@Item.Shipping_price" />
-                        <ValidationMessage For="@(() => Item.Shipping_price)" />
+                        <label>Código<span>*</span></label>
+                        <InputText Class="form-control" @bind-Value="@Item.Code_name" />
+                        <ValidationMessage For="@(() => Item.Code_name)" />
+                    </div>
+                    <div class="checkout__input">
+                        <label>Marca<span>*</span></label>
+                        <InputSelect Class="form-control" @bind-Value="@Brand_id" required>
+                            @foreach (var item in Brand_list)
+                            {
+                                <option value="@item.Id">
+                                    @item.Name
+                                </option>
+                            }
+                        </InputSelect>
                     </div>
                     <!-- Button -->
                     <div class="row align-items-center mb-3 mt-3">
@@ -46,20 +57,42 @@
 @code {
 
     [Parameter]
-    public Address_Province Item { get; set; }
+    public Model Item { get; set; }
+    [Parameter]
+    public List<Brand> Brand_list { get; set; }
     [Parameter]
     public Action DataChanged { get; set; }
+    private string Brand_id
+    {
+        get
+        {
+            return Item.Brand_id.ToString();
+        }
+        set
+        {
+            Item.Brand_id = int.Parse(value);
+        }
+    }
 
     private async Task CloseTaskModal()
     {
         await JS.InvokeAsync<object>("CloseModal", "taskModal-edit");
     }
 
+    private void OnSelectChange(ChangeEventArgs e)
+    {
+        Item.Brand_id = int.Parse(e.Value.ToString());
+    }
+
     private async Task Submit()
     {
-        await provinceService.Update(Item);
+        var res = await modelService.Update(Item);
         await CloseTaskModal();
         DataChanged?.Invoke();
+        if (res.Equals("Ya existe"))
+            toastService.ShowError("Ya existe", "Error");
+        else if (res.Equals("ok"))
+            toastService.ShowSuccess("Editado con éxito", "Genial");
     }
 
 }

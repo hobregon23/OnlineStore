@@ -1,5 +1,5 @@
 ﻿@inject IJSRuntime JS
-@inject IAddressProvinceService provinceService
+@inject IBrandService brandService
 @inject IToastService toastService
 
 
@@ -23,11 +23,6 @@
                         <InputText Class="form-control" @bind-Value="@Item.Name" />
                         <ValidationMessage For="@(() => Item.Name)" />
                     </div>
-                    <div class="checkout__input">
-                        <label>Precio<span>*</span></label>
-                        <InputNumber Class="form-control" @bind-Value="@Item.Shipping_price" />
-                        <ValidationMessage For="@(() => Item.Shipping_price)" />
-                    </div>
                     <!-- Button -->
                     <div class="row align-items-center mb-3 mt-3">
                         <div class="col-lg-12 col-sm-6 text-right">
@@ -46,7 +41,7 @@
 @code {
 
     [Parameter]
-    public Address_Province Item { get; set; }
+    public Brand Item { get; set; }
     [Parameter]
     public Action DataChanged { get; set; }
 
@@ -57,9 +52,13 @@
 
     private async Task Submit()
     {
-        await provinceService.Update(Item);
+        var res = await brandService.Update(Item);
         await CloseTaskModal();
         DataChanged?.Invoke();
+        if (res.Equals("Ya existe"))
+            toastService.ShowError("Ya existe", "Error");
+        else if (res.Equals("ok"))
+            toastService.ShowSuccess("Editado con éxito", "Genial");
     }
 
 }

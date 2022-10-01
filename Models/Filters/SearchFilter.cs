@@ -12,5 +12,6 @@ namespace OnlineStore.Models
         public string Category { get; set; }
         public string Search_text { get; set; }
         public string Order_Status { get; set; } = "";
+        public int Model_brand_id { get; set; } = 0;
     }
 }

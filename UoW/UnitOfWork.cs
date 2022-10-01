@@ -21,6 +21,9 @@ namespace OnlineStore.UoW
         IAddressProvinceRepository Provinces { get; }
         IRequestRepository Requests { get; }
         IRequest_ItemRepository Request_Items { get; }
+        IBrandRepository Brands { get; }
+        IModelRepository Models { get; }
+
         Task<bool> SaveChangesAsync();
     }
 
@@ -39,6 +42,8 @@ namespace OnlineStore.UoW
         public IAddressProvinceRepository Provinces { get; }
         public IRequestRepository Requests { get; }
         public IRequest_ItemRepository Request_Items { get; }
+        public IBrandRepository Brands { get; }
+        public IModelRepository Models { get; }
 
         public UnitOfWork(ApplicationDbContext context, UserManager<User> userManager, IMapper mapper, IToastService toastService)
         {
@@ -52,6 +57,8 @@ namespace OnlineStore.UoW
             Provinces = new AddressProvinceRepository(context, userManager);
             Requests = new RequestRepository(context, userManager);
             Request_Items = new Request_ItemRepository(context, userManager);
+            Brands = new BrandRepository(context, userManager);
+            Models = new ModelRepository(context, userManager);
         }
 
         public async Task<bool> SaveChangesAsync()

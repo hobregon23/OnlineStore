@@ -87,6 +87,8 @@ namespace OnlineStore
             services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<IAddressProvinceService, AddressProvinceService>();
             services.AddScoped<IRequestService, RequestService>();
+            services.AddScoped<IBrandService, BrandService>();
+            services.AddScoped<IModelService, ModelService>();
             services.AddScoped<ComponentStateChangedObserver>();
         }
 

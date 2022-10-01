@@ -144,8 +144,6 @@ namespace OnlineStore.Data.Services
                 Status = "Pendiente",
                 Price = cart.Total_amount - item.Shipping_price,
                 Shipping_price = need_shipping ? ship_price : 0,
-                Created_at = DateTime.Now,
-                IsActive = true,
                 Need_shipping = need_shipping
             };
             if (userAddress.Address_line != item.Address.Address_line ||
@@ -196,12 +194,10 @@ namespace OnlineStore.Data.Services
             {
                 var temp = new Request_Item()
                 {
-                    Created_at = DateTime.Now,
                     Request_id = req_id,
                     Product_id = item.Product_id,
                     Total_import = item.Price * item.Qty,
-                    Qty = item.Qty,
-                    IsActive = true
+                    Qty = item.Qty
                 };
                 list.Add(temp);
             }

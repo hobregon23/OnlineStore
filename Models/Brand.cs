@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace OnlineStore.Models
 {
@@ -9,5 +10,6 @@ namespace OnlineStore.Models
 
         [Required(ErrorMessage = "{0} es requerido.")]
         public string Name { get; set; }
+        public virtual List<Model> Model_list { get; set; } = new List<Model>();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using OnlineStore.Models;
 using OnlineStore.UoW;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace OnlineStore.Data.Services
         Task<Category> GetById(int id);
         Task<List<Category>> GetAll();
         Task<string> Eliminar(int id);
-        Task Update(Category item);
+        Task<string> Update(Category item);
     }
 
     public class CategoryService : ICategoryService
@@ -31,13 +32,15 @@ namespace OnlineStore.Data.Services
 
         public async Task<string> Add(Category item)
         {
+            var bd = (await _unitOfWork.Categories.GetAll()).FirstOrDefault(x => x.Name.ToUpper().Equals(item.Name.ToUpper()));
+            if (bd != null)
+                return "Ya existe";
             try
             {
                 if (string.IsNullOrEmpty(item.Image_url) || string.IsNullOrWhiteSpace(item.Image_url))
                 {
                     item.Image_url = "img/sin_imagen.jpg";
                 }
-
                 await _unitOfWork.Categories.Add(item);
                 await _unitOfWork.SaveChangesAsync();
                 return "ok";
@@ -50,7 +53,7 @@ namespace OnlineStore.Data.Services
 
         public async Task<List<Category>> GetAll()
         {
-            return (await _unitOfWork.Categories.GetAll()).ToList();
+            return (await _unitOfWork.Categories.GetAll()).Where(x => x.IsActive).ToList();
         }
 
         public async Task<PaginationResponse<Category>> GetPag(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo)
@@ -83,10 +86,14 @@ namespace OnlineStore.Data.Services
             }
         }
 
-        public async Task Update(Category item)
+        public async Task<string> Update(Category item)
         {
+            var bd = (await _unitOfWork.Categories.GetAll()).FirstOrDefault(x => x.Name.ToUpper().Equals(item.Name.ToUpper()));
+            if (bd != null && bd.Id != item.Id)
+                return "Ya existe";
             _unitOfWork.Categories.Update(item);
             await _unitOfWork.SaveChangesAsync();
+            return "ok";
         }
     }
 }
