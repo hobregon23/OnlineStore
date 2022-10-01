@@ -9,9 +9,6 @@ namespace OnlineStore.Models
         [Key]
         public int Id { get; set; }
 
-        //[Required(ErrorMessage = "{0} es requerido.")]
-        //public string Serial { get; set; }
-
         [ForeignKey("User_id")]
         public virtual User User { get; set; }
 
