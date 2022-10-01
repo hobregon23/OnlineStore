@@ -9,10 +9,11 @@ namespace OnlineStore.Data.Services
     public interface ICategoryService
     {
         Task<string> Add(Category item);
-        Task<PaginationResponse<Category>> GetPag(Pagination pagination, SearchFilter search_filter);
+        Task<PaginationResponse<Category>> GetPag(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo);
         Task<Category> GetById(int id);
         Task<List<Category>> GetAll();
         Task<string> Eliminar(int id);
+        Task Update(Category item);
     }
 
     public class CategoryService : ICategoryService
@@ -52,9 +53,9 @@ namespace OnlineStore.Data.Services
             return (await _unitOfWork.Categories.GetAll()).ToList();
         }
 
-        public async Task<PaginationResponse<Category>> GetPag(Pagination pagination, SearchFilter search_filter)
+        public async Task<PaginationResponse<Category>> GetPag(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo)
         {
-            return await _unitOfWork.Categories.GetPag(pagination, search_filter);
+            return await _unitOfWork.Categories.GetPag(pagination, search_filter, campoSorteo, ordenSorteo);
         }
 
         public async Task<Category> GetById(int id)
@@ -80,6 +81,12 @@ namespace OnlineStore.Data.Services
             {
                 return "Error inesperado.";
             }
+        }
+
+        public async Task Update(Category item)
+        {
+            _unitOfWork.Categories.Update(item);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

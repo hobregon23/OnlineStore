@@ -1,6 +1,10 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
-
+.categories-img {
+    max-width: 80px;
+    border: 1px solid grey;
+    border-radius: 5px;
+}
 
 .factura {
     table-layout: fixed;

@@ -1,0 +1,65 @@
+﻿@inject IJSRuntime JS
+@inject ICategoryService categoryService
+@inject IToastService toastService
+
+
+<div class="modal" tabindex="-1" role="dialog" id="taskModal-edit">
+    <div class="modal-dialog" style="max-width: 500px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-weight-bold">Actualizar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <EditForm class="col-lg-10 col-md-10 mx-md-auto" Model="Category_item" OnValidSubmit="Update">
+                    <!-- Errors here -->
+                    <DataAnnotationsValidator />
+                    <!-- End Errors -->
+                    <!-- Form Group -->
+                    <div class="checkout__input">
+                        <label>Nombre<span>*</span></label>
+                        <InputText Class="form-control" @bind-Value="@Category_item.Name" />
+                        <ValidationMessage For="@(() => Category_item.Name)" />
+                    </div>
+                    <div class="checkout__input">
+                        <label>Imagen<span>*</span></label>
+                        <RadzenFileInput Class="form-control" @bind-Value="@Category_item.Image_url" />
+                        <ValidationMessage For="@(() => Category_item.Image_url)" />
+                    </div>
+                    <!-- Button -->
+                    <div class="row align-items-center mb-3 mt-3">
+                        <div class="col-lg-12 col-sm-6 text-right">
+                            <button type="button" class="secondary-btn transition-3d-hover" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="primary-btn transition-3d-hover">Actualizar</button>
+                        </div>
+                    </div>
+                    <!-- End Button -->
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public Category Category_item { get; set; }
+    [Parameter]
+    public Action DataChanged { get; set; }
+
+    private async Task CloseTaskModal()
+    {
+        await JS.InvokeAsync<object>("CloseModal", "taskModal-edit");
+    }
+
+    private async Task Update()
+    {
+        await categoryService.Update(Category_item);
+        await CloseTaskModal();
+        DataChanged?.Invoke();
+    }
+
+}
