@@ -16,7 +16,9 @@
                 <option value="Pendiente">Pendiente</option>
                 <option value="Tomado">Tomado</option>
                 <option value="Terminado">Terminado</option>
-                <option value="Cancelado">Cancelado</option>
+                <AuthorizeView Roles="Admin">
+                    <option value="Cancelado">Cancelado</option>
+                </AuthorizeView>
             </select>
         </div>
         <div class="mr-3 ml-3 row">
