@@ -38,8 +38,8 @@ namespace OnlineStore
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Model> Models { get; set; }
-        public DbSet<Payment> Payments { get; set; }
-        public DbSet<Payment_Item> Payment_Items { get; set; }
+        //public DbSet<Payment> Payments { get; set; }
+        //public DbSet<Payment_Item> Payment_Items { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Request> Requests { get; set; }
         public DbSet<Request_Item> Request_Items { get; set; }
