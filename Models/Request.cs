@@ -18,6 +18,11 @@ namespace OnlineStore.Models
         [Required(ErrorMessage = "{0} es requerido.")]
         public string User_id { get; set; }
 
+        [ForeignKey("Dealer_id")]
+        public virtual User Dealer { get; set; }
+
+        public string Dealer_id { get; set; }
+
         [ForeignKey("Address_id")]
         public virtual Address Address { get; set; }
 

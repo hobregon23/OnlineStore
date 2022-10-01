@@ -1,5 +1,55 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+
+
+.factura {
+    table-layout: fixed;
+}
+
+.fact-info > div > h5 {
+    font-weight: bold;
+}
+
+.factura > thead {
+    border-top: solid 3px #000;
+    border-bottom: 3px solid #000;
+}
+
+    .factura > thead > tr > th:nth-child(2), .factura > tbod > tr > td:nth-child(2) {
+        width: 300px;
+    }
+
+    .factura > thead > tr > th:nth-child(n+3) {
+        text-align: right;
+    }
+
+.factura > tbody > tr > td:nth-child(n+3) {
+    text-align: right;
+}
+
+.factura > tfoot > tr > th, .factura > tfoot > tr > th:nth-child(n+3) {
+    font-size: 24px;
+    text-align: right;
+}
+
+.cond {
+    border-top: solid 2px #000;
+}
+
+.form-control-mine {
+    padding: .1375rem .300rem;
+    font-size: 1rem;
+    font-weight: 400;
+    font-family: revert;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
 .checkout__input label {
     font-weight: bold;
 }

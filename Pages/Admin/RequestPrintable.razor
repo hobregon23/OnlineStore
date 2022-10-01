@@ -1,0 +1,151 @@
+﻿@page "/admin/order_printable"
+@layout BlazorLayout
+@attribute [Authorize(Roles = "Admin, Delivery")]
+@inject IRequestService orderService
+@inject IJSRuntime JS
+@inject NavigationManager navi
+
+
+    <div class="col-12" style="text-align: end">
+        <button type="button" class="btn btn-outline-primary hideWhenPrint" @onclick="Print">Imprimir</button>
+    </div>
+    <div id="app" class="col-11">
+
+        <h2>Factura</h2>
+
+        <div class="row my-3">
+            <div class="col-9">
+                <h1>OnlineStore</h1>
+                <span style="color: #6f6f6f;">Calle 5 % 14 y 16</span>
+                <p>Coliseo</p>
+            </div>
+            <div class="col-3">
+                <img src="/img/logo-print.png" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row fact-info mt-3">
+            <div class="col-3">
+                <h5>Facturar a</h5>
+                <p>
+                    @requestInfo.Full_name_receptor
+                </p>
+            </div>
+            <div class="col-3">
+                <h5>Enviar a</h5>
+                <p>
+                    @requestInfo.Address.Address_line, 
+                    @requestInfo.Address.City, 
+                    @requestInfo.Address.State,
+                    @requestInfo.Address.Province.Name,
+                    @requestInfo.Address.Postal_code
+                </p>
+            </div>
+            <div class="col-3">
+                <h5>N° de factura</h5>
+                <h5>Fecha</h5>
+                <h5>Envío</h5>
+            </div>
+            <div class="col-3">
+                <h6 style="color: #6f6f6f;">@requestInfo.Id</h6>
+                <h6 style="color: #6f6f6f;">@String.Format("{0:dd/MM/yyyy}", requestInfo.Created_at)</h6>
+                <h6 style="color: #6f6f6f;">@(requestInfo.Need_shipping ? "Si" : "No")</h6>
+            </div>
+        </div>
+
+        <div class="row my-5">
+            <table class="table table-borderless factura">
+                <thead>
+                    <tr>
+                        <th>Cant.</th>
+                        <th>Descripcion</th>
+                        <th>Precio Unitario</th>
+                        <th>Importe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in requestInfo.Request_item_list)
+                    {
+                        <tr>
+                            <td>@item.Qty</td>
+                            <td>@item.Product.Name</td>
+                            <td>@item.Product.Price</td>
+                            <td>@item.Total_import</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="pb-0"></th>
+                        <th class="pb-0"></th>
+                        <th class="pb-0" style="font-size: 20px">Sub Total</th>
+                        <th class="pb-0" style="font-size: 20px">$@requestInfo.Price</th>
+                    </tr>
+                    <tr>
+                        <th class="pb-0 pt-0"></th>
+                        <th class="pb-0 pt-0"></th>
+                        <th class="pb-0 pt-0" style="font-size: 20px">Envío</th>
+                        <th class="pb-0 pt-0" style="font-size: 20px">$@requestInfo.Shipping_price</th>
+                    </tr>
+                    <tr>
+                        <th class="pb-0 pt-0"></th>
+                        <th class="pb-0 pt-0"></th>
+                        <th class="pb-0 pt-0">Total Factura</th>
+                        <th class="pb-0 pt-0">$@(requestInfo.Price + requestInfo.Shipping_price)</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="cond row mb-5">
+            <div class="col-10 mt-3">
+                <h4>Condiciones y formas de pago</h4>
+                <p>El pago se debe realizar en efectivo.</p>
+                <p>
+                    Gracias por su compra.
+                </p>
+            </div>
+            <div class="col-2 mt-3" style="position: relative;">
+                <div style="position: absolute;bottom: 0;">
+                    <hr class="m-0" style="border-color: black;">
+                    <h5>Firma Cliente</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+@code {
+
+    private int Id { get; set; }
+    private Request requestInfo { get; set; } = new Request() { Address = new Address() { Province = new Address_Province() }, User = new User() };
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await LoadParameters();
+    }
+
+    private async Task LoadParameters()
+    {
+        var uri = navi.ToAbsoluteUri(navi.Uri);
+        if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var _param))
+        {
+            Id = int.Parse(_param);
+        }
+        await LoadData();
+    }
+
+    private async Task Print()
+    {
+        await JS.InvokeVoidAsync("Print");
+    }
+
+    async Task LoadData()
+    {
+        requestInfo = await orderService.GetById(Id);
+    }
+}

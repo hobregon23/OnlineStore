@@ -9,7 +9,7 @@
         }
     </style>
 
-<div class="sidebar">
+<div class="sidebar hideWhenPrint">
     <NavMenu />
 </div>
 
@@ -19,7 +19,7 @@
         <AuthorizeView>
             @if (context.User.Identity.IsAuthenticated)
             {
-                <AutoLogout Roles="@(new List<string>() { "Admin" })" />
+                <AutoLogout Roles="@(new List<string>() { "Admin", "Delivery" })" />
             }
         </AuthorizeView>
         <a href="/about" target="_self"><span class="oi oi-code" aria-hidden="true"></span></a>

@@ -47,9 +47,9 @@
                 <div class="filter__item">
                     <div class="row">
                         <div class="col-lg-7 col-md-5 row">
-                            <div class="filter__sort mr-3">
+                            <div class="filter__sort mr-4">
                                 <span>Filtrar por</span>
-                                <select @onchange="OnFilterChange">
+                                <select class="form-control-mine" @onchange="OnFilterChange">
                                     <option value="all">Todos</option>
                                     <option value="new">Nuevo</option>
                                     <option value="repaired">Reparado</option>
@@ -57,7 +57,7 @@
                             </div>
                             <div class="filter__sort">
                                 <span>Ordenar por</span>
-                                <select @onchange="OnOrderChange">
+                                <select class="form-control-mine" @onchange="OnOrderChange">
                                     <option value="date_down">Fecha Desc</option>
                                     <option value="date_up">Fecha Asc</option>
                                     <option value="price_up">Precio Asc</option>

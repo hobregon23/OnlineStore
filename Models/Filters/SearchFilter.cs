@@ -11,5 +11,6 @@ namespace OnlineStore.Models
         public PriceRange Price_range { get; set; } = new PriceRange();
         public string Category { get; set; }
         public string Search_text { get; set; }
+        public string Order_Status { get; set; } = "";
     }
 }

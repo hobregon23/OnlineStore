@@ -11,8 +11,15 @@ namespace OnlineStore.Data.Services
     public interface IRequestService
     {
         Task Add(Check_Out item, Cart cart, bool need_shipping);
-        Task<List<Request>> GetAll();
+        Task<Request> GetById(int id);
+        Task<PaginationResponse<Request>> GetPag(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo);
+        //Task<List<Request>> GetAllIncluding(string status);
         Task<bool> VerifyItemQty(List<CartItem> items);
+        Task MarkAsTomado(Request item);
+        Task MarkAsTerminado(Request item);
+        Task MarkAsPendiente(Request item);
+        Task Eliminar(Request item);
+        Task Activar(Request item);
     }
 
     public class RequestService : IRequestService
@@ -29,6 +36,78 @@ namespace OnlineStore.Data.Services
             _jwtAuthService = jwtAuthService;
             _toastService = toastService;
             _unitOfWork = unitOfWork;
+        }
+
+        public async Task<Request> GetById(int id)
+        {
+            return await _unitOfWork.Requests.GetByIdIncluding(id);
+        }
+
+        public async Task<PaginationResponse<Request>> GetPag(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo)
+        {
+            var rol = await _jwtAuthService.GetUserRol();
+            var prov_id = await _jwtAuthService.GetUserProvince();
+            return await _unitOfWork.Requests.GetPag(pagination, search_filter, campoSorteo, ordenSorteo, rol, prov_id);
+        }
+
+        //public async Task<List<Request>> GetAllIncluding(string status)
+        //{
+        //    if (string.IsNullOrEmpty(status) || string.IsNullOrWhiteSpace(status))
+        //        return await _unitOfWork.Requests.GetAllIncludingItems();
+        //    return (await _unitOfWork.Requests.GetAllIncludingItems()).Where(x => x.Status.Equals(status)).ToList();
+        //}
+
+        public async Task MarkAsTomado(Request item)
+        {
+            item.Status = "Tomado";
+            item.Dealer_id = await _jwtAuthService.GetUserId();
+            _unitOfWork.Requests.Update(item);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task MarkAsTerminado(Request item)
+        {
+            item.Status = "Terminado";
+            item.IsActive = false;
+            _unitOfWork.Requests.Update(item);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task MarkAsPendiente(Request item)
+        {
+            if (item.Status.Equals("Terminado"))
+                return;
+            item.Status = "Pendiente";
+            item.Dealer_id = null;
+            item.IsActive = true;
+            item.Is_deleted = false;
+            _unitOfWork.Requests.Update(item);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task Eliminar(Request item)
+        {
+            if (!await _jwtAuthService.IsAuthorized(new List<string>() { "Admin" }))
+                return;
+            if (item.Status.Equals("Terminado"))
+                return;
+            item.Status = "Cancelado";
+            item.IsActive = false;
+            item.Is_deleted = true;
+            _unitOfWork.Requests.Update(item);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task Activar(Request item)
+        {
+            if (!await _jwtAuthService.IsAuthorized(new List<string>() { "Admin" }))
+                return;
+            item.Status = "Pendiente";
+            item.Dealer_id = null;
+            item.IsActive = true;
+            item.Is_deleted = false;
+            _unitOfWork.Requests.Update(item);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<bool> VerifyItemQty(List<CartItem> items)
@@ -127,11 +206,6 @@ namespace OnlineStore.Data.Services
                 list.Add(temp);
             }
             return list;
-        }
-
-        public async Task<List<Request>> GetAll()
-        {
-            return await _unitOfWork.Requests.GetAllIncludingItems();
         }
 
     }

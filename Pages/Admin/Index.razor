@@ -1,7 +1,8 @@
 ﻿@page "/admin"
 @layout BlazorLayout
-@attribute [Authorize(Roles = "Admin")]
+@attribute [Authorize(Roles = "Admin, Delivery")]
 @inject NavigationManager navi
+
 
 
 <div class="container space-1 mb-5">
@@ -10,7 +11,9 @@
     </div>
     <div class="col-md-12">
         <div class="row">
-
+            <AuthorizeView Roles="Admin">
+                
+            </AuthorizeView>
         </div>
     </div>
 </div>

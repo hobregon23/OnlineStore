@@ -9,24 +9,17 @@ namespace OnlineStore.Data.Services
 {
     public interface IUserService
     {
-        public Task<PaginationResponse<User>> GetPag(Pagination pagination, string name, string campoSorteo, string ordenSorteo);
-
-        public Task<string> GetUserRol(string id);
-
-        public Task<UserDto> GetUserInfo();
-
-        public Task<User> GetById(string id);
-        public Task<User> GetByIdIncluding(string id);
-
-        public Task<bool> AddNormalUser(UserDto model);
-
-        public Task<bool> AddAppUser(UserDto model, string rol);
-
-        public Task<bool> UpdateUser(UserUpdate model);
-        public Task<bool> Update(User user);
-
-        public Task<bool> Eliminar(string id);
-        public Task<bool> Activar(string id);
+        Task<PaginationResponse<User>> GetPag(Pagination pagination, string name, string campoSorteo, string ordenSorteo);
+        Task<string> GetUserRol(string id);
+        Task<UserDto> GetUserInfo();
+        Task<User> GetById(string id);
+        Task<User> GetByIdIncluding(string id);
+        Task<bool> AddNormalUser(UserDto model);
+        Task<bool> AddAppUser(UserDto model, string rol);
+        Task<bool> UpdateUser(UserUpdate model);
+        Task<bool> Update(User user);
+        Task<bool> Eliminar(string id);
+        Task<bool> Activar(string id);
     }
 
     public class UserService : IUserService

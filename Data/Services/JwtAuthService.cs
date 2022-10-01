@@ -41,11 +41,41 @@ namespace OnlineStore.Data.Services
             return user.Id;
         }
 
+        public async Task<int> GetUserProvince()
+        {
+            var jwtToken = await GetToken();
+            if (jwtToken == null)
+                return 0;
+            var username = await GetUsername();
+            if (username == null)
+                return 0;
+            var user = await _context.Users.Include(x => x.Address).Where(x => x.UserName.Equals(username)).FirstAsync();
+            return user.Address.Province_id;
+        }
+
+        public async Task<string> GetUserRol()
+        {
+            var jwtToken = await GetToken();
+            if (jwtToken == null)
+                return "";
+            var rol = jwtToken.Claims.First(x => x.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Value;
+            return rol;
+        }
+
         public async Task<string> GetUsername()
+        {
+            var jwtToken = await GetToken();
+            if (jwtToken == null)
+                return "";
+            var username = jwtToken.Claims.First(x => x.Type == "unique_name").Value;
+            return username;
+        }
+
+        public async Task<JwtSecurityToken> GetToken()
         {
             var token = await _localStorage.GetItemAsStringAsync("TOKENKEY");
             if (string.IsNullOrEmpty(token))
-                return "";
+                return null;
             var tokenHandler = new JwtSecurityTokenHandler();
             tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
@@ -59,10 +89,8 @@ namespace OnlineStore.Data.Services
 
             var jwtToken = (JwtSecurityToken)validatedToken;
             if (DateTime.UtcNow.CompareTo(Convert.ToDateTime(jwtToken.Claims.First(x => x.Type.Contains("piration")).Value)) > 0)
-                return "";
-            var username = jwtToken.Claims.First(x => x.Type == "unique_name").Value;
-
-            return username;
+                return null;
+            return jwtToken;
         }
 
         public async Task<bool> IsAuthorized(List<string> roles)

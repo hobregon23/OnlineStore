@@ -9,6 +9,12 @@
 
 'use strict';
 
+function Print() {
+    $(".hideWhenPrint").hide();
+    window.print();
+    $(".hideWhenPrint").show();
+}
+
 function hero__categories_ShowHide() {
     $('.hero__categories ul').slideToggle(400);
 }
