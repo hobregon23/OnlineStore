@@ -9,11 +9,12 @@ namespace OnlineStore.Data.Services
     {
         Task<string> Add(Product item);
         Task<PaginationResponse<Product>> GetPag(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo);
+        Task<PaginationResponse<Product>> GetPagAdmin(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo);
         Task<Product> GetById(int id);
         Task<List<Product>> GetRecents(int qty);
         Task<List<Product>> GetRandom();
-        Task<string> Eliminar(int id);
         Task<string> Rebajar(int id, int qty);
+        Task<string> Update(Product item);
     }
 
     public class ProductService : IProductService
@@ -53,6 +54,11 @@ namespace OnlineStore.Data.Services
             return await _unitOfWork.Products.GetPag(pagination, search_filter, campoSorteo, ordenSorteo);
         }
 
+        public async Task<PaginationResponse<Product>> GetPagAdmin(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo)
+        {
+            return await _unitOfWork.Products.GetPagAdmin(pagination, search_filter, campoSorteo, ordenSorteo);
+        }
+
         public async Task<Product> GetById(int id)
         {
             return await _unitOfWork.Products.GetById(id);
@@ -73,9 +79,11 @@ namespace OnlineStore.Data.Services
             return await _unitOfWork.Products.Rebajar(id, qty);
         }
 
-        public async Task<string> Eliminar(int id)
+        public async Task<string> Update(Product item)
         {
-            return await _unitOfWork.Products.Eliminar(id);
+            _unitOfWork.Products.Update(item);
+            await _unitOfWork.SaveChangesAsync();
+            return "ok";
         }
     }
 }

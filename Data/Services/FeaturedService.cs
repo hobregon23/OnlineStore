@@ -42,7 +42,7 @@ namespace OnlineStore.Data.Services
 
         public async Task<List<FeaturedProduct>> GetAll()
         {
-            return (await _unitOfWork.FeaturedProducts.GetIncludingProducts()).Take(8).ToList();
+            return await _unitOfWork.FeaturedProducts.GetIncludingProducts();
         }
 
         public async Task<string> Eliminar(int id)

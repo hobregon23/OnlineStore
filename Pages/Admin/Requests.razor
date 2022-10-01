@@ -122,6 +122,7 @@
         PagParam.TotalPageQuantity = data.CantPorPag;
         PagParam.itemsTotal = data.ItemsTotal;
         request_List = data.ListaObjetos.ToList();
+        PagParam.CurrentPage = page;
     }
 
     private async Task SelectedPage(int page)

@@ -86,6 +86,7 @@
         PagParam.TotalPageQuantity = data.CantPorPag;
         Brand_list = data.ListaObjetos.ToList();
         PagParam.itemsTotal = data.ItemsTotal;
+        PagParam.CurrentPage = page;
     }
 
     private async Task SelectedPage(int page)

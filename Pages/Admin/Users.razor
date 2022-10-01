@@ -92,6 +92,7 @@
         PagParam.TotalPageQuantity = data.CantPorPag;
         UsersList = data.ListaObjetos.ToList();
         PagParam.itemsTotal = data.ItemsTotal;
+        PagParam.CurrentPage = page;
         await GetUserRol();
     }
 

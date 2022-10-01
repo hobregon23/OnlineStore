@@ -10,6 +10,7 @@ namespace OnlineStore.Repos
 {
     public interface IProductRepository : IGenericRepository<Product>
     {
+        Task<PaginationResponse<Product>> GetPagAdmin(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo);
         Task<PaginationResponse<Product>> GetPag(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo);
         Task<List<Product>> GetRecents(int qty);
         Task<List<Product>> GetRandom();
@@ -40,6 +41,43 @@ namespace OnlineStore.Repos
                 respond.Add(products[item]);
             }
             return respond;
+        }
+
+        public async Task<PaginationResponse<Product>> GetPagAdmin(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo)
+        {
+            var queryable = _context.Products.OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
+
+            if (!string.IsNullOrWhiteSpace(search_filter.Search_text))
+            {
+                queryable = queryable.Where(x => x.Name.Contains(search_filter.Search_text) || x.Category_name.Contains(search_filter.Search_text) || x.Model_name.Contains(search_filter.Search_text) || x.Description.Contains(search_filter.Search_text));
+            }
+            if (!search_filter.Category.Equals("all"))
+            {
+                queryable = queryable.Where(x => x.Category_name.Equals(search_filter.Category));
+            }
+            if (!search_filter.Brand.Equals("all"))
+            {
+                queryable = queryable.Where(x => x.Brand_name.Equals(search_filter.Brand));
+            }
+
+            if (search_filter.Condition.Equals("new"))
+            {
+                queryable = queryable.Where(x => x.Is_new);
+            }
+            if (search_filter.Condition.Equals("repaired"))
+            {
+                queryable = queryable.Where(x => x.Is_new.Equals(false));
+            }
+
+            if (search_filter.Price_range.Is_active)
+            {
+                queryable = queryable.Where(x => x.Price >= search_filter.Price_range.Min && x.Price <= search_filter.Price_range.Max);
+            }
+
+            double count = await queryable.CountAsync();
+            double pagesQuantity = Math.Ceiling(count / pagination.QuantityPerPage);
+
+            return new PaginationResponse<Product>() { ListaObjetos = await queryable.Paginate(pagination).ToListAsync(), CantPorPag = (int)pagesQuantity, ItemsTotal = queryable.Count() };
         }
 
         public async Task<PaginationResponse<Product>> GetPag(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo)
@@ -108,7 +146,7 @@ namespace OnlineStore.Repos
                 if (item == null)
                     return "Error, no existe.";
                 item.IsActive = false;
-
+                item.Is_deleted = true;
                 Update(item);
                 await _context.SaveChangesAsync();
                 return "Ok";
