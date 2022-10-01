@@ -73,7 +73,7 @@ namespace OnlineStore.Repos
             }
             else
             {
-                var queryable = _context.Requests.Include(x => x.User).Include(x => x.Address).ThenInclude(x => x.Province).Where(x => x.Address.Province_id.Equals(prov_id) && x.Is_deleted == false).OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
+                var queryable = _context.Requests.Include(x => x.User).Include(x => x.Address).ThenInclude(x => x.Province).Where(x => x.Need_shipping && x.Address.Province_id.Equals(prov_id) && x.Is_deleted == false).OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
 
                 if (!string.IsNullOrEmpty(search_filter.Search_text) || !string.IsNullOrWhiteSpace(search_filter.Search_text))
                 {
