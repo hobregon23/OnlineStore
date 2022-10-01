@@ -66,7 +66,7 @@
                                             @if (!item.Status.Equals("Terminado"))
                                             {
                                                 <AuthorizeView Roles="Admin">
-                                                    <mark @onclick="@(() => Activar_Desactivar(item))" class="@(item.IsActive ? "bg-danger" : "bg-success")" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="fa @(item.IsActive ? "fa-close" : "fa-check")" aria-hidden="true"></span></mark>
+                                                    <mark @onclick="@(() => Activar_Desactivar(item))" class="@(item.IsActive ? "bg-danger" : "bg-success")" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="fa @(item.IsActive ? "fa-close" : "fa-check")" style="@(item.IsActive ? "font-size: 20px" : "")" aria-hidden="true"></span></mark>
                                                 </AuthorizeView>
                                                 if (!item.Status.Equals("Pendiente") && !item.Status.Equals("Cancelado"))
                                                 {
@@ -80,7 +80,7 @@
                                                     }
                                                     else
                                                     {
-                                                        <mark @onclick="@(() => MarkAsTerminado(item))" class="bg-success" style="cursor:pointer; border-radius:5px 5px 5px 5px; padding-left:5px; color:white"><span class="fa fa-dollar" aria-hidden="true"></span></mark>
+                                                        <mark @onclick="@(() => MarkAsTerminado(item))" class="bg-success" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="fa fa-dollar" aria-hidden="true" style="font-size: 20px"></span></mark>
                                                     }
                                                 }
                                             }
