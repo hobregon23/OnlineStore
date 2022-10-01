@@ -49,8 +49,8 @@
                                         <td class="align-middle"><a style="font-size: small">@(UserRol[item.Id])</a></td>
                                         <td class="align-middle"><span style="font-size: small" class="@(item.IsActive ? "text-success" : "text-danger")"> @(item.IsActive ? "Activo" : "Inactivo")</span></td>
                                         <td>
-                                            <mark @onclick="@(() => navi.NavigateTo("/admin/user?id="+item.Id, true))" class="bg-primary" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="oi oi-pencil" aria-hidden="true"></span></mark>
-                                            <mark @onclick="@(() => Activar_Desactivar(item))" class="@(item.IsActive ? "bg-danger" : "bg-success")" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="oi @(item.IsActive ? "oi-x" : "oi-check")" aria-hidden="true"></span></mark>
+                                            <mark @onclick="@(() => navi.NavigateTo("/admin/user?id="+item.Id, true))" class="bg-primary" style="cursor:pointer; border-radius:50px 50px 50px 20px; padding-left:5px; color:white"><span class="fa fa-pencil" aria-hidden="true"></span></mark>
+                                            <mark @onclick="@(() => Activar_Desactivar(item))" class="@(item.IsActive ? "bg-danger" : "bg-success")" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="fa @(item.IsActive ? "fa-close" : "fa-check")" aria-hidden="true"></span></mark>
                                         </td>
                                     </tr>
                                 }
