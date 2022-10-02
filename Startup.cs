@@ -89,6 +89,7 @@ namespace OnlineStore
             services.AddScoped<IRequestService, RequestService>();
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IModelService, ModelService>();
+            services.AddScoped<IUploadService, UploadService>();
             services.AddScoped<ComponentStateChangedObserver>();
         }
 
