@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnlineStore.Models
@@ -7,6 +8,8 @@ namespace OnlineStore.Models
     {
         [Key]
         public int Id { get; set; }
+
+        public DateTime Created_at { get; set; } = DateTime.Now;
 
         [ForeignKey("Product_id")]
         public virtual Product Product { get; set; }

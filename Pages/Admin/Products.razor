@@ -4,6 +4,7 @@
 @inject IProductService productService
 @inject ICategoryService categoryService
 @inject IBrandService brandService
+@inject IFeaturedService featuredService
 @inject NavigationManager navi
 @inject IJSRuntime JS
 
@@ -85,6 +86,7 @@
                                         <td class="align-middle">
                                             <mark @onclick="@(() => Edit(item))" class="bg-primary" style="cursor:pointer; border-radius:50px 50px 50px 20px; padding-left:5px; color:white"><span class="fa fa-pencil" aria-hidden="true"></span></mark>
                                             <mark @onclick="@(() => Activar_Desactivar(item))" class="@(item.IsActive ? "bg-danger" : "bg-success")" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="fa @(item.IsActive ? "fa-close" : "fa-check")" style="@(item.IsActive ? "font-size: 20px" : "")" aria-hidden="true"></span></mark>
+                                            <mark @onclick="@(() => AddFeatured(item.Id))" class="bg-success" style="cursor:pointer; border-radius:20px; padding-left:5px; color:white"><span class="fa fa-star" aria-hidden="true"></span></mark>
                                         </td>
                                     </tr>
                                 }
@@ -174,6 +176,15 @@
     private async Task Edit(Product item)
     {
         await JS.InvokeAsync<object>("ShowModal", "taskModal-edit");
+    }
+
+    private async Task AddFeatured(int id)
+    {
+        if (await JS.ConfirmSinResp($"Marcar", $"¿Desea marcar el producto como Destacado?"))
+        {
+            var item = new FeaturedProduct() { Product_id = id };
+            await featuredService.Add(item);
+        }
     }
 
     private async Task Activar_Desactivar(Product item)
