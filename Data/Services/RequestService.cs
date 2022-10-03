@@ -1,4 +1,5 @@
-﻿using Blazored.Toast.Services;
+﻿using AutoMapper;
+using Blazored.Toast.Services;
 using OnlineStore.Models;
 using OnlineStore.UoW;
 using System;
@@ -13,13 +14,14 @@ namespace OnlineStore.Data.Services
         Task Add(Check_Out item, Cart cart, bool need_shipping);
         Task<Request> GetById(int id);
         Task<PaginationResponse<Request>> GetPag(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo);
-        //Task<List<Request>> GetAllIncluding(string status);
         Task<bool> VerifyItemQty(List<CartItem> items);
         Task MarkAsTomado(Request item);
         Task MarkAsTerminado(Request item);
         Task MarkAsPendiente(Request item);
         Task Eliminar(Request item);
         Task Activar(Request item);
+        Task<PaginationResponse<Request>> Track(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo);
+        Task<List<Request>> GetAllIncluding();
     }
 
     public class RequestService : IRequestService
@@ -27,15 +29,30 @@ namespace OnlineStore.Data.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly JwtAuthService _jwtAuthService;
         private readonly IToastService _toastService;
+        private readonly IMapper _mapper;
 
         public RequestService(
             JwtAuthService jwtAuthService,
             IUnitOfWork unitOfWork,
-            IToastService toastService)
+            IToastService toastService,
+            IMapper mapper)
         {
             _jwtAuthService = jwtAuthService;
             _toastService = toastService;
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
+        }
+
+        public async Task<PaginationResponse<Request>> Track(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo)
+        {
+            var user_id = await _jwtAuthService.GetUserId();
+            var rol = await _jwtAuthService.GetUserRol();
+            return await _unitOfWork.Requests.Track(pagination, search_filter, campoSorteo, ordenSorteo, user_id);
+        }
+
+        public async Task<List<Request>> GetAllIncluding()
+        {
+            return await _unitOfWork.Requests.GetAllIncluding();
         }
 
         public async Task<Request> GetById(int id)
@@ -49,13 +66,6 @@ namespace OnlineStore.Data.Services
             var prov_id = await _jwtAuthService.GetUserProvince();
             return await _unitOfWork.Requests.GetPag(pagination, search_filter, campoSorteo, ordenSorteo, rol, prov_id);
         }
-
-        //public async Task<List<Request>> GetAllIncluding(string status)
-        //{
-        //    if (string.IsNullOrEmpty(status) || string.IsNullOrWhiteSpace(status))
-        //        return await _unitOfWork.Requests.GetAllIncludingItems();
-        //    return (await _unitOfWork.Requests.GetAllIncludingItems()).Where(x => x.Status.Equals(status)).ToList();
-        //}
 
         public async Task MarkAsTomado(Request item)
         {
