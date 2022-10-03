@@ -142,6 +142,7 @@
 
     private async Task AddUser()
     {
+        userInfo = new UserDto();
         await JS.InvokeAsync<object>("ShowModal", "taskModal");
     }
 
