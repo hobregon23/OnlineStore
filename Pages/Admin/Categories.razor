@@ -72,7 +72,7 @@
 
 @code {
 
-    private Category Category_item { get; set; } = new Category();
+    private Category Category_item { get; set; } = new Category() { Name = "" };
     private List<Category> Category_list { get; set; } = new List<Category>();
     private SearchFilter search_obj { get; set; } = new SearchFilter();
     private PaginationParameters PagParam { get; set; } = new PaginationParameters() { QuantityPerPage = 7, FieldActualSort = "Created_at" };
@@ -133,7 +133,7 @@
 
     private async Task Add()
     {
-        Category_item = new Category();
+        Category_item = new Category() { Name = "" };
         await JS.InvokeAsync<object>("ShowModal", "taskModal");
     }
 

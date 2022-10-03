@@ -65,6 +65,7 @@
                             <thead>
                                 <tr style="font-size: small; color: white; background-image: linear-gradient(182deg, rgb(8, 38, 123) 0%, #4f1056 90%);">
                                     <th><span style="cursor:pointer" @onclick="@(() => Ordenar("Created_at"))">Creado </span><i class="@(IndicadorOrden("Created_at"))"></i></th>
+                                    <th>Imagen</th>
                                     <th>Nombre</th>
                                     <th>Cantidad</th>
                                     <th><span style="cursor:pointer" @onclick="@(() => Ordenar("Price"))">Precio </span><i class="@(IndicadorOrden("Price"))"></i></th>
@@ -78,6 +79,7 @@
                                 {
                                     <tr class="my-transition-3d-hover">
                                         <td class="align-middle"><a class="text-info" style="font-size: small">@String.Format("{0:dd/MM/yyyy}", item.Created_at)</a></td>
+                                        <td class="align-middle"><a style="font-size: small"><img class="categories-img" src="@item.Image_url" /></a></td>
                                         <td class="align-middle"><a style="font-size: small">@item.Name</a></td>
                                         <td class="align-middle"><a style="font-size: small">@item.Qty</a></td>
                                         <td class="align-middle"><a style="font-size: small">@item.Price</a></td>

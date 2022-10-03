@@ -25,7 +25,7 @@
                     </div>
                     <div class="checkout__input">
                         <label>Imagen<span>*</span></label>
-                        <RadzenUpload @ref="upload" Auto="false" Accept="image/*" Multiple="false" Url="api/upload/category" Complete=@CompleteUpload Progress=@(args => OnProgress(args, "Subidos")) class="w-100" />
+                        <RadzenUpload @ref="upload" Auto="false" Accept="image/*" Multiple="false" Url=@($"api/upload/category?filename={Item.Name.ToLower()+".jpg"}") Complete=@CompleteUpload Progress=@(args => OnProgress(args, "Subidos")) class="w-100" />
                         <RadzenProgressBar Value="@progress" Unit="@info" Visible="@(progress>0)" Style="margin-bottom:20px"></RadzenProgressBar>
                     </div>
                     <!-- Button -->
@@ -56,13 +56,14 @@
 
     private void OnProgress(UploadProgressArgs args, string name)
     {
-        this.info = $"% {name} {args.Loaded} de {args.Total} bytes.";
-        this.progress = args.Progress;
+        info = $"% {name} {args.Loaded} de {args.Total} bytes.";
+        progress = args.Progress;
     }
 
     private async Task CompleteUpload()
     {
         toastService.ShowSuccess("Añadido con éxito", "Genial");
+        progress = 0;
         await CloseTaskModal();
         DataChanged?.Invoke();
     }
@@ -74,12 +75,17 @@
 
     private async Task Submit()
     {
-        Item.Image_url = "img/" + Item.Name.ToLower() + ".jpg";
+        if (upload.HasValue)
+            Item.Image_url = "img/categories/" + Item.Name.ToLower() + ".jpg";
         var res = await categoryService.Add(Item);
         if (res.Equals("Ya existe"))
             toastService.ShowError("Ya existe", "Error");
         else if (res.Equals("ok"))
+        {
             await upload.Upload();
+            if (!upload.HasValue)
+                await CompleteUpload();
+        }
     }
 
 }

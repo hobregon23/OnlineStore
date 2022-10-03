@@ -6,6 +6,11 @@
     border-radius: 5px;
 }
 
+.categories-img-edit {
+    border: 1px solid grey;
+    border-radius: 5px;
+}
+
 .factura {
     table-layout: fixed;
 }

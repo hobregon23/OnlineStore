@@ -19,14 +19,17 @@
                     <!-- End Errors -->
                     <!-- Form Group -->
                     <div class="checkout__input">
+                        <img class="categories-img-edit" src="@Item.Image_url" />
+                    </div>
+                    <div class="checkout__input">
                         <label>Nombre<span>*</span></label>
                         <InputText Class="form-control" @bind-Value="@Item.Name" />
                         <ValidationMessage For="@(() => Item.Name)" />
                     </div>
                     <div class="checkout__input">
                         <label>Imagen<span>*</span></label>
-                        <RadzenFileInput Class="form-control" @bind-Value="@Item.Image_url" />
-                        <ValidationMessage For="@(() => Item.Image_url)" />
+                        <RadzenUpload @ref="upload" Auto="false" Accept="image/*" Multiple="false" Url=@($"api/upload/category?filename={Item.Name.ToLower()+".jpg"}") Complete=@CompleteUpload Progress=@(args => OnProgress(args, "Subidos")) class="w-100" />
+                        <RadzenProgressBar Value="@progress" Unit="@info" Visible="@(progress>0)" Style="margin-bottom:20px"></RadzenProgressBar>
                     </div>
                     <!-- Button -->
                     <div class="row align-items-center mb-3 mt-3">
@@ -50,6 +53,24 @@
     [Parameter]
     public Action DataChanged { get; set; }
 
+    RadzenUpload upload;
+    string info;
+    int progress;
+
+    private void OnProgress(UploadProgressArgs args, string name)
+    {
+        info = $"% {name} {args.Loaded} de {args.Total} bytes.";
+        progress = args.Progress;
+    }
+
+    private async Task CompleteUpload()
+    {
+        toastService.ShowSuccess("Añadido con éxito", "Genial");
+        progress = 0;
+        await CloseTaskModal();
+        DataChanged?.Invoke();
+    }
+
     private async Task CloseTaskModal()
     {
         await JS.InvokeAsync<object>("CloseModal", "taskModal-edit");
@@ -57,13 +78,17 @@
 
     private async Task Submit()
     {
+        if (upload.HasValue)
+            Item.Image_url = "img/categories/" + Item.Name.ToLower() + ".jpg";
         var res = await categoryService.Update(Item);
-        await CloseTaskModal();
-        DataChanged?.Invoke();
         if (res.Equals("Ya existe"))
             toastService.ShowError("Ya existe", "Error");
         else if (res.Equals("ok"))
-            toastService.ShowSuccess("Editado con éxito", "Genial");
+        {
+            await upload.Upload();
+            if (!upload.HasValue)
+                await CompleteUpload();
+        }
     }
 
 }

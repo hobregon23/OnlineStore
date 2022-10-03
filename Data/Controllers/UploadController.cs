@@ -2,6 +2,9 @@
 using OnlineStore.UoW;
 using OnlineStore.Data.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace OnlineStore.Data.Controllers
 {
@@ -12,27 +15,54 @@ namespace OnlineStore.Data.Controllers
     public class UploadController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IUploadService _uploadService;
+        private readonly IWebHostEnvironment _environment;
 
         public UploadController(
-            IUploadService uploadService,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IWebHostEnvironment environment)
         {
-            _uploadService = uploadService;
             _unitOfWork = unitOfWork;
+            _environment = environment;
         }
 
         [HttpPost("category")]
-        public IActionResult Category(IFormFile file)
+        public async Task<IActionResult> Category(IFormFile file, string filename)
         {
             try
             {
-                _uploadService.UploadCategory(file);
+                var imagePath = @"\img\categories";
+                await UploadFile(file, imagePath, filename);
                 return StatusCode(200);
             }
             catch
             {
                 return StatusCode(500);
+            }
+        }
+
+        [HttpPost("product")]
+        public async Task<IActionResult> Product(IFormFile file, string filename)
+        {
+            try
+            {
+                var imagePath = @"\img\products";
+                await UploadFile(file, imagePath, filename);
+                return StatusCode(200);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
+        private async Task UploadFile(IFormFile file, string imagePath, string filename)
+        {
+            if (file != null && file.Length > 0)
+            {
+                var uploadPath = _environment.WebRootPath + imagePath;
+                var fullPath = Path.Combine(uploadPath, filename);
+                using FileStream fileStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write);
+                await file.CopyToAsync(fileStream);
             }
         }
     }
