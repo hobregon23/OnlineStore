@@ -91,6 +91,7 @@ namespace OnlineStore.Data.Services
             var bd = (await _unitOfWork.Categories.GetAll()).FirstOrDefault(x => x.Name.ToUpper().Equals(item.Name.ToUpper()));
             if (bd != null && bd.Id != item.Id)
                 return "Ya existe";
+            item.Updated_at = DateTime.Now;
             _unitOfWork.Categories.Update(item);
             await _unitOfWork.SaveChangesAsync();
             return "ok";

@@ -2,6 +2,7 @@
 using Blazored.Toast.Services;
 using OnlineStore.Models;
 using OnlineStore.UoW;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -95,6 +96,7 @@ namespace OnlineStore.Data.Services
             user.UserName = old_user.UserName;
             _unitOfWork.Addresses.Update(user.Address);
             await _unitOfWork.SaveChangesAsync();
+            user.Updated_at = DateTime.Now;
             _unitOfWork.Users.Update(user);
             await _unitOfWork.SaveChangesAsync();
             _toastService.ShowSuccess("Usuario actualizado exitosamente", "Genial");

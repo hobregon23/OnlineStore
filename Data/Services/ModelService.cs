@@ -93,6 +93,7 @@ namespace OnlineStore.Data.Services
             var bd = (await GetAllByBrand(item.Brand_id)).FirstOrDefault(x => x.Name.ToUpper().Equals(item.Name.ToUpper()));
             if (bd != null && bd.Id != item.Id)
                 return "Ya existe";
+            item.Updated_at = DateTime.Now;
             _unitOfWork.Models.Update(item);
             await _unitOfWork.SaveChangesAsync();
             return "ok";
