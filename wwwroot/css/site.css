@@ -9,6 +9,14 @@
 .categories-img-edit {
     border: 1px solid grey;
     border-radius: 5px;
+    max-width: 250px;
+    cursor: zoom-in;
+}
+
+.categories-img-edit-zoom {
+    border: 1px solid grey;
+    border-radius: 5px;
+    cursor: zoom-out;
 }
 
 .factura {

@@ -45,7 +45,7 @@ namespace OnlineStore.Repos
 
         public async Task<PaginationResponse<Product>> GetPagAdmin(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo)
         {
-            var queryable = _context.Products.OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
+            var queryable = _context.Products.Include(x => x.Model).ThenInclude(x => x.Brand).Include(x => x.Category).OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
 
             if (!string.IsNullOrWhiteSpace(search_filter.Search_text))
             {

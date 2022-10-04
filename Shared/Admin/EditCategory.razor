@@ -19,7 +19,7 @@
                     <!-- End Errors -->
                     <!-- Form Group -->
                     <div class="checkout__input" style="text-align: center">
-                        <img class="categories-img-edit" src="@Item.Image_url" />
+                        <img class="@(zoom ? "categories-img-edit-zoom" : "categories-img-edit")" @onclick="@Zoom" src="@Item.Image_url" />
                     </div>
                     <div class="checkout__input">
                         <label>Nombre<span>*</span></label>
@@ -56,6 +56,7 @@
     RadzenUpload upload;
     string info;
     int progress;
+    bool zoom;
 
     private void OnProgress(UploadProgressArgs args, string name)
     {
@@ -85,10 +86,16 @@
             toastService.ShowError("Ya existe", "Error");
         else if (res.Equals("ok"))
         {
-            await upload.Upload();
             if (!upload.HasValue)
                 await CompleteUpload();
+            else
+                await upload.Upload();
         }
+    }
+
+    private void Zoom()
+    {
+        zoom = zoom ? false : true;
     }
 
 }

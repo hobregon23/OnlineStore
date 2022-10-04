@@ -4,6 +4,7 @@
 @inject IProductService productService
 @inject ICategoryService categoryService
 @inject IBrandService brandService
+@inject IModelService modelService
 @inject IFeaturedService featuredService
 @inject NavigationManager navi
 @inject IJSRuntime JS
@@ -107,17 +108,19 @@
 
     </div>
 </div>
-@*<AddUser Item="userInfo" DataChanged="@DataChanged" />*@
+<AddProduct Item="productInfo" Brand_list="Brands" Category_list="Categories" Model_list="Models" DataChanged="@DataChanged" />
+<EditProduct Item="productInfo" Brand_list="Brands" Category_list="Categories" Model_list="Models" DataChanged="@DataChanged" />
 
 
 
 @code {
 
-    private Product productInfo { get; set; } = new Product();
+    private Product productInfo { get; set; } = new Product() { Model = new Model() { Brand = new Brand() } };
     private SearchFilter search_obj { get; set; } = new SearchFilter() { Category = "all", Brand = "all" };
     private List<Product> Product_list { get; set; } = new List<Product>();
     public List<Category> Categories { get; set; } = new List<Category>();
     public List<Brand> Brands { get; set; } = new List<Brand>();
+    public List<Model> Models { get; set; } = new List<Model>();
     private PaginationParameters PagParam { get; set; } = new PaginationParameters() { QuantityPerPage = 7, FieldActualSort = "Created_at" };
 
     protected async override Task OnInitializedAsync()
@@ -134,6 +137,7 @@
         PagParam.CurrentPage = page;
         Categories = await categoryService.GetAll();
         Brands = await brandService.GetAll();
+        Models = await modelService.GetAll();
     }
 
     private async Task SelectedPage(int page)
@@ -172,11 +176,13 @@
 
     private async Task Add()
     {
+        productInfo = new Product() { Model = new Model() { Brand = new Brand() } };
         await JS.InvokeAsync<object>("ShowModal", "taskModal");
     }
 
     private async Task Edit(Product item)
     {
+        productInfo = item;
         await JS.InvokeAsync<object>("ShowModal", "taskModal-edit");
     }
 
@@ -232,7 +238,7 @@
     private async void DataChanged()
     {
         await LoadItems();
-        productInfo = new Product();
+        productInfo = new Product() { Model = new Model() { Brand = new Brand() } };
         StateHasChanged();
     }
 

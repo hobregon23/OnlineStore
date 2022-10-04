@@ -1,0 +1,223 @@
+﻿@inject IJSRuntime JS
+@inject IProductService productService
+@inject IToastService toastService
+
+
+<div class="modal" tabindex="-1" role="dialog" id="taskModal">
+    <div class="modal-dialog" style="max-width: 1000px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-weight-bold">Añadir</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <EditForm class="col-lg-10 col-md-10 mx-md-auto" Model="Item" OnValidSubmit="Submit">
+                    <!-- Errors here -->
+                    <DataAnnotationsValidator />
+                    <!-- End Errors -->
+                    <!-- Form Group -->
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label>Categoría<span>*</span></label>
+                                <InputSelect Class="form-control" @bind-Value="@Category_id" required>
+                                    @foreach (var item in Category_list)
+                                    {
+                                        <option value="@item.Id">
+                                            @item.Name
+                                        </option>
+                                    }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label>Marca<span>*</span></label>
+                                <InputSelect Class="form-control" @bind-Value="@Brand_id" required>
+                                    @foreach (var item in Brand_list)
+                                    {
+                                        <option value="@item.Id">
+                                            @item.Name
+                                        </option>
+                                    }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label>Modelo<span>*</span></label>
+                                <InputSelect Class="form-control" @bind-Value="@Model_id" required>
+                                    @foreach (var item in Model_list)
+                                    {
+                                        if (item.Brand_id.ToString() == Brand_id)
+                                        {
+                                            <option value="@item.Id">
+                                                @item.Name
+                                            </option>
+                                        }
+                                    }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="checkout__input">
+                        <label>Nombre<span>*</span></label>
+                        <InputText Class="form-control" @bind-Value="@Item.Name" />
+                        <ValidationMessage For="@(() => Item.Name)" />
+                    </div>
+                    <div class="checkout__input">
+                        <label>Descripción<span>*</span></label>
+                        <InputTextArea Class="form-control" @bind-Value="@Item.Description" />
+                        <ValidationMessage For="@(() => Item.Description)" />
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label>Costo<span>*</span></label>
+                                <InputNumber Class="form-control" @bind-Value="@Item.Cost" />
+                                <ValidationMessage For="@(() => Item.Cost)" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label>Precio<span>*</span></label>
+                                <InputNumber Class="form-control" @bind-Value="@Item.Price" />
+                                <ValidationMessage For="@(() => Item.Price)" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label>Cantidad<span>*</span></label>
+                                <InputNumber Class="form-control" @bind-Value="@Item.Qty" />
+                                <ValidationMessage For="@(() => Item.Qty)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="checkout__input">
+                        <label for="chk">Marque si es nuevo<span>*</span></label>
+                        <InputCheckbox id="chk" class="ml-3" @bind-Value="@Item.Is_new" style="width: initial; height: initial" />
+                    </div>
+                    <div class="checkout__input">
+                        <label>Imagen<span>*</span></label>
+                        <RadzenUpload @ref="upload" Auto="false" Accept="image/*" Multiple="false" Url=@($"api/upload/product?filename={Item.Name.ToLower()+".jpg"}") Complete=@CompleteUpload Progress=@(args => OnProgress(args, "Subidos")) class="w-100" />
+                        <RadzenProgressBar Value="@progress" Unit="@info" Visible="@(progress>0)" Style="margin-bottom:20px"></RadzenProgressBar>
+                    </div>
+                    <!-- Button -->
+                    <div class="row align-items-center mb-3 mt-3">
+                        <div class="col-lg-12 col-sm-6 text-right">
+                            <button type="button" class="secondary-btn transition-3d-hover" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="primary-btn transition-3d-hover">Añadir</button>
+                        </div>
+                    </div>
+                    <!-- End Button -->
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public Product Item { get; set; }
+    [Parameter]
+    public List<Brand> Brand_list { get; set; }
+    [Parameter]
+    public List<Category> Category_list { get; set; }
+    [Parameter]
+    public List<Model> Model_list { get; set; }
+    [Parameter]
+    public Action DataChanged { get; set; }
+
+    RadzenUpload upload;
+    string info;
+    int progress;
+
+    private string Brand_id
+    {
+        get
+        {
+            return Item.Model.Brand_id.ToString();
+        }
+        set
+        {
+            Item.Model.Brand_id = int.Parse(value);
+            try
+            {
+                //como se pone en el select automaticamente el primero lo paso al modeloId sino se queda en 0
+                Item.Model_id = Model_list.Where(x => x.Brand_id.Equals(int.Parse(value))).ToList().First().Id;
+                Item.Model_name = Model_list.Where(x => x.Brand_id.Equals(int.Parse(value))).ToList().First().Name;
+                Item.Brand_name = Brand_list.Where(x => x.Id.Equals(int.Parse(value))).ToList().First().Name;
+            }
+            catch
+            {
+                //
+            }
+        }
+    }
+    private string Model_id
+    {
+        get
+        {
+            return Item.Model_id.ToString();
+        }
+        set
+        {
+            Item.Model_id = int.Parse(value);
+            Item.Model_name = Model_list.Where(x => x.Id.Equals(int.Parse(value))).ToList().First().Name;
+        }
+    }
+    private string Category_id
+    {
+        get
+        {
+            return Item.Category_id.ToString();
+        }
+        set
+        {
+            Item.Category_id = int.Parse(value);
+            Item.Category_name = Category_list.Where(x => x.Id.Equals(int.Parse(value))).ToList().First().Name;
+        }
+    }
+
+    private void OnProgress(UploadProgressArgs args, string name)
+    {
+        info = $"% {name} {args.Loaded} de {args.Total} bytes.";
+        progress = args.Progress;
+    }
+
+    private async Task CompleteUpload()
+    {
+        toastService.ShowSuccess("Añadido con éxito", "Genial");
+        progress = 0;
+        await CloseTaskModal();
+        DataChanged?.Invoke();
+    }
+
+    private async Task CloseTaskModal()
+    {
+        await JS.InvokeAsync<object>("CloseModal", "taskModal");
+    }
+
+    private async Task Submit()
+    {
+        if (upload.HasValue)
+            Item.Image_url = "img/products/" + Item.Name.ToLower() + ".jpg";
+        var res = await productService.Add(Item);
+        if (res.Equals("ok"))
+        {
+            if (!upload.HasValue)
+                await CompleteUpload();
+            else
+                await upload.Upload();
+        }
+        else
+        {
+            toastService.ShowError(res, "Error");
+        }
+    }
+
+}

@@ -1,5 +1,6 @@
 ﻿using OnlineStore.Models;
 using OnlineStore.UoW;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -34,18 +35,36 @@ namespace OnlineStore.Data.Services
         {
             try
             {
-                if(string.IsNullOrEmpty(item.Image_url) || string.IsNullOrWhiteSpace(item.Image_url))
+                var new_item = new Product()
                 {
-                    item.Image_url = "img/sin_imagen.jpg";
+                    Brand_name = item.Brand_name,
+                    Category_id = item.Category_id,
+                    Category_name = item.Category_name,
+                    Cost = item.Cost,
+                    Created_at = DateTime.Now,
+                    Description = item.Description,
+                    Image_url = item.Image_url,
+                    Is_new = item.Is_new,
+                    IsActive = true,
+                    Model_id = item.Model_id,
+                    Model_name = item.Model_name,
+                    Name = item.Name,
+                    Original_price = item.Price,
+                    Price = item.Price,
+                    Qty = item.Qty
+                };
+                if(string.IsNullOrEmpty(new_item.Image_url) || string.IsNullOrWhiteSpace(new_item.Image_url))
+                {
+                    new_item.Image_url = "img/sin_imagen.jpg";
                 }
 
-                await _unitOfWork.Products.Add(item);
+                await _unitOfWork.Products.Add(new_item);
                 await _unitOfWork.SaveChangesAsync();
                 return "ok";
             }
-            catch
+            catch(Exception e)
             {
-                return "Error inesperado.";
+                return "Error inesperado. "+e.Message;
             }
         }
 
@@ -81,6 +100,7 @@ namespace OnlineStore.Data.Services
 
         public async Task<string> Update(Product item)
         {
+            item.Updated_at = DateTime.Now;
             _unitOfWork.Products.Update(item);
             await _unitOfWork.SaveChangesAsync();
             return "ok";

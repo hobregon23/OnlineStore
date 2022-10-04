@@ -82,9 +82,10 @@
             toastService.ShowError("Ya existe", "Error");
         else if (res.Equals("ok"))
         {
-            await upload.Upload();
             if (!upload.HasValue)
                 await CompleteUpload();
+            else
+                await upload.Upload();
         }
     }
 

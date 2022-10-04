@@ -25,6 +25,7 @@ namespace OnlineStore.Repos
                     Qty = 10,
                     Original_price = 5500,
                     Price = 5500,
+                    Cost = 1000,
                     Created_at = DateTime.Now.AddDays(1),
                     IsActive = true
                 },
@@ -43,6 +44,7 @@ namespace OnlineStore.Repos
                     Qty = 10,
                     Original_price = 9000,
                     Price = 7000,
+                    Cost = 1500,
                     Created_at = DateTime.Now,
                     IsActive = true
                 },
@@ -61,6 +63,7 @@ namespace OnlineStore.Repos
                     Qty = 7,
                     Original_price = 800,
                     Price = 750,
+                    Cost = 300,
                     Created_at = DateTime.Now,
                     IsActive = true
                 },
@@ -79,6 +82,7 @@ namespace OnlineStore.Repos
                     Qty = 5,
                     Original_price = 1000,
                     Price = 1000,
+                    Cost = 250,
                     Created_at = DateTime.Now,
                     IsActive = true
                 },
@@ -97,6 +101,7 @@ namespace OnlineStore.Repos
                     Qty = 5,
                     Original_price = 400,
                     Price = 400,
+                    Cost = 150,
                     Created_at = DateTime.Now,
                     IsActive = true
                 },
@@ -115,6 +120,7 @@ namespace OnlineStore.Repos
                     Qty = 5,
                     Original_price = 500,
                     Price = 400,
+                    Cost = 150,
                     Created_at = DateTime.Now,
                     IsActive = true
                 },
@@ -133,6 +139,7 @@ namespace OnlineStore.Repos
                     Qty = 5,
                     Original_price = 12000,
                     Price = 12000,
+                    Cost = 3000,
                     Created_at = DateTime.Now,
                     IsActive = true
                 },
@@ -151,6 +158,7 @@ namespace OnlineStore.Repos
                     Qty = 5,
                     Original_price = 14000,
                     Price = 12500,
+                    Cost = 3500,
                     Created_at = DateTime.Now,
                     IsActive = true
                 }
