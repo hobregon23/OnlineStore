@@ -41,6 +41,38 @@ namespace OnlineStore.Repos
                     PasswordHash = "AQAAAAEAACcQAAAAEDsAtWGJgjqyvMqMcQVOGaZ0HReabnNrmol+mpQK+2gZJzyVr+s0A7xbT8OIYs9yyw==",
                     IsActive = true,
                     Address_id = 3
+                },
+                new User
+                {
+                    Id = "dfh457-37dd-4e8d-8faf-45547547457",
+                    CI = "91052307946",
+                    Created_at = DateTime.Now,
+                    Name = "Trabajador",
+                    UserName = "worker",
+                    NormalizedUserName = "HENRY23",
+                    Email = "henry23@nauta.cu",
+                    NormalizedEmail = "HENRY23@NAUTA.CU",
+                    PhoneNumber = "53604366",
+                    LastName = "shop man",
+                    PasswordHash = "AQAAAAEAACcQAAAAEDsAtWGJgjqyvMqMcQVOGaZ0HReabnNrmol+mpQK+2gZJzyVr+s0A7xbT8OIYs9yyw==",
+                    IsActive = true,
+                    Address_id = 3
+                },
+                new User
+                {
+                    Id = "fg3434gre-37dd-4e8d-8faf-xcgre34tgdg",
+                    CI = "91052307946",
+                    Created_at = DateTime.Now,
+                    Name = "Delivery",
+                    UserName = "delivery",
+                    NormalizedUserName = "HENRY23",
+                    Email = "henry23@nauta.cu",
+                    NormalizedEmail = "HENRY23@NAUTA.CU",
+                    PhoneNumber = "53604366",
+                    LastName = "delivery man",
+                    PasswordHash = "AQAAAAEAACcQAAAAEDsAtWGJgjqyvMqMcQVOGaZ0HReabnNrmol+mpQK+2gZJzyVr+s0A7xbT8OIYs9yyw==",
+                    IsActive = true,
+                    Address_id = 3
                 }
             );
         }

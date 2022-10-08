@@ -26,6 +26,12 @@ namespace OnlineStore.Repos
                     Id = "8871dfhdfh-548b-4e84-8088-df56df51h",
                     Name = "Delivery",
                     NormalizedName = "DELIVERY"
+                },
+                new IdentityRole
+                {
+                    Id = "9971dfhdfh-548b-4e84-8088-asdf32dsf",
+                    Name = "Worker",
+                    NormalizedName = "WORKER"
                 }
             );
         }
