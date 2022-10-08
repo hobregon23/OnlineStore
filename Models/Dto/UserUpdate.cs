@@ -9,6 +9,10 @@ namespace OnlineStore.Models
         public string UserName { get; set; }
 
         [Required]
+        [StringLength(100, MinimumLength = 5)]
+        public string CI { get; set; }
+
+        [Required]
         [DataType(DataType.Text)]
         public string Name { get; set; }
 

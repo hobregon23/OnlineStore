@@ -7,6 +7,7 @@ namespace OnlineStore.Models
 {
     public class User : IdentityUser
     {
+        public string CI { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }
         public DateTime Created_at { get; set; }

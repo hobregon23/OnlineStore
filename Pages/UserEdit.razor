@@ -19,78 +19,67 @@
                     <!-- End Errors -->
                     <!-- Form Group -->
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Usuario<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.UserName" disabled />
                                 <ValidationMessage For="@(() => userUpdate.UserName)" />
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Correo<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.Email" />
                                 <ValidationMessage For="@(() => userUpdate.Email)" />
                             </div>
                         </div>
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label>Carnet<span>*</span></label>
+                                <InputText Class="form-control" @bind-Value="@userUpdate.CI" />
+                                <ValidationMessage For="@(() => userUpdate.CI)" />
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Nombre<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.Name" />
                                 <ValidationMessage For="@(() => userUpdate.Name)" />
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Apellidos<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.LastName" />
                                 <ValidationMessage For="@(() => userUpdate.LastName)" />
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Teléfono<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.PhoneNumber" />
                                 <ValidationMessage For="@(() => userUpdate.PhoneNumber)" />
                             </div>
                         </div>
-                        <div class="col-lg-6">
-                            <div class="checkout__input">
-                                <label>Dirección<span>*</span></label>
-                                <InputText Class="form-control" @bind-Value="@userUpdate.Address.Address_line" />
-                                <ValidationMessage For="@(() => userUpdate.Address.Address_line)" />
-                            </div>
-                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Ciudad<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.Address.City" />
                                 <ValidationMessage For="@(() => userUpdate.Address.City)" />
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Municipio<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@userUpdate.Address.State" />
                                 <ValidationMessage For="@(() => userUpdate.Address.State)" />
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="checkout__input">
-                                <label>Código Postal<span>*</span></label>
-                                <InputText Class="form-control" @bind-Value="@userUpdate.Address.Postal_code" />
-                                <ValidationMessage For="@(() => userUpdate.Address.Postal_code)" />
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Provincia<span>*</span></label><br />
                                 <InputSelect Class="form-control" @bind-Value="@ProvinceId" required>
@@ -101,6 +90,22 @@
                                         </option>
                                     }
                                 </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="checkout__input">
+                                <label>Dirección<span>*</span></label>
+                                <InputText Class="form-control" @bind-Value="@userUpdate.Address.Address_line" />
+                                <ValidationMessage For="@(() => userUpdate.Address.Address_line)" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label>Código Postal<span>*</span></label>
+                                <InputText Class="form-control" @bind-Value="@userUpdate.Address.Postal_code" />
+                                <ValidationMessage For="@(() => userUpdate.Address.Postal_code)" />
                             </div>
                         </div>
                     </div>

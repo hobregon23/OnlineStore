@@ -13,6 +13,7 @@ namespace OnlineStore.Repos
                 new User
                 {
                     Id = "a77d4efb-37dd-4e8d-8faf-9f84746fe941",
+                    CI = "91052307946",
                     Created_at = DateTime.Now,
                     Name = "Administrador",
                     UserName = "admin",
@@ -28,6 +29,7 @@ namespace OnlineStore.Repos
                 new User
                 {
                     Id = "b99e4efb-37dd-4e8d-8faf-15s6d51sd1v6",
+                    CI = "91052307946",
                     Created_at = DateTime.Now,
                     Name = "Henry",
                     UserName = "henry23",

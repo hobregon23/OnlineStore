@@ -149,6 +149,7 @@ namespace OnlineStore.Repos
                 }
                 else
                 {
+                    user.CI = model.CI;
                     user.Updated_at = DateTime.Now;
                     user.Email = model.Email;
                     user.PhoneNumber = model.PhoneNumber;
@@ -172,6 +173,7 @@ namespace OnlineStore.Repos
             }
             else
             {
+                user.CI = model.CI;
                 user.Updated_at = DateTime.Now;
                 user.Email = model.Email;
                 user.PhoneNumber = model.PhoneNumber;
