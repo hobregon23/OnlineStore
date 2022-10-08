@@ -21,6 +21,7 @@ namespace OnlineStore.Data.Services
         Task<bool> Update(User user);
         Task<bool> Eliminar(string id);
         Task<bool> Activar(string id);
+        Task RestorePassword(string email);
     }
 
     public class UserService : IUserService
@@ -101,6 +102,11 @@ namespace OnlineStore.Data.Services
             await _unitOfWork.SaveChangesAsync();
             _toastService.ShowSuccess("Usuario actualizado exitosamente", "Genial");
             return true;
+        }
+
+        public async Task RestorePassword(string email)
+        {
+            await _unitOfWork.Users.RestorePassword(email);
         }
 
         public async Task<bool> Eliminar(string id)

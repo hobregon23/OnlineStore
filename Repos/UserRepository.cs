@@ -18,6 +18,7 @@ namespace OnlineStore.Repos
         Task<bool> AddNormalUser(UserDto model);
         Task<bool> AddAppUser(UserDto model, string rol);
         Task<bool> UpdateUser(UserUpdate model);
+        Task RestorePassword(string email);
     }
 
     public class UserRepository : GenericRepository<User>, IUserRepository
@@ -200,5 +201,32 @@ namespace OnlineStore.Repos
                 }
             }
         }
+        public async Task RestorePassword(string email)
+        {
+            var user = await _context.Users.Where(x => x.Email.Equals(email)).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                user.Updated_at = DateTime.Now;
+                Update(user);
+                var result = await _userManager.ChangePasswordAsync(user, "admin", "123456789");
+                await _context.SaveChangesAsync();
+                var random = new Random();
+                var newPass = random.Next(1631615, int.MaxValue).ToString();
+                await _userManager.AddPasswordAsync(user, newPass);
+                await _context.SaveChangesAsync();
+                await SendEmail("Cambio de Contraseña", "Su contraseña ha sido cambiada. Ahora podrá acceder con la siguiente: " + newPass, email);
+                _toastService.ShowSuccess("Se le ha enviado un correo con su nueva contraseña", "Genial");
+            }
+            else
+            {
+                _toastService.ShowWarning("No existe usuario con el correo proporcionado", "Advertencia");
+            }
+        }
+
+        public async Task SendEmail(string subject, string body, string email)
+        {
+            //
+        }
+
     }
 }
