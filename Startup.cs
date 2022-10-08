@@ -44,7 +44,7 @@ namespace OnlineStore
             services.AddServerSideBlazor();
             services.AddTransient<HttpClient>();
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient);
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
 
             services.AddIdentity<User, IdentityRole>(options =>
             {
