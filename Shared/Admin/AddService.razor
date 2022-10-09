@@ -1,0 +1,316 @@
+﻿@inject IJSRuntime JS
+@inject IServiceService serviceService
+@inject IProductService productService
+@inject IToastService toastService
+
+
+<div class="modal" tabindex="-1" role="dialog" id="taskModal">
+    <div class="modal-dialog" style="max-width: 1300px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-weight-bold">Añadir</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <EditForm class="col-lg-11 col-md-10 mx-md-auto" Model="Item" OnValidSubmit="Submit">
+                    <!-- Errors here -->
+                    <DataAnnotationsValidator />
+                    <!-- End Errors -->
+                    <!-- Form Group -->
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-md-6" style="position:inherit">
+                                    <label for="taskName">Fecha</label>
+                                    <InputDate class="form-control" @bind-Value="@Item.Created_at" />
+                                </div>
+                                <div class="col-md-6" style="position:inherit">
+                                    <label for="taskName">Tipo</label>
+                                    <select class="form-control" @bind="@Item.Tipo" required>
+                                        <option disabled value="">Seleccionar</option>
+                                        <option value="Venta">Venta</option>
+                                        <option value="Reparación">Reparación</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="padding-top:7px">
+                                <div class="col-md-12" style="position:inherit">
+                                    <label for="taskName">Descripción</label>
+                                    <InputTextArea class="form-control" @bind-Value="@Item.Descripcion" />
+                                </div>
+                            </div>
+                            <div class="row" style="padding-top:7px">
+                                <div class="col-md-4" style="position:inherit">
+                                    <label for="taskName">Cantidad</label>
+                                    <InputNumber class="form-control" @bind-Value="@Cantidad" />
+                                </div>
+                                <div class="col-md-4" style="position:inherit">
+                                    <label for="taskName">Precio</label>
+                                    <InputNumber class="form-control" @bind-Value="@Precio" />
+                                </div>
+                                <div class="col-md-4" style="position:inherit">
+                                    <label for="taskName">Costo</label>
+                                    <InputNumber class="form-control" @bind-Value="@Costo" />
+                                </div>
+                            </div>
+                            <div class="row" style="padding-top:7px">
+                                <div class="col-md-6" style="position:inherit">
+                                    <label for="taskName">Ingreso</label>
+                                    <InputNumber disabled class="form-control" @bind-Value="@Item.Ingreso" />
+                                </div>
+                                <div class="col-md-6" style="position:inherit">
+                                    <label for="taskName">Ganancia Neta</label>
+                                    <InputNumber disabled class="form-control" @bind-Value="@Item.GananciaNeta" false />
+                                </div>
+                            </div>
+                            <div class="row" style="padding-top:7px">
+                                <div class="col-md-4" style="position:inherit">
+                                    <label>Productos usados:</label>
+                                </div>
+                                <div class="col">
+                                    <div class="col-md-12" style="position:inherit">
+                                        @foreach (var item in Item.Used_products)
+                                        {
+                                            <div class="mb-1">
+                                                <label style="padding-left:1em">
+                                                    <span class="oi oi-check" aria-hidden="true"></span> @item.Product.Category_name-@item.Product.Model_name
+                                                </label>
+                                            <mark @onclick="(() => QuitarProducto(item))" class="bg-danger" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white; display: inline-flex"><span class="fa fa-close" style="font-size: 20px;" aria-hidden="true"></span></mark>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="checkout__input" style="margin-bottom:0">
+                                        <label>Categoría<span>*</span></label>
+                                        <select class="form-control-mine" @onchange="OnCategoryChange">
+                                            <option value="all" disabled>Seleccionar</option>
+                                            @foreach (var item in Category_list)
+                                            {
+                                                <option value="@item.Id">
+                                                    @item.Name
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="checkout__input" style="margin-bottom:0">
+                                        <label>Marca<span>*</span></label>
+                                        <select class="form-control-mine" @onchange="OnBrandChange">
+                                            <option value="all">Todas</option>
+                                            @foreach (var item in Brand_list)
+                                            {
+                                                <option value="@item.Id">
+                                                    @item.Name
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="padding-top:1em">
+                                <div class="table-responsive-sm justify-content-center ml-3 mr-3 w-100">
+
+                                    @if (products.Count.Equals(0))
+                                    {
+                                        <p class="text-danger" style="text-align: center">N/A</p>
+                                    }
+                                    else
+                                    {
+                                        <table class="table table-light">
+                                            <thead>
+                                                <tr style="font-size: small; color: white; background-image: linear-gradient(182deg, rgb(8, 38, 123) 0%, #4f1056 90%)">
+                                                    <th></th>
+                                                    <th>Modelo</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Costo</th>
+                                                    <th>Descripción</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="font-size-1" style="font-family: 'Arial Rounded MT'">
+                                                @foreach (var item in products)
+                                                {
+                                                    <tr class="my-transition-3d-hover">
+                                                        @if (item.Qty - Item.Used_products.FindAll(x => x.Product_id.Equals(item.Id)).Count > 0)
+                                                        {
+                                                        <td class="align-middle">
+                                                            <span style="cursor:pointer" class="btn btn-sm btn-success" @onclick="(() => AddProducto(item))"><span class="oi oi-plus" aria-hidden="true"></span></span>
+                                                        </td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="align-middle">
+                                                                
+                                                            </td>
+                                                        }
+                                                        <td class="align-middle"><a class="text-info" style="font-size: small">@item.Model_name</a></td>
+                                                        <td class="align-middle"><a class="text-danger" style="font-size: small">@item.Qty</a></td>
+                                                        <td class="align-middle"><a class="text-success" style="font-size: small">@item.Cost</a></td>
+                                                        <td class="align-middle"><a class="text-warning" style="font-size: small">@item.Description</a></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    }
+                                    <PaginationComponent TotaPagesQuantity="PagParam.TotalPageQuantity" CurrentPage="PagParam.CurrentPage" Radius="3" SelectedPage="SelectedPage"></PaginationComponent>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Button -->
+                    <div class="row align-items-center mb-3 mt-3">
+                        <div class="col-lg-12 col-sm-6 text-right">
+                            <button type="button" class="secondary-btn transition-3d-hover" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="primary-btn transition-3d-hover">Añadir</button>
+                        </div>
+                    </div>
+                    <!-- End Button -->
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public Service Item { get; set; }
+    [Parameter]
+    public List<Brand> Brand_list { get; set; }
+    [Parameter]
+    public List<Category> Category_list { get; set; }
+    [Parameter]
+    public List<Model> Model_list { get; set; }
+    [Parameter]
+    public Action DataChanged { get; set; }
+
+    private PaginationParameters PagParam { get; set; } = new PaginationParameters() { QuantityPerPage = 4, FieldActualSort = "Created_at" };
+
+    public List<Product> products = new List<Product>();
+    public Product product = new Product() { Model = new Model() { Brand = new Brand() } };
+
+    private async Task CloseTaskModal()
+    {
+        await JS.InvokeAsync<object>("CloseModal", "taskModal");
+    }
+
+    private async Task Submit()
+    {
+        var res = await serviceService.Add(Item);
+        if (res.Equals("ok"))
+        {
+            toastService.ShowSuccess("Añadido con éxito", "Genial");
+            await CloseTaskModal();
+            DataChanged?.Invoke();
+        }
+        else
+        {
+            toastService.ShowError(res, "Error");
+        }
+    }
+
+    public int Cantidad
+    {
+        get
+        {
+            return Item.Cantidad;
+        }
+        set
+        {
+            Item.Cantidad = value;
+            CalcIngreso();
+            CalcGananciaNeta();
+        }
+    }
+
+    public decimal Precio
+    {
+        get
+        {
+            return Item.Precio;
+        }
+        set
+        {
+            Item.Precio = value;
+            CalcIngreso();
+            CalcGananciaNeta();
+        }
+    }
+
+    public decimal Costo
+    {
+        get
+        {
+            return Item.Costo;
+        }
+        set
+        {
+            Item.Costo = value;
+            CalcIngreso();
+            CalcGananciaNeta();
+        }
+    }
+
+    private void CalcIngreso()
+    {
+        Item.Ingreso = Cantidad * Precio;
+    }
+
+    private void CalcGananciaNeta()
+    {
+        Item.GananciaNeta = Item.Ingreso - Costo;
+    }
+
+    public async Task OnCategoryChange(ChangeEventArgs e)
+    {
+        product.Category_id = e.Value.ToString().Equals("all") ? 0 : int.Parse(e.Value.ToString());
+        product.Category_name = e.Value.ToString().Equals("all") ? "all" : Category_list.Where(x => x.Id.Equals(int.Parse(e.Value.ToString()))).ToList().First().Name;
+        await LoadItems();
+    }
+
+    public async Task OnBrandChange(ChangeEventArgs e)
+    {
+        product.Model.Brand_id = int.Parse(e.Value.ToString());
+        product.Brand_name = e.Value.ToString().Equals("all") ? "all" : Brand_list.Where(x => x.Id.Equals(int.Parse(e.Value.ToString()))).ToList().First().Name;
+        await LoadItems();
+    }
+
+    private void AddProducto(Product item)
+    {
+        var used = new Used_Product() { Product = item, Product_id = item.Id, Qty = 1 };
+        Item.Used_products.Add(used);
+        Costo += item.Cost;
+    }
+
+    private void QuitarProducto(Used_Product item)
+    {
+        Item.Used_products.Remove(item);
+        Costo -= item.Product.Cost;
+    }
+
+    private async Task SelectedPage(int page)
+    {
+        PagParam.CurrentPage = page;
+        await LoadItems(page);
+    }
+
+    async Task LoadItems(int page = 1)
+    {
+        var search = new SearchFilter() { Brand = product.Brand_name, Category = product.Category_name };
+        var data = await productService.GetPagAdmin(new Pagination() { Page = page, QuantityPerPage = PagParam.QuantityPerPage }, search, PagParam.FieldActualSort, PagParam.OrderActualSort);
+        PagParam.TotalPageQuantity = data.CantPorPag;
+        products = data.ListaObjetos.ToList();
+        PagParam.itemsTotal = data.ItemsTotal;
+        PagParam.CurrentPage = page;
+    }
+
+}

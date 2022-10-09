@@ -23,6 +23,8 @@ namespace OnlineStore.UoW
         IRequest_ItemRepository Request_Items { get; }
         IBrandRepository Brands { get; }
         IModelRepository Models { get; }
+        IServiceRepository Services { get; }
+        IUsedProductRepository UsedProducts { get; }
 
         Task<bool> SaveChangesAsync();
     }
@@ -44,6 +46,8 @@ namespace OnlineStore.UoW
         public IRequest_ItemRepository Request_Items { get; }
         public IBrandRepository Brands { get; }
         public IModelRepository Models { get; }
+        public IServiceRepository Services { get; }
+        public IUsedProductRepository UsedProducts { get; }
 
         public UnitOfWork(ApplicationDbContext context, UserManager<User> userManager, IMapper mapper, IToastService toastService)
         {
@@ -59,6 +63,8 @@ namespace OnlineStore.UoW
             Request_Items = new Request_ItemRepository(context, userManager);
             Brands = new BrandRepository(context, userManager);
             Models = new ModelRepository(context, userManager);
+            Services = new ServiceRepository(context, userManager);
+            UsedProducts = new UsedProductRepository(context, userManager);
         }
 
         public async Task<bool> SaveChangesAsync()

@@ -45,5 +45,7 @@ namespace OnlineStore
         public DbSet<Request_Item> Request_Items { get; set; }
         public DbSet<Address_Province> Address_Provinces { get; set; }
         public DbSet<FeaturedProduct> FeaturedProducts { get; set; }
+        public DbSet<Service> Services { get; set; }
+        public DbSet<Used_Product> UsedProducts { get; set; }
     }
 }

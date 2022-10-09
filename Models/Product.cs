@@ -32,6 +32,9 @@ namespace OnlineStore.Models
         [Required(ErrorMessage = "{0} es requerido.")]
         public bool Is_new { get; set; }
 
+        [Required(ErrorMessage = "{0} es requerido.")]
+        public bool Is_for_sell { get; set; }
+
         [ForeignKey("Category_id")]
         public virtual Category Category { get; set; }
 

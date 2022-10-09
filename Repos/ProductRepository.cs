@@ -27,12 +27,12 @@ namespace OnlineStore.Repos
         //metodos especificos de la clase aqui
         public async Task<List<Product>> GetRecents(int qty)
         {
-            return (await _context.Products.Where(x => x.IsActive).ToListAsync()).OrderByDescending(x => x.Created_at).Take(qty).ToList();
+            return (await _context.Products.Where(x => x.IsActive && x.Is_for_sell).ToListAsync()).OrderByDescending(x => x.Created_at).Take(qty).ToList();
         }
 
         public async Task<List<Product>> GetRandom()
         {
-            var products = await _context.Products.Where(x => x.IsActive).ToListAsync();
+            var products = await _context.Products.Where(x => x.IsActive && x.Is_for_sell).ToListAsync();
             Random random = new Random();
             var numbers = new int[4] { random.Next(1, products.Count - 1), random.Next(1, products.Count - 1), random.Next(1, products.Count - 1), random.Next(1, products.Count - 1) };
             var respond = new List<Product>();
@@ -51,11 +51,11 @@ namespace OnlineStore.Repos
             {
                 queryable = queryable.Where(x => x.Name.Contains(search_filter.Search_text) || x.Category_name.Contains(search_filter.Search_text) || x.Model_name.Contains(search_filter.Search_text) || x.Description.Contains(search_filter.Search_text));
             }
-            if (!search_filter.Category.Equals("all"))
+            if (search_filter.Category != null && !search_filter.Category.Equals("all"))
             {
                 queryable = queryable.Where(x => x.Category_name.Equals(search_filter.Category));
             }
-            if (!search_filter.Brand.Equals("all"))
+            if (search_filter.Brand != null && !search_filter.Brand.Equals("all"))
             {
                 queryable = queryable.Where(x => x.Brand_name.Equals(search_filter.Brand));
             }
@@ -82,7 +82,7 @@ namespace OnlineStore.Repos
 
         public async Task<PaginationResponse<Product>> GetPag(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo)
         {
-            var queryable = _context.Products.Where(x => x.IsActive).OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
+            var queryable = _context.Products.Where(x => x.IsActive && x.Is_for_sell).OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
 
             if ((!string.IsNullOrEmpty(search_filter.Category) || !string.IsNullOrWhiteSpace(search_filter.Category)) && (!string.IsNullOrEmpty(search_filter.Search_text) || !string.IsNullOrWhiteSpace(search_filter.Search_text)))
             {
