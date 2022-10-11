@@ -5,13 +5,18 @@
 @inject ICategoryService categoryService
 @inject IBrandService brandService
 @inject IModelService modelService
+@inject ICierreService cierreService
 @inject IJSRuntime JS
+@inject NavigationManager navi
 
 
 <div class="container space-1 mb-5">
     <div class="d-sm-flex align-items-center justify-content-between mb-3">
         <h3 class="text-secondary font-weight-normal mb-0">Servicios</h3>
         <div class="mr-3 ml-3 row">
+            <div class="mr-5">
+                <button @onclick="@CerrarCaja" type="button" class="btn admin-btn-sm btn-outline-info transition-3d-hover">Cerrar Caja</button>
+            </div>
             <div class="mr-5">
                 <button @onclick="@Add" type="button" class="btn admin-btn-sm btn-success transition-3d-hover"><span class="oi oi-plus" aria-hidden="true"></span></button>
             </div>
@@ -59,7 +64,14 @@
                                         <td class="align-middle"><span style="font-size: small" class="@(item.IsActive ? "text-success" : "text-danger")"> @(item.IsActive ? "Activo" : "Inactivo")</span></td>
                                         <td class="align-middle">
                                             <mark @onclick="@(() => Edit(item))" class="bg-primary" style="cursor:pointer; border-radius:50px 50px 50px 20px; padding-left:5px; color:white"><span class="fa fa-pencil" aria-hidden="true"></span></mark>
-                                            <mark @onclick="@(() => Activar_Desactivar(item))" class="@(item.IsActive ? "bg-danger" : "bg-success")" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="fa @(item.IsActive ? "fa-close" : "fa-check")" style="@(item.IsActive ? "font-size: 20px" : "")" aria-hidden="true"></span></mark>
+                                            @if (item.IsActive)
+                                            {
+                                                <mark @onclick="@(() => Eliminar(item))" class="bg-danger" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="fa fa-trash" style="font-size: 20px" aria-hidden="true"></span></mark>
+                                            }
+                                            else
+                                            {
+                                                <mark class="bg-success" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="fa fa-check" aria-hidden="true"></span></mark>
+                                            }
                                         </td>
                                     </tr>
                                 }
@@ -160,25 +172,28 @@
         await JS.InvokeAsync<object>("ShowModal", "taskModal");
     }
 
-    private async Task Activar_Desactivar(Service item)
+    private async Task Eliminar(Service item)
     {
         if (item.IsActive)
         {
-            if (await JS.ConfirmSinResp($"Desactivar", $"Esto desactivará el servicio."))
+            if (await JS.ConfirmSinResp($"Eliminar", $"¿Desea eliminar el servicio?"))
             {
-                item.IsActive = false;
-                await serviceService.Update(item, null, null);
+                await serviceService.Eliminar(item.Id);
                 await LoadItems();
             }
         }
-        else
+    }
+
+    private async Task CerrarCaja()
+    {
+        if (await JS.ConfirmSinResp($"Advertencia", $"¿Desea realizar un cierre de caja?"))
         {
-            if (await JS.ConfirmSinResp($"Activar", $"Esto activará el servicio."))
+            var id = await cierreService.Create();
+            if (await JS.ConfirmSinResp($"Info", $"¿Desea ver el cierre creado?"))
             {
-                item.IsActive = true;
-                await serviceService.Update(item, null, null);
-                await LoadItems();
+                navi.NavigateTo("admin/cierre_printable?id=" + id, true);
             }
+            await LoadItems();
         }
     }
 

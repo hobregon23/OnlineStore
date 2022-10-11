@@ -70,10 +70,14 @@ namespace OnlineStore.Data.Services
                 var item = await GetById(id);
                 if (item == null)
                     return "Error, no existe.";
-                item.IsActive = false;
-                item.Is_deleted = true;
-
-                _unitOfWork.Services.Update(item);
+                foreach (var it in item.Used_products)
+                {
+                    _unitOfWork.UsedProducts.Remove(it);
+                    var prod = await _unitOfWork.Products.GetById(it.Product_id);
+                    prod.Qty += 1;
+                    _unitOfWork.Products.Update(prod);
+                }
+                _unitOfWork.Services.Remove(item);
                 await _unitOfWork.SaveChangesAsync();
                 return "Ok";
             }
@@ -85,6 +89,8 @@ namespace OnlineStore.Data.Services
 
         public async Task<string> Update(Service item, List<Used_Product> nuevos, List<Used_Product> quitados)
         {
+            if (!item.IsActive)
+                return "Servicio cerrado";
             var bd = await _unitOfWork.Services.GetById(item.Id);
             bd.Updated_at = DateTime.Now;
             bd.Cantidad = item.Cantidad;

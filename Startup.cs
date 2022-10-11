@@ -90,6 +90,7 @@ namespace OnlineStore
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IModelService, ModelService>();
             services.AddScoped<IServiceService, ServiceService>();
+            services.AddScoped<ICierreService, CierreService>();
             services.AddScoped<ComponentStateChangedObserver>();
         }
 

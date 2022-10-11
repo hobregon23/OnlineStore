@@ -95,9 +95,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="checkout__input">
-                        <label for="chk">Marque si es nuevo<span>*</span></label>
-                        <InputCheckbox id="chk" class="ml-3" @bind-Value="@Item.Is_new" style="width: initial; height: initial" />
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <InputCheckbox id="chk-new" class="ml-3" @bind-Value="@Item.Is_new" style="width: initial; height: initial" />
+                                <label for="chk-new">Producto nuevo</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <InputCheckbox id="chk-sell" class="ml-3" @bind-Value="@Item.Is_for_sell" style="width: initial; height: initial" />
+                                <label for="chk-sell">Público para ventas</label>
+                            </div>
+                        </div>
                     </div>
                     <div class="checkout__input">
                         <label>Imagen<span>*</span></label>

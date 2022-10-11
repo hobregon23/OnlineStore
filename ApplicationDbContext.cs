@@ -47,5 +47,6 @@ namespace OnlineStore
         public DbSet<FeaturedProduct> FeaturedProducts { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<Used_Product> UsedProducts { get; set; }
+        public DbSet<Cierre> Cierres { get; set; }
     }
 }
