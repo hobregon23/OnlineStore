@@ -37,6 +37,7 @@ namespace OnlineStore.Data.Services
                 item.F_fin = list[list.Count - 1].Created_at;
                 foreach (var it in list)
                 {
+                    it.IsActive = false;
                     item.Costo += it.Costo;
                     item.Ganancia += it.GananciaNeta;
                     item.Ingreso += it.Ingreso;
@@ -44,6 +45,7 @@ namespace OnlineStore.Data.Services
                         item.Qty_ventas += 1;
                     else
                         item.Qty_reparaciones += 1;
+                    _unitOfWork.Services.Update(it);
                 }
                 await _unitOfWork.Cierres.Add(item);
                 await _unitOfWork.SaveChangesAsync();

@@ -176,8 +176,11 @@
                     <!-- Button -->
                     <div class="row align-items-center mb-3 mt-3">
                         <div class="col-lg-12 col-sm-6 text-right">
-                            <button type="button" class="secondary-btn transition-3d-hover" data-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="primary-btn transition-3d-hover">Actualizar</button>
+                            @if (Item.IsActive)
+                            {
+                                <button type="button" class="secondary-btn transition-3d-hover" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="primary-btn transition-3d-hover">Actualizar</button>
+                            }
                         </div>
                     </div>
                     <!-- End Button -->

@@ -9,99 +9,64 @@
 <div class="col-12" style="text-align: end">
     <button type="button" class="btn btn-outline-primary hideWhenPrint" @onclick="Print">Imprimir</button>
 </div>
-<div id="app" class="col-11">
-
-    <h2>Cierre de Caja</h2>
-
+<div id="app" class="col-6 mx-md-auto">
+    <h3>Cierre de Caja</h3>
     <div class="row my-3">
-        <div class="col-9">
+        <div class="col-12">
             <h1>OnlineStore</h1>
             <span style="color: #6f6f6f;">Calle 5 % 14 y 16</span>
             <p>Coliseo</p>
         </div>
-        <div class="col-3">
-            <img src="/img/logo-print.png" />
-        </div>
     </div>
-
     <hr />
-
     <div class="row fact-info mt-3">
-        <div class="col-3">
-            <h5>Creado</h5>
-            <p>
-                @String.Format("{0:dd/MM/yyyy}", Item.Created_at)
-            </p>
-        </div>
-        <div class="col-3">
-        </div>
-        <div class="col-3">
+        <div class="col-lg-6">
             <h5>N° </h5>
+            <h5>Creado</h5>
             <h5>Desde</h5>
             <h5>Hasta</h5>
         </div>
-        <div class="col-3">
-            <h6 style="color: #6f6f6f;">@Item.Id</h6>
-            <h6 style="color: #6f6f6f;">@String.Format("{0:dd/MM/yyyy}", Item.F_inicio)</h6>
-            <h6 style="color: #6f6f6f;">@String.Format("{0:dd/MM/yyyy}", Item.F_fin)</h6>
+        <div class="col-lg-6">
+            <h5 style="color: #6f6f6f; text-align: end">@Item.Id</h5>
+            <h5 style="color: #6f6f6f; text-align: end">@String.Format("{0:dd/MM/yyyy}", Item.Created_at)</h5>
+            <h5 style="color: #6f6f6f; text-align: end">@String.Format("{0:dd/MM/yyyy}", Item.F_inicio)</h5>
+            <h5 style="color: #6f6f6f; text-align: end">@String.Format("{0:dd/MM/yyyy}", Item.F_fin)</h5>
         </div>
     </div>
-
-    <div class="row my-5">
-        <table class="table table-borderless factura">
-            <thead>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th class="pb-0"></th>
-                    <th class="pb-0"></th>
-                    <th class="pb-0" style="font-size: 20px">Reparaciones</th>
-                    <th class="pb-0" style="font-size: 20px">$@Item.Qty_reparaciones</th>
-                </tr>
-                <tr>
-                    <th class="pb-0"></th>
-                    <th class="pb-0"></th>
-                    <th class="pb-0" style="font-size: 20px">Ventas</th>
-                    <th class="pb-0" style="font-size: 20px">$@Item.Qty_ventas</th>
-                </tr>
-                <tr>
-                    <th class="pb-0"></th>
-                    <th class="pb-0"></th>
-                    <th class="pb-0" style="font-size: 20px">Ingreso</th>
-                    <th class="pb-0" style="font-size: 20px">$@Item.Ingreso</th>
-                </tr>
-                <tr>
-                    <th class="pb-0 pt-0"></th>
-                    <th class="pb-0 pt-0"></th>
-                    <th class="pb-0 pt-0" style="font-size: 20px">Costo</th>
-                    <th class="pb-0 pt-0" style="font-size: 20px">$@Item.Costo</th>
-                </tr>
-                <tr>
-                    <th class="pb-0 pt-0"></th>
-                    <th class="pb-0 pt-0"></th>
-                    <th class="pb-0 pt-0">Ganancia Neta</th>
-                    <th class="pb-0 pt-0">$@Item.Ganancia</th>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-
-    <div class="cond row mb-5">
-        <div class="col-10 mt-3">
-            <h4>Condiciones y formas de pago</h4><br />
-            <p><input type="checkbox" disabled /> Pago en efectivo.</p>
-            <p><input type="checkbox" disabled /> Pago por transferencia a la cuenta: <strong>9205 0699 7332 2994</strong></p>
-            <br />
-            <p>
-                Gracias por su compra.
-            </p>
+    <div class="row fact-info my-5">
+        <div class="col-lg-12">
+            <h4 style="text-align: center">Operaciones</h4>
         </div>
-        <div class="col-2 mt-3" style="position: relative;">
-            <div style="position: absolute;bottom: 0;">
-                <hr class="m-0" style="border-color: black;">
-                <h5>Firma Cliente</h5>
+        <div class="col-lg-6">
+            <h5>Reparaciones</h5>
+            <h5>Ventas</h5>
+        </div>
+        <div class="col-lg-6">
+            <h5 style="color: #6f6f6f; text-align: end">@Item.Qty_reparaciones</h5>
+            <h5 style="color: #6f6f6f; text-align: end">@Item.Qty_ventas</h5>
+        </div>
+    </div>
+    <div class="row fact-info my-5">
+        <div class="col-lg-12">
+            <h4 style="text-align: center">Facturación</h4>
+        </div>
+        <div class="col-lg-6">
+            <h5>Ingreso</h5>
+            <h5>Costo</h5>
+            <h5>Ganancia Neta</h5>
+        </div>
+        <div class="col-lg-6">
+            <h5 style="color: #6f6f6f; text-align: end">$@Item.Ingreso</h5>
+            <h5 style="color: #6f6f6f; text-align: end">$@Item.Costo</h5>
+            <h4 style="font-weight: bold; text-align: end">$@Item.Ganancia</h4>
+        </div>
+    </div>
+    <div class="cond row mb-5 pt-5">
+        <div class="col-lg-10 mt-3 mb-5">
+        </div>
+        <div class="col-lg-2" style="position: relative;">
+            <div style="position: absolute; bottom: 0; right: 0">
+                <h5>Firma</h5>
             </div>
         </div>
     </div>
