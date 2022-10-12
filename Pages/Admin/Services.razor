@@ -7,6 +7,7 @@
 @inject IModelService modelService
 @inject ICierreService cierreService
 @inject IJSRuntime JS
+@inject IToastService toastService
 @inject NavigationManager navi
 
 
@@ -190,11 +191,18 @@
         if (await JS.ConfirmSinResp($"Advertencia", $"¿Desea realizar un cierre de caja?"))
         {
             var id = await cierreService.Create();
-            if (await JS.ConfirmSinResp($"Info", $"¿Desea ver el cierre creado?"))
+            if (id == -1)
+                toastService.ShowInfo("No hay servicios abiertos", "Info");
+            else if (id == 0)
+                toastService.ShowError("Ha ocurrido un error inesperado", "Error");
+            else
             {
-                navi.NavigateTo("admin/cierre_printable?id=" + id, true);
+                if (await JS.ConfirmSinResp($"Info", $"¿Desea ver el cierre creado?"))
+                {
+                    navi.NavigateTo("admin/cierre_printable?id=" + id, true);
+                }
+                await LoadItems();
             }
-            await LoadItems();
         }
     }
 

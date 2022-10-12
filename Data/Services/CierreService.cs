@@ -33,6 +33,8 @@ namespace OnlineStore.Data.Services
             {
                 var item = new Cierre();
                 var list = (await _unitOfWork.Services.GetAll()).Where(x => x.IsActive).ToList();
+                if (list.Count == 0)
+                    return -1;
                 item.F_inicio = list[0].Created_at;
                 item.F_fin = list[list.Count - 1].Created_at;
                 foreach (var it in list)
