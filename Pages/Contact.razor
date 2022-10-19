@@ -1,5 +1,6 @@
 ﻿@page "/contact"
 @attribute [AllowAnonymous]
+@inject ICenterService centerService
 
 
 <!-- Breadcrumb Section Begin -->
@@ -23,28 +24,28 @@
                 <div class="contact__widget">
                     <span class="icon_phone"></span>
                     <h4>Teléfono</h4>
-                    <p>+53 53604366</p>
+                    <p>@center.PhoneNumber</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-6 text-center">
                 <div class="contact__widget">
                     <span class="icon_pin_alt"></span>
                     <h4>Dirección</h4>
-                    <p>Calle 5 % 14 y 16, Coliseo</p>
+                    <p>@center.Address, @center.City</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-6 text-center">
                 <div class="contact__widget">
                     <span class="icon_clock_alt"></span>
                     <h4>Horario</h4>
-                    <p>10:00 am a 05:00 pm</p>
+                    <p>@center.Horario</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-6 text-center">
                 <div class="contact__widget">
                     <span class="icon_mail_alt"></span>
                     <h4>Correo</h4>
-                    <p>onlinestore@gmail.com</p>
+                    <p>@center.Email</p>
                 </div>
             </div>
         </div>
@@ -58,12 +59,28 @@
     <div class="map-inside">
         <i class="icon_pin"></i>
         <div class="inside-widget">
-            <h4>Coliseo</h4>
+            <h4>@center.City</h4>
             <ul>
-                <li>Teléfono: +53 53604366</li>
-                <li>Dirección: Calle 5 % 14 y 16</li>
+                <li>Teléfono: @center.PhoneNumber</li>
+                <li>Dirección: @center.Address</li>
             </ul>
         </div>
     </div>
 </div>
 <!-- Map End -->
+
+@code{
+
+    public Center center { get; set; } = new Center();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    async Task LoadData()
+    {
+        center = await centerService.GetById(1);
+    }
+
+}

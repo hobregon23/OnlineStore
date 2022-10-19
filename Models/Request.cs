@@ -41,6 +41,7 @@ namespace OnlineStore.Models
         [Required(ErrorMessage = "{0} es requerido.")]
         public decimal Shipping_price { get; set; }
         public string Details { get; set; }
+        public bool Is_paid { get; set; } = false;
         public virtual List<Request_Item> Request_item_list { get; set; } = new List<Request_Item>();
 
     }

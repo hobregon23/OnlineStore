@@ -4,6 +4,7 @@
 @inject IRequestService orderService
 @inject IJSRuntime JS
 @inject NavigationManager navi
+@inject ICenterService centerService
 
 
     <div class="col-12" style="text-align: end">
@@ -16,8 +17,8 @@
         <div class="row my-3">
             <div class="col-9">
                 <h1>OnlineStore</h1>
-                <span style="color: #6f6f6f;">Calle 5 % 14 y 16</span>
-                <p>Coliseo</p>
+                <span style="color: #6f6f6f;">@center.Address</span>
+                <p>@center.City</p>
             </div>
             <div class="col-3">
                 <img src="/img/logo-print.png" />
@@ -102,8 +103,16 @@
         <div class="cond row mb-5">
             <div class="col-10 mt-3">
                 <h4>Condiciones y formas de pago</h4><br />
-                <p><input type="checkbox" disabled /> Pago en efectivo.</p>
-                <p><input type="checkbox" disabled /> Pago por transferencia a la cuenta: <strong>9205 0699 7332 2994</strong></p>
+                @if (requestInfo.Is_paid)
+                {
+                    <p>Estado: Pagada</p>
+                }
+                else
+                {
+                    <p>Estado: Pendiente de pago</p>
+                    <p><input type="checkbox" disabled /> Pago en efectivo.</p>
+                    <p><input type="checkbox" disabled /> Pago por transferencia a la cuenta: <strong>@center.Tarjeta_Activa</strong></p>
+                }
                 <br />
                 <p>
                     Gracias por su compra.
@@ -124,7 +133,7 @@
 
     private int Id { get; set; }
     private Request requestInfo { get; set; } = new Request() { Address = new Address() { Province = new Address_Province() }, User = new User() };
-
+    private Center center { get; set; } = new Center();
 
     protected async override Task OnInitializedAsync()
     {
@@ -149,5 +158,6 @@
     async Task LoadData()
     {
         requestInfo = await orderService.GetById(Id);
+        center = await centerService.GetById(1);
     }
 }

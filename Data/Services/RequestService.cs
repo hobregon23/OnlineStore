@@ -18,6 +18,7 @@ namespace OnlineStore.Data.Services
         Task MarkAsTomado(Request item);
         Task MarkAsTerminado(Request item);
         Task MarkAsPendiente(Request item);
+        Task MarkAsPaid(int id);
         Task Eliminar(Request item);
         Task Activar(Request item);
         Task<PaginationResponse<Request>> Track(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo);
@@ -79,6 +80,7 @@ namespace OnlineStore.Data.Services
         {
             item.Status = "Terminado";
             item.IsActive = false;
+            item.Is_paid = true;
             _unitOfWork.Requests.Update(item);
             await _unitOfWork.SaveChangesAsync();
         }
@@ -91,6 +93,14 @@ namespace OnlineStore.Data.Services
             item.Dealer_id = null;
             item.IsActive = true;
             item.Is_deleted = false;
+            _unitOfWork.Requests.Update(item);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task MarkAsPaid(int id)
+        {
+            var item = await GetById(id);
+            item.Is_paid = true;
             _unitOfWork.Requests.Update(item);
             await _unitOfWork.SaveChangesAsync();
         }

@@ -35,6 +35,7 @@ namespace OnlineStore
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
             modelBuilder.ApplyConfiguration(new Order_ItemsConfiguration());
+            modelBuilder.ApplyConfiguration(new CenterConfiguration());
         }
 
         public DbSet<Address> Addresses { get; set; }
@@ -51,5 +52,6 @@ namespace OnlineStore
         public DbSet<Service> Services { get; set; }
         public DbSet<Used_Product> UsedProducts { get; set; }
         public DbSet<Cierre> Cierres { get; set; }
+        public DbSet<Center> Centers { get; set; }
     }
 }

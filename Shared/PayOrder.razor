@@ -1,0 +1,62 @@
+﻿@inject IJSRuntime JS
+@inject IRequestService orderService
+@inject IToastService toastService
+
+
+<div class="modal" tabindex="-1" role="dialog" id="taskModal">
+    <div class="modal-dialog" style="max-width: 500px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-weight-bold">Pagar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <EditForm class="col-lg-10 col-md-10 mx-md-auto" Model="Item" OnValidSubmit="Submit">
+                    <!-- Errors here -->
+                    <DataAnnotationsValidator />
+                    <!-- End Errors -->
+                    <!-- Form Group -->
+                    <div class="checkout__input" style="text-align: center">
+                        <img class="@(zoom ? "categories-img-edit-zoom" : "categories-img-edit")" @onclick="@Zoom" src="@Center.Qr_Code" />
+                    </div>
+                    <div style="text-align: center">
+                        <label>CUP: <strong>@Center.Tarjeta_Activa</strong></label>
+                    </div>
+                    <div style="text-align: center">
+                        <label>Monto: <strong>$@(Item.Price + Item.Shipping_price)</strong></label>
+                    </div>
+                    <br />
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public Request Item { get; set; }
+    [Parameter]
+    public Center Center { get; set; }
+
+    bool zoom;
+
+    private async Task CloseTaskModal()
+    {
+        await JS.InvokeAsync<object>("CloseModal", "taskModal");
+    }
+
+    private async Task Submit()
+    {
+        await CloseTaskModal();
+    }
+
+    private void Zoom()
+    {
+        zoom = zoom ? false : true;
+    }
+
+}

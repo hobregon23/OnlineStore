@@ -4,6 +4,7 @@
 @inject IAddressProvinceService provinceService
 @inject IRequestService requestService
 @inject IUserService userService
+@inject IToastService toastService
 
 
 <!-- Checkout Section Begin -->
@@ -90,16 +91,32 @@
                                     </label>
                                 </div>
                                 <div class="checkout__input__checkbox">
-                                    <label for="payment_type">
+                                    <label for="payment_type_presencial">
                                         Presencial
-                                        <input type="checkbox" checked disabled id="payment_type">
-                                        <span class="checkmark"></span>
+                                        <input type="radio" id="payment_type_presencial" name="payment_type" @onchange="@(() => OnPaymentChange("presencial"))">
+                                        <span class="checkmark-radio"></span>
                                     </label>
                                 </div>
-                                <p>
-                                    El pago se realizará de forma presencial, en efectivo o mediante transferencia bancaria
-                                    a la cuenta que aparece en la factura una vez haya examinado los productos recibidos.
-                                </p>
+                                <div class="checkout__input__checkbox">
+                                    <label for="payment_type_ahora">
+                                        Pagar ahora
+                                        <input type="radio" id="payment_type_ahora" name="payment_type" @onchange="@(() => OnPaymentChange("ahora"))">
+                                        <span class="checkmark-radio"></span>
+                                    </label>
+                                </div>
+                                @if (payment_type == "presencial")
+                                {
+                                    <p>
+                                        El pago se realizará de forma presencial, en efectivo o mediante transferencia bancaria
+                                        a la cuenta que aparece en la factura una vez haya examinado los productos recibidos.
+                                    </p>
+                                }
+                                else if (payment_type == "ahora")
+                                {
+                                    <p>
+                                        Una vez completada la orden podrá realizar el pago.
+                                    </p>
+                                }
                                 <button type="submit" class="site-btn">CREAR ORDEN</button>
                             </div>
                         </div>
@@ -124,6 +141,12 @@
     public decimal SubTotal_amount { get; set; }
     public decimal Province_ship_price { get; set; }
     public bool Need_shipping { get; set; } = true;
+
+    public string payment_type { get; set; }
+    private void OnPaymentChange(string type)
+    {
+        payment_type = type;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -190,12 +213,20 @@
 
     private async Task OnSubmit()
     {
+        var payment = payment_type == null ? false : true;
+        if (!payment)
+        {
+            toastService.ShowError("Debe marcar el tipo de pago", "Error");
+            return;
+        }
         var goodToGo = await requestService.VerifyItemQty(Cart.Items);
         if (!goodToGo)
             return;
         await requestService.Add(Check_out, Cart, Need_shipping);
         await cartService.WipeCart();
         await LoadData();
+        if (payment_type.Equals("ahora"))
+            navi.NavigateTo("/tracker", true);
     }
 
 }

@@ -26,6 +26,7 @@ namespace OnlineStore.UoW
         IServiceRepository Services { get; }
         IUsedProductRepository UsedProducts { get; }
         ICierreRepository Cierres { get; }
+        ICenterRepository Centers { get; }
 
         Task<bool> SaveChangesAsync();
     }
@@ -50,6 +51,7 @@ namespace OnlineStore.UoW
         public IServiceRepository Services { get; }
         public IUsedProductRepository UsedProducts { get; }
         public ICierreRepository Cierres { get; }
+        public ICenterRepository Centers { get; }
 
         public UnitOfWork(ApplicationDbContext context, UserManager<User> userManager, IMapper mapper, IToastService toastService)
         {
@@ -68,6 +70,7 @@ namespace OnlineStore.UoW
             Services = new ServiceRepository(context, userManager);
             UsedProducts = new UsedProductRepository(context, userManager);
             Cierres = new CierreRepository(context, userManager);
+            Centers = new CenterRepository(context, userManager);
         }
 
         public async Task<bool> SaveChangesAsync()

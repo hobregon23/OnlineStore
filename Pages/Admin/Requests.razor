@@ -47,6 +47,7 @@
                                     <th>Precio Total</th>
                                     <th><span style="cursor:pointer" @onclick="@(() => Ordenar("IsActive"))">Activo </span><i class="@(IndicadorOrden("IsActive"))"></i></th>
                                     <th>Estado</th>
+                                    <th>Pago</th>
                                     <th>Repartidor</th>
                                     <th>Acciones</th>
                                 </tr>
@@ -62,6 +63,7 @@
                                         <td class="align-middle"><a style="font-size: small">$@(item.Price + item.Shipping_price)</a></td>
                                         <td class="align-middle"><span style="font-size: small" class="@(item.IsActive ? "text-success" : "text-danger")"> @(item.IsActive ? "Activo" : "Inactivo")</span></td>
                                         <td class="align-middle"><a class="@(item.Status.Equals("Pendiente")?"text-warning":"") @(item.Status.Equals("Tomado")?"text-primary":"") @(item.Status.Equals("Terminado")?"text-success":"") @(item.Status.Equals("Cancelado")?"text-danger":"")" style="font-size: small">@item.Status</a></td>
+                                        <td class="align-middle"><a class="@(item.Is_paid?"text-success":"")" style="font-size: small">@(item.Is_paid?"Pagada":"Sin Pagar")</a></td>
                                         <td class="align-middle"><a style="font-size: small">@(item.Dealer == null ? "" : item.Dealer.UserName)</a></td>
                                         <td class="align-middle">
                                             <mark @onclick="@(() => Print(item))" class="bg-secondary" style="cursor:pointer; border-radius:15px 15px 15px 15px; padding-left:5px; color:white"><span class="fa fa-file" aria-hidden="true"></span></mark>
