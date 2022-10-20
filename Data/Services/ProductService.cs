@@ -45,6 +45,7 @@ namespace OnlineStore.Data.Services
                     Description = item.Description,
                     Image_url = item.Image_url,
                     Is_new = item.Is_new,
+                    Is_for_sell = item.Is_for_sell,
                     IsActive = true,
                     Model_id = item.Model_id,
                     Model_name = item.Model_name,
