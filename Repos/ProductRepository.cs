@@ -97,6 +97,10 @@ namespace OnlineStore.Repos
             {
                 queryable = queryable.Where(x => x.Name.Contains(search_filter.Search_text) || x.Category_name.Contains(search_filter.Search_text) || x.Model_name.Contains(search_filter.Search_text) || x.Description.Contains(search_filter.Search_text));
             }
+            if (!string.IsNullOrEmpty(search_filter.Brand) || !string.IsNullOrWhiteSpace(search_filter.Brand))
+            {
+                queryable = queryable.Where(x => x.Brand_name.Equals(search_filter.Brand));
+            }
 
             if (search_filter.Condition.Equals("new"))
             {
