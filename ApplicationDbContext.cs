@@ -53,5 +53,7 @@ namespace OnlineStore
         public DbSet<Used_Product> UsedProducts { get; set; }
         public DbSet<Cierre> Cierres { get; set; }
         public DbSet<Center> Centers { get; set; }
+        public DbSet<BannerTop> Top_Banners { get; set; }
+        public DbSet<BannerBottom> Bottom_Banners { get; set; }
     }
 }

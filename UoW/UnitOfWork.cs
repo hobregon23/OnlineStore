@@ -27,6 +27,8 @@ namespace OnlineStore.UoW
         IUsedProductRepository UsedProducts { get; }
         ICierreRepository Cierres { get; }
         ICenterRepository Centers { get; }
+        IBannerTopRepository Top_Banners { get; }
+        IBannerBottomRepository Bottom_Banners { get; }
 
         Task<bool> SaveChangesAsync();
     }
@@ -52,6 +54,8 @@ namespace OnlineStore.UoW
         public IUsedProductRepository UsedProducts { get; }
         public ICierreRepository Cierres { get; }
         public ICenterRepository Centers { get; }
+        public IBannerTopRepository Top_Banners { get; }
+        public IBannerBottomRepository Bottom_Banners { get; }
 
         public UnitOfWork(ApplicationDbContext context, UserManager<User> userManager, IMapper mapper, IToastService toastService)
         {
@@ -71,6 +75,8 @@ namespace OnlineStore.UoW
             UsedProducts = new UsedProductRepository(context, userManager);
             Cierres = new CierreRepository(context, userManager);
             Centers = new CenterRepository(context, userManager);
+            Top_Banners = new BannerTopRepository(context, userManager);
+            Bottom_Banners = new BannerBottomRepository(context, userManager);
         }
 
         public async Task<bool> SaveChangesAsync()
