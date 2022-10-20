@@ -6,6 +6,7 @@ namespace OnlineStore.Models
     {
         [Key]
         public int Id { get; set; }
+        public string Name { get; set; }
         public string Link_Type { get; set; }
         public string Link_Value { get; set; }
         public string Image_url { get; set; }

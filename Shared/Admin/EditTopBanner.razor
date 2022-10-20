@@ -1,0 +1,135 @@
+﻿@inject IJSRuntime JS
+@inject IBannerTopService topbannerService
+@inject IToastService toastService
+
+
+<div class="modal" tabindex="-1" role="dialog" id="taskModal-edit">
+    <div class="modal-dialog" style="max-width: 500px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-weight-bold">Actualizar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <EditForm class="col-lg-10 col-md-10 mx-md-auto" Model="Item" OnValidSubmit="Submit">
+                    <!-- Errors here -->
+                    <DataAnnotationsValidator />
+                    <!-- End Errors -->
+                    <!-- Form Group -->
+                    <div class="checkout__input" style="text-align: center">
+                        <img class="@(zoom ? "categories-img-edit-zoom" : "categories-img-edit")" @onclick="@Zoom" src="@Item.Image_url" />
+                    </div>
+                    <div class="checkout__input">
+                        <label>Sub Título Superior<span>*</span></label>
+                        <InputText placeholder="Ej: Encuentra" Class="form-control" @bind-Value="@Item.SubTitle_Top" />
+                        <ValidationMessage For="@(() => Item.SubTitle_Top)" />
+                    </div>
+                    <div class="checkout__input">
+                        <label>Título<span>*</span></label>
+                        <InputText placeholder="Ej: Todo de Huawei" Class="form-control" @bind-Value="@Item.Title" />
+                        <ValidationMessage For="@(() => Item.Title)" />
+                    </div>
+                    <div class="checkout__input">
+                        <label>Sub Título Inferior<span>*</span></label>
+                        <InputText placeholder="Ej: Todo en uno" Class="form-control" @bind-Value="@Item.SubTitle_Bottom" />
+                        <ValidationMessage For="@(() => Item.SubTitle_Bottom)" />
+                    </div>
+                    <div class="checkout__input">
+                        <label>Tipo de Vínculo<span>*</span></label>
+                        <select class="form-control" @bind="@Item.Link_Type" required>
+                            <option disabled value="">Seleccionar</option>
+                            <option value="Category">Categoría</option>
+                            <option value="Brand">Marca</option>
+                        </select>
+                    </div>
+                    <div class="checkout__input">
+                        <label>Vínculo<span>*</span></label>
+                        <InputText placeholder="Ej: Samsung" Class="form-control" @bind-Value="@Item.Link_Value" />
+                        <ValidationMessage For="@(() => Item.Link_Value)" />
+                    </div>
+                    <div class="checkout__input">
+                        <label>Imagen<span>*</span></label>
+                        <RadzenUpload @ref="upload" Auto="false" Accept="image/*" Multiple="false" Url=@($"api/upload/top_banner?filename={generated_name}") Complete=@CompleteUpload Progress=@(args => OnProgress(args, "Subidos")) class="w-100" />
+                        <RadzenProgressBar Value="@progress" Unit="@info" Visible="@(progress>0)" Style="margin-bottom:20px"></RadzenProgressBar>
+                    </div>
+                    <!-- Button -->
+                    <div class="row align-items-center mb-3 mt-3">
+                        <div class="col-lg-12 col-sm-6 text-right">
+                            <button type="button" class="secondary-btn transition-3d-hover" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="primary-btn transition-3d-hover">Actualizar</button>
+                        </div>
+                    </div>
+                    <!-- End Button -->
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public BannerTop Item { get; set; }
+    [Parameter]
+    public Action DataChanged { get; set; }
+
+    RadzenUpload upload;
+    string info;
+    int progress;
+    bool zoom;
+    Random random = new Random();
+    string generated_name = "";
+
+    public void RandomString()
+    {
+        const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+        generated_name = (new string(Enumerable.Repeat(chars, 10).Select(s => s[random.Next(s.Length)]).ToArray())) + ".jpg";
+    }
+
+    private void OnProgress(UploadProgressArgs args, string name)
+    {
+        info = $"% {name} {args.Loaded} de {args.Total} bytes.";
+        progress = args.Progress;
+    }
+
+    private async Task CompleteUpload()
+    {
+        toastService.ShowSuccess("Editado con éxito", "Genial");
+        progress = 0;
+        await CloseTaskModal();
+        DataChanged?.Invoke();
+    }
+
+    private void Zoom()
+    {
+        zoom = zoom ? false : true;
+    }
+
+    private async Task CloseTaskModal()
+    {
+        await JS.InvokeAsync<object>("CloseModal", "taskModal-edit");
+    }
+
+    private async Task Submit()
+    {
+        if (upload.HasValue)
+        {
+            RandomString();
+            Item.Image_url = "img/hero/" + generated_name;
+        }
+        var res = await topbannerService.Update(Item);
+        if (res.Equals("Ya existe"))
+            toastService.ShowError("Ya existe", "Error");
+        else if (res.Equals("ok"))
+        {
+            if (!upload.HasValue)
+                await CompleteUpload();
+            else
+                await upload.Upload();
+        }
+    }
+
+}

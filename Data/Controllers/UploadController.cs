@@ -70,6 +70,36 @@ namespace OnlineStore.Data.Controllers
             }
         }
 
+        [HttpPost("top_banner")]
+        public async Task<IActionResult> Top_banner(IFormFile file, string filename)
+        {
+            try
+            {
+                var imagePath = @"\img\hero";
+                await UploadFile(file, imagePath, filename);
+                return StatusCode(200);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost("bottom_banner")]
+        public async Task<IActionResult> Bottom_banner(IFormFile file, string filename)
+        {
+            try
+            {
+                var imagePath = @"\img\banner";
+                await UploadFile(file, imagePath, filename);
+                return StatusCode(200);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
         private async Task UploadFile(IFormFile file, string imagePath, string filename)
         {
             if (file != null && file.Length > 0)

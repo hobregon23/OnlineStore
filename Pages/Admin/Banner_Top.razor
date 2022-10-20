@@ -1,5 +1,167 @@
-﻿<h3>Banner_Top</h3>
+﻿@page "/admin/banner-top"
+@layout BlazorLayout
+@attribute [Authorize(Roles = "Admin")]
+@inject IBannerTopService topbannerService
+@inject IJSRuntime JS
+
+
+<div class="container space-1 mb-5">
+    <div class="d-sm-flex align-items-center justify-content-between mb-3">
+        <h3 class="text-secondary font-weight-normal mb-0">Pancartas-Principales</h3>
+        <div class="mr-3 ml-3 row">
+            <div class="mr-5">
+                <button @onclick="@Add" type="button" class="btn admin-btn-sm btn-success transition-3d-hover"><span class="oi oi-plus" aria-hidden="true"></span></button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="row">
+
+            <div class="col-md-12 w-md-75 w-lg-40 mx-md-auto">
+                <div class="table-responsive-sm">
+
+                    @if (Item_List.Count.Equals(0))
+                    {
+                        <p class="text-danger" style="text-align: center">N/A</p>
+                    }
+                    else
+                    {
+                        <table class="table table-light">
+                            <thead>
+                                <tr style="font-size: small; color: white; background-image: linear-gradient(182deg, rgb(8, 38, 123) 0%, #4f1056 90%);">
+                                    <th>Id</th>
+                                    <th>Imagen</th>
+                                    <th>Título</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="font-size-1" style="font-family: 'Arial Rounded MT'">
+                                @foreach (var item in Item_List)
+                                {
+                                    <tr class="my-transition-3d-hover">
+                                        <td class="align-middle"><a style="font-size: small">@item.Id</a></td>
+                                        <td class="align-middle"><a style="font-size: small"><img class="categories-img" src="@item.Image_url" /></a></td>
+                                        <td class="align-middle"><a style="font-size: small">@item.Title</a></td>
+                                        <td class="align-middle"><span style="font-size: small" class="@(item.IsActive ? "text-success" : "text-danger")"> @(item.IsActive ? "Activo" : "Inactivo")</span></td>
+                                        <td class="align-middle">
+                                            <mark @onclick="@(() => Edit(item))" class="bg-primary" style="cursor:pointer; border-radius:50px 50px 50px 20px; padding-left:5px; color:white"><span class="fa fa-pencil" aria-hidden="true"></span></mark>
+                                            <mark @onclick="@(() => Activar_Desactivar(item))" class="@(item.IsActive ? "bg-danger" : "bg-success")" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="fa @(item.IsActive ? "fa-close" : "fa-check")" style="@(item.IsActive ? "font-size: 20px" : "")" aria-hidden="true"></span></mark>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+                <PaginationComponent TotaPagesQuantity="PagParam.TotalPageQuantity" CurrentPage="PagParam.CurrentPage" Radius="3" SelectedPage="SelectedPage"></PaginationComponent>
+                <div class="col-lg-12 col-md-4 mt-2">
+                    <div class="filter__found" style="text-align: right">
+                        <h6><span>@Item_List.Count de @PagParam.itemsTotal</span> encontrados</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<AddTopBanner Item="Item" DataChanged="DataChanged"></AddTopBanner>
+<EditTopBanner Item="Item" DataChanged="DataChanged"></EditTopBanner>
+
 
 @code {
+
+    private BannerTop Item { get; set; } = new BannerTop();
+    private List<BannerTop> Item_List { get; set; } = new List<BannerTop>();
+    private SearchFilter search_obj { get; set; } = new SearchFilter();
+    private PaginationParameters PagParam { get; set; } = new PaginationParameters() { QuantityPerPage = 7, FieldActualSort = "Created_at" };
+
+    protected async override Task OnInitializedAsync()
+    {
+        await LoadItems();
+    }
+
+    async Task LoadItems(int page = 1)
+    {
+        var data = await topbannerService.GetPag(new Pagination() { Page = page, QuantityPerPage = PagParam.QuantityPerPage }, search_obj, PagParam.FieldActualSort, PagParam.OrderActualSort);
+        PagParam.TotalPageQuantity = data.CantPorPag;
+        Item_List = data.ListaObjetos.ToList();
+        PagParam.itemsTotal = data.ItemsTotal;
+        PagParam.CurrentPage = page;
+    }
+
+    private async Task SelectedPage(int page)
+    {
+        PagParam.CurrentPage = page;
+        await LoadItems(page);
+    }
+
+    private string IndicadorOrden(string campoSorteo)
+    {
+        if (campoSorteo.Equals(PagParam.FieldActualSort))
+        {
+            return PagParam.OrderActualSort.Equals("Asc") ? "oi oi-arrow-top" : "oi oi-arrow-bottom";
+        }
+        return string.Empty;
+    }
+
+    private async Task Ordenar(string campoSorteo)
+    {
+        if (campoSorteo.Equals(PagParam.FieldActualSort))
+        {
+            PagParam.OrderActualSort = PagParam.OrderActualSort.Equals("Asc") ? "Desc" : "Asc";
+        }
+        else
+        {
+            PagParam.FieldActualSort = campoSorteo;
+            PagParam.OrderActualSort = "Asc";
+        }
+        await LoadItems();
+    }
+
+    private async Task Search()
+    {
+        await LoadItems();
+    }
+
+    private async Task Edit(BannerTop item)
+    {
+        Item = item;
+        await JS.InvokeAsync<object>("ShowModal", "taskModal-edit");
+    }
+
+    private async Task Add()
+    {
+        Item = new BannerTop();
+        await JS.InvokeAsync<object>("ShowModal", "taskModal");
+    }
+
+    private async Task Activar_Desactivar(BannerTop item)
+    {
+        if (item.IsActive)
+        {
+            if (await JS.ConfirmSinResp($"Desactivar", $"¿Desea desactivar la pancarta?"))
+            {
+                item.IsActive = false;
+                await topbannerService.Update(item);
+                await LoadItems();
+            }
+        }
+        else
+        {
+            if (await JS.ConfirmSinResp($"Activar", $"¿Desea activar la pancarta?"))
+            {
+                item.IsActive = true;
+                await topbannerService.Update(item);
+                await LoadItems();
+            }
+        }
+    }
+
+    private async void DataChanged()
+    {
+        await LoadItems();
+        StateHasChanged();
+    }
 
 }
