@@ -1,5 +1,11 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+.login-name:hover {
+    color: red;
+    background-color: transparent;
+    text-decoration: underline;
+}
+
 .categories-img {
     max-width: 80px;
     border: 1px solid grey;
