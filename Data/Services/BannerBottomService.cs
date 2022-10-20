@@ -70,10 +70,8 @@ namespace OnlineStore.Data.Services
                 var item = await GetById(id);
                 if (item == null)
                     return "Error, no existe.";
-                item.IsActive = false;
-                item.Is_deleted = true;
 
-                _unitOfWork.Bottom_Banners.Update(item);
+                _unitOfWork.Bottom_Banners.Remove(item);
                 await _unitOfWork.SaveChangesAsync();
                 return "Ok";
             }

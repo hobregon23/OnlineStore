@@ -47,6 +47,7 @@
                                         <td class="align-middle">
                                             <mark @onclick="@(() => Edit(item))" class="bg-primary" style="cursor:pointer; border-radius:50px 50px 50px 20px; padding-left:5px; color:white"><span class="fa fa-pencil" aria-hidden="true"></span></mark>
                                             <mark @onclick="@(() => Activar_Desactivar(item))" class="@(item.IsActive ? "bg-danger" : "bg-success")" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="fa @(item.IsActive ? "fa-close" : "fa-check")" style="@(item.IsActive ? "font-size: 20px" : "")" aria-hidden="true"></span></mark>
+                                            <mark @onclick="@(() => Remove(item))" class="bg-danger" style="cursor:pointer; border-radius:50px; padding-left:5px; color:white"><span class="fa fa-trash" style="font-size: 20px" aria-hidden="true"></span></mark>
                                         </td>
                                     </tr>
                                 }
@@ -155,6 +156,15 @@
                 await bottombannerService.Update(item);
                 await LoadItems();
             }
+        }
+    }
+
+    private async Task Remove(BannerBottom item)
+    {
+        if (await JS.ConfirmSinResp($"Eliminar", $"¿Desea eliminar la pancarta?"))
+        {
+            await bottombannerService.Eliminar(item.Id);
+            await LoadItems();
         }
     }
 
