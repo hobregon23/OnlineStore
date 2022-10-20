@@ -36,6 +36,8 @@ namespace OnlineStore
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
             modelBuilder.ApplyConfiguration(new Order_ItemsConfiguration());
             modelBuilder.ApplyConfiguration(new CenterConfiguration());
+            modelBuilder.ApplyConfiguration(new BannerTopConfiguration());
+            modelBuilder.ApplyConfiguration(new BannerBottomConfiguration());
         }
 
         public DbSet<Address> Addresses { get; set; }

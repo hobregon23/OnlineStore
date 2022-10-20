@@ -4,16 +4,18 @@
 @inject IProductService productService
 @inject ICategoryService categoryService
 @inject ICartService cartService
+@inject IBannerTopService topbannerService
+@inject IBannerBottomService bottombannerService
 @inject NavigationManager navi
 @attribute [AllowAnonymous]
 
 
-<div class="hero__item set-bg mx-md-auto mb-5" style="background-image: url(img/hero/banner.jpg); width: 85%">
+<div class="hero__item set-bg mx-md-auto mb-5" style="background-image: url(@Top_Banner.Image_url); width: 85%">
     <div class="hero__text">
-        <span>ENCUENTRA</span>
-        <h2>LO MEJOR <br />DE HUAWEI</h2>
-        <p>Todo en un solo lugar</p>
-        <a href="shop-grid/?brand=Huawei" class="primary-btn">¡Ver Más!</a>
+        <span>@Top_Banner.SubTitle_Top</span>
+        <h2 style="text-transform: uppercase;">@((MarkupString)Top_Banner.Title)</h2>
+        <p>@Top_Banner.SubTitle_Bottom</p>
+        <a href="shop-grid?@Top_Banner.Link_Type=@Top_Banner.Link_Value" class="primary-btn">¡Ver Más!</a>
     </div>
 </div>
 
@@ -107,16 +109,14 @@
 <div class="banner mt-5">
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6">
-                <div class="banner__pic">
-                    <a href="shop-grid"><img src="img/banner/banner-1.jpg" alt=""></a>
+            @foreach (var item in Bottom_Banners)
+            {
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="banner__pic">
+                        <a href="shop-grid?@item.Link_Type=@item.Link_Value"><img src="@item.Image_url" alt=""></a>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-6 col-md-6 col-sm-6">
-                <div class="banner__pic">
-                    <a href="shop-grid/?brand=Xiaomi"><img src="img/banner/banner-2.jpg" alt=""></a>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </div>
@@ -173,6 +173,9 @@
     public List<FeaturedProduct> featuredCategories { get; set; } = new List<FeaturedProduct>();
     public List<Product> recentProducts { get; set; } = new List<Product>();
     public List<Category> Categories { get; set; } = new List<Category>();
+    private BannerTop Top_Banner { get; set; } = new BannerTop();
+    private List<BannerBottom> Bottom_Banners { get; set; } = new List<BannerBottom>();
+    private Random random = new Random();
 
 
     protected override async Task OnInitializedAsync()
@@ -195,6 +198,12 @@
         recentProducts = await productService.GetRecents(6);
         Categories = await categoryService.GetAll();
         featuredCategories = featuredProducts.GroupBy(x => x.Product.Category_name).Select(x => x.FirstOrDefault()).ToList();
+        var top_list = await topbannerService.GetAll();
+        var bot_list = await bottombannerService.GetAll();
+        if (top_list.Count > 0)
+            Top_Banner = top_list[random.Next(0, top_list.Count)];
+        if (bot_list.Count > 0)
+            Bottom_Banners = bot_list.OrderBy(item => random.Next()).Take(2).ToList();
     }
 
     private string F_active(string item)

@@ -4,7 +4,7 @@
 
 
 <div class="modal" tabindex="-1" role="dialog" id="taskModal-edit">
-    <div class="modal-dialog" style="max-width: 500px" role="document">
+    <div class="modal-dialog" style="max-width: 1000px" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title font-weight-bold">Actualizar</h5>
@@ -13,7 +13,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <EditForm class="col-lg-10 col-md-10 mx-md-auto" Model="Item" OnValidSubmit="Submit">
+                <EditForm class="col-lg-11 col-md-10 mx-md-auto" Model="Item" OnValidSubmit="Submit">
                     <!-- Errors here -->
                     <DataAnnotationsValidator />
                     <!-- End Errors -->
@@ -21,33 +21,45 @@
                     <div class="checkout__input" style="text-align: center">
                         <img class="@(zoom ? "categories-img-edit-zoom" : "categories-img-edit")" @onclick="@Zoom" src="@Item.Image_url" />
                     </div>
-                    <div class="checkout__input">
-                        <label>Sub Título Superior<span>*</span></label>
-                        <InputText placeholder="Ej: Encuentra" Class="form-control" @bind-Value="@Item.SubTitle_Top" />
-                        <ValidationMessage For="@(() => Item.SubTitle_Top)" />
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <label>Sub Título Superior<span>*</span></label>
+                                <InputText placeholder="Ej. Encuentra" Class="form-control" @bind-Value="@Item.SubTitle_Top" />
+                                <ValidationMessage For="@(() => Item.SubTitle_Top)" />
+                            </div>
+                            <div class="checkout__input">
+                                <label>Sub Título Inferior<span>*</span></label>
+                                <InputText placeholder="Ej. Todo en uno" Class="form-control" @bind-Value="@Item.SubTitle_Bottom" />
+                                <ValidationMessage For="@(() => Item.SubTitle_Bottom)" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <label>Título<span>*</span> <span class="text-secondary" style="font-size:small">(Puede incluir código HTML)</span></label>
+                                <InputTextArea style="height:135px" placeholder="Ej. Lo mejor <br /> de Huawei" Class="form-control" @bind-Value="@Item.Title" />
+                                <ValidationMessage For="@(() => Item.Title)" />
+                            </div>
+                        </div>
                     </div>
-                    <div class="checkout__input">
-                        <label>Título<span>*</span></label>
-                        <InputText placeholder="Ej: Todo de Huawei" Class="form-control" @bind-Value="@Item.Title" />
-                        <ValidationMessage For="@(() => Item.Title)" />
-                    </div>
-                    <div class="checkout__input">
-                        <label>Sub Título Inferior<span>*</span></label>
-                        <InputText placeholder="Ej: Todo en uno" Class="form-control" @bind-Value="@Item.SubTitle_Bottom" />
-                        <ValidationMessage For="@(() => Item.SubTitle_Bottom)" />
-                    </div>
-                    <div class="checkout__input">
-                        <label>Tipo de Vínculo<span>*</span></label>
-                        <select class="form-control" @bind="@Item.Link_Type" required>
-                            <option disabled value="">Seleccionar</option>
-                            <option value="Category">Categoría</option>
-                            <option value="Brand">Marca</option>
-                        </select>
-                    </div>
-                    <div class="checkout__input">
-                        <label>Vínculo<span>*</span></label>
-                        <InputText placeholder="Ej: Samsung" Class="form-control" @bind-Value="@Item.Link_Value" />
-                        <ValidationMessage For="@(() => Item.Link_Value)" />
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <label>Tipo de Vínculo<span>*</span></label>
+                                <select class="form-control" @bind="@Item.Link_Type" required>
+                                    <option disabled value="">Seleccionar</option>
+                                    <option value="Category">Categoría</option>
+                                    <option value="Brand">Marca</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <label>Vínculo<span>*</span></label>
+                                <InputText placeholder="Ej. Samsung" Class="form-control" @bind-Value="@Item.Link_Value" />
+                                <ValidationMessage For="@(() => Item.Link_Value)" />
+                            </div>
+                        </div>
                     </div>
                     <div class="checkout__input">
                         <label>Imagen<span>*</span></label>
