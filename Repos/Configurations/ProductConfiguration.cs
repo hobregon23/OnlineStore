@@ -189,6 +189,26 @@ namespace OnlineStore.Repos
                     Cost = 1000,
                     Created_at = DateTime.Now.AddDays(1),
                     IsActive = true
+                },
+                new Product
+                {
+                    Id = 10,
+                    Name = "Pantalla para Huawei P30",
+                    Category_id = 1,
+                    Model_id = 14,
+                    Brand_name = "Huawei",
+                    Category_name = "Pantallas",
+                    Model_name = "P30",
+                    Image_url = "img/sin_imagen.jpg",
+                    Description = "Producto nuevo.",
+                    Is_new = false,
+                    Is_for_sell = true,
+                    Qty = 10,
+                    Original_price = 5500,
+                    Price = 5500,
+                    Cost = 1000,
+                    Created_at = DateTime.Now.AddDays(1),
+                    IsActive = true
                 }
             );
         }
