@@ -12,6 +12,7 @@ namespace OnlineStore.Data.Services
         Task<string> GetActiveCard();
         Task<PaginationResponse<Center>> GetPag(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo);
         Task<Center> GetById(int id);
+        Task Update(Center item);
     }
 
     public class CenterService : ICenterService
@@ -40,6 +41,13 @@ namespace OnlineStore.Data.Services
         public async Task<Center> GetById(int id)
         {
             return await _unitOfWork.Centers.GetById(id);
+        }
+
+        public async Task Update(Center item)
+        {
+            _unitOfWork.Centers.Update(item);
+            await _unitOfWork.SaveChangesAsync();
+            return;
         }
     }
 }

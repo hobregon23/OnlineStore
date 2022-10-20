@@ -1,0 +1,103 @@
+﻿@page "/admin/center-details"
+@layout BlazorLayout
+@attribute [Authorize(Roles = "Admin")]
+@inject ICenterService centerService
+@inject IJSRuntime JS
+@inject IToastService toastService
+
+    <EditForm Model="center" OnValidSubmit="OnSubmit">
+        <DataAnnotationsValidator />
+        <section class="">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-3 col-md-3 col-sm-6 text-center px-3 m-4">
+                        <div class="contact__widget">
+                            <span class="icon_phone"></span>
+                            <h4>Teléfono</h4>
+                            <InputText style="text-align:center" Class="form-control" @bind-Value="@center.PhoneNumber" />
+                            <ValidationMessage For="@(() => center.PhoneNumber)" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 text-center px-3 m-4">
+                        <div class="contact__widget">
+                            <span class="icon_pin_alt"></span>
+                            <h4>Dirección</h4>
+                            <InputText style="text-align:center" Class="form-control" @bind-Value="@center.Address" />
+                            <ValidationMessage For="@(() => center.Address)" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 text-center px-3 m-4">
+                        <div class="contact__widget">
+                            <span class="icon_pin"></span>
+                            <h4>Ciudad</h4>
+                            <InputText style="text-align:center" Class="form-control" @bind-Value="@center.City" />
+                            <ValidationMessage For="@(() => center.City)" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 text-center px-3 m-4">
+                        <div class="contact__widget">
+                            <span class="icon_clock_alt"></span>
+                            <h4>Horario</h4>
+                            <InputText style="text-align:center" Class="form-control" @bind-Value="@center.Horario" />
+                            <ValidationMessage For="@(() => center.Horario)" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 text-center px-3 m-4">
+                        <div class="contact__widget">
+                            <span class="icon_mail_alt"></span>
+                            <h4>Correo</h4>
+                            <InputText style="text-align:center" Class="form-control" @bind-Value="@center.Email" />
+                            <ValidationMessage For="@(() => center.Email)" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 text-center px-3 m-4">
+                        <div class="contact__widget" style="margin-bottom: 0px">
+                            <span class="icon_creditcard"></span>
+                            <h4>Tarjeta CUP</h4>
+                            <InputText style="text-align:center" Class="form-control" @bind-Value="@center.Tarjeta_Activa" />
+                            <ValidationMessage For="@(() => center.Tarjeta_Activa)" />
+                            <h4>Código QR</h4>
+                            <img style="max-width: 100px" src="@center.Qr_Code" />
+                        </div>
+                        <RadzenUpload @ref="upload" Auto="false" ChooseText="Subir" Accept="image/*" Multiple="false" Url=@($"api/upload/qr_tarjeta?filename=qr_cup.jpg") class="w-100" />
+                    </div>
+                </div>
+                <div class="row align-items-center mb-5 mt-3">
+                    <div class="col-lg-12 col-sm-6 text-center">
+                        <button type="submit" class="primary-btn transition-3d-hover">Actualizar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </EditForm>
+
+
+@code {
+
+    public Center center { get; set; } = new Center();
+
+    RadzenUpload upload;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    async Task LoadData()
+    {
+        center = await centerService.GetById(1);
+    }
+
+    private async Task OnSubmit()
+    {
+        if (await JS.ConfirmSinResp($"Actualizar", $"¿Desea actualizar los datos de la empresa?"))
+        {
+            if (upload.HasValue)
+                await upload.Upload();
+            await centerService.Update(center);
+            await LoadData();
+            toastService.ShowSuccess("Actualizado correctamente", "Genial");
+        }
+    }
+
+}

@@ -55,6 +55,21 @@ namespace OnlineStore.Data.Controllers
             }
         }
 
+        [HttpPost("qr_tarjeta")]
+        public async Task<IActionResult> Qr_tarjeta(IFormFile file, string filename)
+        {
+            try
+            {
+                var imagePath = @"\img\tarjetas";
+                await UploadFile(file, imagePath, filename);
+                return StatusCode(200);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
         private async Task UploadFile(IFormFile file, string imagePath, string filename)
         {
             if (file != null && file.Length > 0)
