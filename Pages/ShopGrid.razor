@@ -156,6 +156,10 @@
         {
             Search_filter.Category = _cat;
         }
+        if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("brand", out var _brand))
+        {
+            Search_filter.Brand = _brand;
+        }
         if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("search_text", out var _txt))
         {
             Search_filter.Search_text = _txt;
