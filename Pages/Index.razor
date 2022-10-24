@@ -132,7 +132,8 @@
                         <div class="latest-prdouct__slider__item row mx-md-auto">
                             @foreach (var item in recentProducts)
                             {
-                                <a href="/shop-details?id=@item.Id" class="latest-product__item mr-5">
+                                <div class="col-lg-4">
+                                    <a href="/shop-details?id=@item.Id" class="latest-product__item mr-5">
                                     <div class="latest-product__item__pic">
                                         <img src="@item.Image_url" alt="">
                                     </div>
@@ -153,6 +154,7 @@
                                         }
                                     </div>
                                 </a>
+                                </div>
                             }
                         </div>
                     </div>
