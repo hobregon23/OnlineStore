@@ -49,6 +49,86 @@ namespace OnlineStore.Repos
                     Qty = 1,
                     Request_id = 3,
                     Total_import = 1000
+                },
+                new Request_Item
+                {
+                    Id = 5,
+                    Created_at = new DateTime(2022, 08, 15),
+                    IsActive = true,
+                    Product_id = 2,
+                    Qty = 2,
+                    Request_id = 4,
+                    Total_import = 14000
+                },
+                new Request_Item
+                {
+                    Id = 6,
+                    Created_at = new DateTime(2022, 07, 15),
+                    IsActive = true,
+                    Product_id = 2,
+                    Qty = 1,
+                    Request_id = 5,
+                    Total_import = 7000
+                },
+                new Request_Item
+                {
+                    Id = 7,
+                    Created_at = new DateTime(2022, 06, 15),
+                    IsActive = true,
+                    Product_id = 2,
+                    Qty = 3,
+                    Request_id = 6,
+                    Total_import = 21000
+                },
+                new Request_Item
+                {
+                    Id = 8,
+                    Created_at = new DateTime(2022, 05, 15),
+                    IsActive = true,
+                    Product_id = 2,
+                    Qty = 2,
+                    Request_id = 7,
+                    Total_import = 14000
+                },
+                new Request_Item
+                {
+                    Id = 9,
+                    Created_at = new DateTime(2022, 04, 15),
+                    IsActive = true,
+                    Product_id = 2,
+                    Qty = 1,
+                    Request_id = 8,
+                    Total_import = 7000
+                },
+                new Request_Item
+                {
+                    Id = 10,
+                    Created_at = new DateTime(2022, 03, 15),
+                    IsActive = true,
+                    Product_id = 2,
+                    Qty = 4,
+                    Request_id = 9,
+                    Total_import = 28000
+                },
+                new Request_Item
+                {
+                    Id = 11,
+                    Created_at = new DateTime(2022, 02, 15),
+                    IsActive = true,
+                    Product_id = 2,
+                    Qty = 2,
+                    Request_id = 10,
+                    Total_import = 14000
+                },
+                new Request_Item
+                {
+                    Id = 12,
+                    Created_at = new DateTime(2022, 01, 15),
+                    IsActive = true,
+                    Product_id = 2,
+                    Qty = 3,
+                    Request_id = 11,
+                    Total_import = 21000
                 }
             );
         }
