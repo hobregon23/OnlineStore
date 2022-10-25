@@ -2,23 +2,406 @@
 @layout BlazorLayout
 @attribute [Authorize(Roles = "Admin, Delivery, Worker")]
 @inject NavigationManager navi
+@inject IStatisticsService statsService
 
 
 
 <div class="container space-1 mb-5">
-    <div class="mb-4">
-        <h3 class="text-secondary font-weight-normal mb-0">Usuarios</h3>
-    </div>
     <div class="col-md-12">
-        <div class="row">
-            <AuthorizeView Roles="Admin">
-                
-            </AuthorizeView>
-        </div>
+        <AuthorizeView Roles="Admin">
+            <!-- Users & Orders Inicio -->
+            <div class="row mb-4 mt-2" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                <div class="col-xl-6 col-md-6 mb-2 mt-2">
+                    <div class="h-100 py-2" style="border: 0">
+                        <div class="d-flex">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <h5 class="admin-font-weight-bold text-secondary text-uppercase">
+                                        Datos Generales
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-2 mt-2">
+                    <div class="admin-border-left-primary admin-shadow px-2 py-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                        <div class="">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs admin-font-weight-bold text-primary text-uppercase mb-1">Pedidos (Hoy)</div>
+                                    <div class="h5 mb-0 admin-font-weight-bold admin-text-gray-800">@stats.OrdersToday</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-plane fa-2x admin-text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-2 mt-2">
+                    <div class="admin-border-left-primary admin-shadow px-2 py-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                        <div class="">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs admin-font-weight-bold text-primary text-uppercase mb-1">Registro (Hoy)</div>
+                                    <div class="h5 mb-0 admin-font-weight-bold admin-text-gray-800">@stats.UsersToday</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-users fa-2x admin-text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Users & Orders Fin -->
+            <!-- Tienda Inicio -->
+            <div class="my-card-deck d-block d-lg-flex my-card-lg-gutters-3 mb-2">
+                <!-- Stats -->
+                <div class="my-card admin-shadow">
+                    <div class="my-card-body">
+                        <!-- Title & Settings -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label>Ganancias <span class="text-secondary" style="font-size:small">(este mes)</span></label>
+
+                            <!-- Settings Dropdown -->
+                            <div class="position-relative">
+                                <span class="text-secondary text-uppercase">Tienda</span>
+                            </div>
+                            <!-- End Settings Dropdown -->
+                        </div>
+                        <!-- End Title & Settings -->
+
+                        <hr class="mt-2 mb-3">
+
+                        <div class="table-responsive-sm">
+                            <table class="table table-light">
+                                <tbody class="font-size-1" style="font-family: 'Arial Rounded MT'">
+
+                                    <RadzenChart>
+                                        <RadzenAreaSeries Smooth="true" Data="@stats.EarningsStoreDaily" CategoryProperty="Date" Title="@CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(DateTime.Now.Month))" ValueProperty="Earning">
+                                            <TooltipTemplate Context="data">
+                                                <div>
+                                                    <div>
+                                                        @CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(data.Date.DayOfWeek)) @data.Date.Day
+                                                    </div>
+                                                    <div>
+                                                        <strong>@(((decimal)@data.Earning).ToString("C0", CultureInfo.CreateSpecificCulture("en-US")))</strong>
+                                                    </div>
+                                                </div>
+                                            </TooltipTemplate>
+                                            <ChildContent>
+                                                <RadzenMarkers MarkerType="MarkerType.Circle" />
+                                            </ChildContent>
+                                        </RadzenAreaSeries>
+                                        <RadzenCategoryAxis FormatString="{0:dd}" Padding="20">
+                                            <RadzenAxisTitle Text="" />
+                                        </RadzenCategoryAxis>
+                                        <RadzenValueAxis Formatter="@FormatAsUSD">
+                                            <RadzenGridLines Visible="true" />
+                                            <RadzenAxisTitle Text="" />
+                                        </RadzenValueAxis>
+                                    </RadzenChart>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- End Deposit Info -->
+                    </div>
+                </div>
+                <!-- End Stats -->
+            </div>
+            <div class="row mb-5 ml-1 mr-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                <div class="col-xl-3 col-md-6 mb-2 mt-2">
+                    <div class="h-100 py-2" style="border: 0">
+                        <div class="d-flex">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <h5 class="admin-font-weight-bold text-secondary text-uppercase">
+                                        Tienda
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-2 mt-2">
+                    <div class="admin-border-left-primary admin-shadow px-2 py-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                        <div class="">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs admin-font-weight-bold text-primary text-uppercase mb-1">Ganancia (Hoy)</div>
+                                    <div class="h5 mb-0 admin-font-weight-bold admin-text-gray-800">$@stats.StoreEarnToday</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-dollar fa-2x admin-text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-2 mt-2">
+                    <div class="admin-border-left-info admin-shadow px-2 py-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                        <div class="">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs admin-font-weight-bold admin-text-info text-uppercase mb-1">Ganancia (Semana)</div>
+                                    <div class="h5 mb-0 admin-font-weight-bold admin-text-gray-800">$@stats.StoreEarnWeek</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-dollar fa-2x admin-text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-2 mt-2">
+                    <div class="admin-border-left-success admin-shadow px-2 py-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                        <div class="">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs admin-font-weight-bold text-success text-uppercase mb-1">Ganancia (Total)</div>
+                                    <div class="h5 mb-0 admin-font-weight-bold admin-text-gray-800">$@stats.StoreEarnTotal</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-dollar fa-2x admin-text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Tienda Fin -->
+            <!-- Taller Inicio -->
+            <div class="my-card-deck d-block d-lg-flex my-card-lg-gutters-3 mb-2">
+                <!-- Stats -->
+                <div class="my-card admin-shadow">
+                    <div class="my-card-body">
+                        <!-- Title & Settings -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label>Ganancias <span class="text-secondary" style="font-size:small">(este mes)</span></label>
+
+                            <!-- Settings Dropdown -->
+                            <div class="position-relative">
+                                <span class="text-secondary text-uppercase">Taller</span>
+                            </div>
+                            <!-- End Settings Dropdown -->
+                        </div>
+                        <!-- End Title & Settings -->
+
+                        <hr class="mt-2 mb-3">
+
+                        <div class="table-responsive-sm">
+                            <table class="table table-light">
+                                <tbody class="font-size-1" style="font-family: 'Arial Rounded MT'">
+
+                                    <RadzenChart>
+                                        <RadzenAreaSeries Smooth="true" Data="@stats.EarningsWSDaily" CategoryProperty="Date" Title="@CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(DateTime.Now.Month))" ValueProperty="Earning">
+                                            <TooltipTemplate Context="data">
+                                                <div>
+                                                    <div>
+                                                        @CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(data.Date.DayOfWeek)) @data.Date.Day
+                                                    </div>
+                                                    <div>
+                                                        <strong>@(((decimal)@data.Earning).ToString("C0", CultureInfo.CreateSpecificCulture("en-US")))</strong>
+                                                    </div>
+                                                </div>
+                                            </TooltipTemplate>
+                                            <ChildContent>
+                                                <RadzenMarkers MarkerType="MarkerType.Circle" />
+                                            </ChildContent>
+                                        </RadzenAreaSeries>
+                                        <RadzenCategoryAxis FormatString="{0:dd}" Padding="20">
+                                            <RadzenAxisTitle Text="" />
+                                        </RadzenCategoryAxis>
+                                        <RadzenValueAxis Formatter="@FormatAsUSD">
+                                            <RadzenGridLines Visible="true" />
+                                            <RadzenAxisTitle Text="" />
+                                        </RadzenValueAxis>
+                                    </RadzenChart>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- End Deposit Info -->
+                    </div>
+                </div>
+                <!-- End Stats -->
+            </div>
+            <div class="row mb-5 ml-1 mr-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                <div class="col-xl-3 col-md-6 mb-2 mt-2">
+                    <div class="h-100 py-2" style="border: 0">
+                        <div class="d-flex">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <h5 class="admin-font-weight-bold text-secondary text-uppercase">
+                                        Taller
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-2 mt-2">
+                    <div class="admin-border-left-primary admin-shadow px-2 py-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                        <div class="">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs admin-font-weight-bold text-primary text-uppercase mb-1">Ganancia (Hoy)</div>
+                                    <div class="h5 mb-0 admin-font-weight-bold admin-text-gray-800">$@stats.WorkShopEarnToday</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-dollar fa-2x admin-text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-2 mt-2">
+                    <div class="admin-border-left-info admin-shadow px-2 py-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                        <div class="">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs admin-font-weight-bold admin-text-info text-uppercase mb-1">Ganancia (Semana)</div>
+                                    <div class="h5 mb-0 admin-font-weight-bold admin-text-gray-800">$@stats.WorkShopEarnWeek</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-dollar fa-2x admin-text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-2 mt-2">
+                    <div class="admin-border-left-success admin-shadow px-2 py-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                        <div class="">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs admin-font-weight-bold text-success text-uppercase mb-1">Ganancia (Total)</div>
+                                    <div class="h5 mb-0 admin-font-weight-bold admin-text-gray-800">$@stats.WorkShopEarnTotal</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-dollar fa-2x admin-text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Taller Fin -->
+            <!-- Best & Idle Inicio -->
+            <div class="row">
+                <div class="col-lg-6">
+                    @if (stats.BestSellingProducts != null && stats.BestSellingProducts.Count != 0)
+                    {
+                        <div class="my-card-deck d-block d-lg-flex my-card-lg-gutters-3 mb-5">
+                            <!-- Stats -->
+                            <div class="my-card admin-shadow">
+                                <div class="my-card-body">
+                                    <!-- Title & Settings -->
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="admin-font-weight-bold text-secondary text-uppercase">
+                                            Más vendidos
+                                        </h5>
+                                        <!-- Settings Dropdown -->
+                                        <div class="position-relative">
+                                            <i class="fa fa-info fa-2x admin-text-gray-300 mr-2"></i>
+                                        </div>
+                                        <!-- End Settings Dropdown -->
+                                    </div>
+                                    <!-- End Title & Settings -->
+                                    <hr class="mt-2 mb-3">
+
+                                    <div class="table-responsive-sm">
+                                        <table class="table table-light">
+                                            <tbody class="font-size-1" style="font-family: 'Arial Rounded MT'">
+                                                @foreach (var item in stats.BestSellingProducts)
+                                                {
+                                                    <tr class="my-transition-3d-hover">
+                                                        <td class="align-middle"><a style="font-size: small">@(bestCount++)</a></td>
+                                                        <td class="align-middle"><a style="font-size: small">@item.Name</a></td>
+                                                        <td class="align-middle"><a style="font-size: small">@item.Qty</a></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- End Deposit Info -->
+                                </div>
+                            </div>
+                            <!-- End Stats -->
+                        </div>
+                    }
+                </div>
+                <div class="col-lg-6">
+                    @if (stats.IdleProducts != null && stats.IdleProducts.Count != 0)
+                    {
+                        <div class="my-card-deck d-block d-lg-flex my-card-lg-gutters-3 mb-5">
+                            <!-- Stats -->
+                            <div class="my-card admin-shadow">
+                                <div class="my-card-body">
+                                    <!-- Title & Settings -->
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="admin-font-weight-bold text-secondary text-uppercase">
+                                            Sin Movimiento
+                                        </h5>
+                                        <!-- Settings Dropdown -->
+                                        <div class="position-relative">
+                                            <i class="fa fa-info fa-2x admin-text-gray-300 mr-2"></i>
+                                        </div>
+                                        <!-- End Settings Dropdown -->
+                                    </div>
+                                    <!-- End Title & Settings -->
+                                    <hr class="mt-2 mb-3">
+
+                                    <div class="table-responsive-sm">
+                                        <table class="table table-light">
+                                            <tbody class="font-size-1" style="font-family: 'Arial Rounded MT'">
+                                                @foreach (var item in stats.IdleProducts)
+                                                {
+                                                    <tr class="my-transition-3d-hover">
+                                                        <td class="align-middle"><a style="font-size: small">@(idleCount++)</a></td>
+                                                        <td class="align-middle"><a style="font-size: small">@item.Name</a></td>
+                                                        <td class="align-middle"><a style="font-size: small">@item.Qty</a></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- End Deposit Info -->
+                                </div>
+                            </div>
+                            <!-- End Stats -->
+                        </div>
+                    }
+                </div>
+            </div>
+            <!-- Best & Idle Fin -->
+        </AuthorizeView>
     </div>
 </div>
 
 
 @code {
+
+    public Statistic stats { get; set; } = new Statistic();
+    int bestCount = 1;
+    int idleCount = 1;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await LoadItems();
+    }
+
+    async Task LoadItems(int page = 1)
+    {
+        stats = await statsService.Get();
+    }
+
+    string FormatAsUSD(object value)
+    {
+        return (Convert.ToDecimal(value)).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
+    }
 
 }

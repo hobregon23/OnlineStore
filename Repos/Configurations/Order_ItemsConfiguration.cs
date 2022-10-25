@@ -13,7 +13,7 @@ namespace OnlineStore.Repos
                 new Request_Item
                 {
                     Id = 1,
-                    Created_at = DateTime.Now,
+                    Created_at = new DateTime(2022, 09, 30),
                     IsActive = true,
                     Product_id = 1,
                     Qty = 2,
@@ -23,7 +23,7 @@ namespace OnlineStore.Repos
                 new Request_Item
                 {
                     Id = 2,
-                    Created_at = DateTime.Now,
+                    Created_at = new DateTime(2022, 10, 15),
                     IsActive = true,
                     Product_id = 2,
                     Qty = 1,

@@ -14,7 +14,7 @@ namespace OnlineStore.Repos
                 {
                     Id = 1,
                     Address_id = 3,
-                    Created_at = DateTime.Now,
+                    Created_at = new DateTime(2022, 09, 30),
                     Dealer_id = "fg3434gre-37dd-4e8d-8faf-xcgre34tgdg",
                     Full_name_receptor = "Frank Jose Antonio",
                     IsActive = true,
@@ -28,7 +28,7 @@ namespace OnlineStore.Repos
                 {
                     Id = 2,
                     Address_id = 3,
-                    Created_at = DateTime.Now,
+                    Created_at = new DateTime(2022, 10, 15),
                     Full_name_receptor = "Henry Obregon Mena",
                     IsActive = true,
                     Need_shipping = true,

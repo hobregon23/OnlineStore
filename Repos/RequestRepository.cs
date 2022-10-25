@@ -29,7 +29,7 @@ namespace OnlineStore.Repos
 
         public async Task<List<Request>> GetAllIncluding()
         {
-            return await _context.Requests.Include(x => x.User).Include(x => x.Address).ThenInclude(x => x.Province).ToListAsync();
+            return await _context.Requests.Include(x => x.User).Include(x => x.Address).ThenInclude(x => x.Province).Include(x => x.Request_item_list).ThenInclude(x => x.Product).ToListAsync();
         }
 
         public async Task<PaginationResponse<Request>> Track(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo, string user_id)

@@ -1,0 +1,376 @@
+﻿@page "/admin/analytics"
+@layout BlazorLayout
+@attribute [Authorize(Roles = "Admin")]
+@inject NavigationManager navi
+@inject IStatisticsService statsService
+
+
+
+<div class="container space-1 mb-5">
+    <div class="col-md-12">
+        <!-- Total Inicio -->
+        <div class="my-card-deck d-block d-lg-flex my-card-lg-gutters-3 mb-4">
+            <!-- Stats -->
+            <div class="my-card admin-shadow">
+                <div class="my-card-body">
+                    <!-- Title & Settings -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="admin-font-weight-bold text-secondary text-uppercase">Ganancias Totales</h5>
+                        <!-- Settings Dropdown -->
+                        <div class="position-relative">
+                            <input type="button" class="btn btn-soft-primary transition-3d-hover" value="Lineal" @onclick="@(() => CambiarChartTotal("lineal"))" />
+                            <input type="button" class="btn btn-soft-danger transition-3d-hover" value="Área" @onclick="@(() => CambiarChartTotal("area"))" />
+                        </div>
+                        <!-- End Settings Dropdown -->
+                    </div>
+                    <!-- End Title & Settings -->
+
+                    <hr class="mt-2 mb-3">
+                    <div>
+                        @if (AnnosDataTotal == null || AnnosDataTotal.Count.Equals(0))
+                        {
+                            <div style="margin-top: 4rem !important">
+                                <p class="text-danger" style="text-align: center">N/A</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <RadzenChart>
+                                @if (tipoChartTotal.Equals("lineal"))
+                                {
+                                    @for (int i = 0; i < AnnosDataTotal.Count; i++)
+                                    {
+                                        <RadzenLineSeries Smooth="@suave" Data="@AnnosDataTotal[i]" CategoryProperty="Mes" Title="@AnnosDataTotal[i][0].Anno.ToString()" ValueProperty="Ganancia">
+                                            <TooltipTemplate Context="data">
+                                                <div>
+                                                    <div>
+                                                        @CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName((int)data.Mes))
+                                                    </div>
+                                                    <div>
+                                                        @data.Anno: <strong>@(((double)@data.Ganancia).ToString("C0", CultureInfo.CreateSpecificCulture("en-US")))</strong>
+                                                    </div>
+                                                </div>
+                                            </TooltipTemplate>
+                                            <ChildContent>
+                                                <RadzenMarkers MarkerType="MarkerType.Circle" />
+                                            </ChildContent>
+                                        </RadzenLineSeries>
+                                    }
+                                }
+                                @if (tipoChartTotal.Equals("area"))
+                                {
+                                    @for (int i = 0; i < AnnosDataTotal.Count; i++)
+                                    {
+                                        <RadzenAreaSeries Smooth="@suave" Data="@AnnosDataTotal[i]" CategoryProperty="Mes" Title="@AnnosDataTotal[i][0].Anno.ToString()" ValueProperty="Ganancia">
+                                            <TooltipTemplate Context="data">
+                                                <div>
+                                                    <div>
+                                                        @CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName((int)data.Mes))
+                                                    </div>
+                                                    <div>
+                                                        @data.Anno: <strong>@(((decimal)@data.Ganancia).ToString("C0", CultureInfo.CreateSpecificCulture("en-US")))</strong>
+                                                    </div>
+                                                </div>
+                                            </TooltipTemplate>
+                                            <ChildContent>
+                                                <RadzenMarkers MarkerType="MarkerType.Circle" />
+                                            </ChildContent>
+                                        </RadzenAreaSeries>
+                                    }
+                                }
+                                <RadzenCategoryAxis Step="1" Min="1" Padding="20">
+                                    <RadzenAxisTitle Text="Mes" />
+                                </RadzenCategoryAxis>
+                                <RadzenValueAxis Formatter="@FormatAsUSD">
+                                    <RadzenGridLines Visible="true" />
+                                    <RadzenAxisTitle Text="" />
+                                </RadzenValueAxis>
+                            </RadzenChart>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- End Stats -->
+        </div>
+        <!-- Total Fin -->
+        <div class="row">
+            <div class="col-lg-6">
+                <!-- Tienda Inicio -->
+                <div class="my-card-deck d-block d-lg-flex my-card-lg-gutters-3 mb-4">
+                    <!-- Stats -->
+                    <div class="my-card admin-shadow">
+                        <div class="my-card-body">
+                            <!-- Title & Settings -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="admin-font-weight-bold text-secondary text-uppercase">Ganancias Tienda</h5>
+                                <!-- Settings Dropdown -->
+                                <div class="position-relative">
+                                    <input type="button" class="btn btn-soft-primary transition-3d-hover" value="Lineal" @onclick="@(() => CambiarChartStore("lineal"))" />
+                                    <input type="button" class="btn btn-soft-danger transition-3d-hover" value="Área" @onclick="@(() => CambiarChartStore("area"))" />
+                                </div>
+                                <!-- End Settings Dropdown -->
+                            </div>
+                            <!-- End Title & Settings -->
+
+                            <hr class="mt-2 mb-3">
+                            <div>
+                                @if (stats.EarningsStoreLife == null || stats.EarningsStoreLife.Count.Equals(0))
+                                {
+                                    <div style="margin-top: 4rem !important">
+                                        <p class="text-danger" style="text-align: center">N/A</p>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <RadzenChart>
+                                        @if (tipoChartStore.Equals("lineal"))
+                                        {
+                                            @for (int i = 0; i < AnnosDataStore.Count; i++)
+                                            {
+                                                <RadzenLineSeries Smooth="@suave" Data="@AnnosDataStore[i]" CategoryProperty="Mes" Title="@AnnosDataStore[i][0].Anno.ToString()" ValueProperty="Ganancia">
+                                                    <TooltipTemplate Context="data">
+                                                        <div>
+                                                            <div>
+                                                                @CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName((int)data.Mes))
+                                                            </div>
+                                                            <div>
+                                                                @data.Anno: <strong>@(((double)@data.Ganancia).ToString("C0", CultureInfo.CreateSpecificCulture("en-US")))</strong>
+                                                            </div>
+                                                        </div>
+                                                    </TooltipTemplate>
+                                                    <ChildContent>
+                                                        <RadzenMarkers MarkerType="MarkerType.Circle" />
+                                                    </ChildContent>
+                                                </RadzenLineSeries>
+                                            }
+                                        }
+                                        @if (tipoChartStore.Equals("area"))
+                                        {
+                                            @for (int i = 0; i < AnnosDataStore.Count; i++)
+                                            {
+                                                <RadzenAreaSeries Smooth="@suave" Data="@AnnosDataStore[i]" CategoryProperty="Mes" Title="@AnnosDataStore[i][0].Anno.ToString()" ValueProperty="Ganancia">
+                                                    <TooltipTemplate Context="data">
+                                                        <div>
+                                                            <div>
+                                                                @CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName((int)data.Mes))
+                                                            </div>
+                                                            <div>
+                                                                @data.Anno: <strong>@(((decimal)@data.Ganancia).ToString("C0", CultureInfo.CreateSpecificCulture("en-US")))</strong>
+                                                            </div>
+                                                        </div>
+                                                    </TooltipTemplate>
+                                                    <ChildContent>
+                                                        <RadzenMarkers MarkerType="MarkerType.Circle" />
+                                                    </ChildContent>
+                                                </RadzenAreaSeries>
+                                            }
+                                        }
+                                        <RadzenCategoryAxis Step="1" Min="1" Padding="20">
+                                            <RadzenAxisTitle Text="Mes" />
+                                        </RadzenCategoryAxis>
+                                        <RadzenValueAxis Formatter="@FormatAsUSD">
+                                            <RadzenGridLines Visible="true" />
+                                            <RadzenAxisTitle Text="" />
+                                        </RadzenValueAxis>
+                                    </RadzenChart>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- End Stats -->
+                </div>
+                <!-- Tienda Fin -->
+            </div>
+            <div class="col-lg-6">
+                <!-- Taller Inicio -->
+                <div class="my-card-deck d-block d-lg-flex my-card-lg-gutters-3 mb-4">
+                    <!-- Stats -->
+                    <div class="my-card admin-shadow">
+                        <div class="my-card-body">
+                            <!-- Title & Settings -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="admin-font-weight-bold text-secondary text-uppercase">Ganancias Taller</h5>
+                                <!-- Settings Dropdown -->
+                                <div class="position-relative">
+                                    <input type="button" class="btn btn-soft-primary transition-3d-hover" value="Lineal" @onclick="@(() => CambiarChartWS("lineal"))" />
+                                    <input type="button" class="btn btn-soft-danger transition-3d-hover" value="Área" @onclick="@(() => CambiarChartWS("area"))" />
+                                </div>
+                                <!-- End Settings Dropdown -->
+                            </div>
+                            <!-- End Title & Settings -->
+
+                            <hr class="mt-2 mb-3">
+                            <div>
+                                @if (stats.EarningsWSLife == null || stats.EarningsWSLife.Count.Equals(0))
+                                {
+                                    <div style="margin-top: 4rem !important">
+                                        <p class="text-danger" style="text-align: center">N/A</p>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <RadzenChart>
+                                        @if (tipoChartWS.Equals("lineal"))
+                                        {
+                                            @for (int i = 0; i < AnnosDataWS.Count; i++)
+                                            {
+                                                <RadzenLineSeries Smooth="@suave" Data="@AnnosDataWS[i]" CategoryProperty="Mes" Title="@AnnosDataWS[i][0].Anno.ToString()" ValueProperty="Ganancia">
+                                                    <TooltipTemplate Context="data">
+                                                        <div>
+                                                            <div>
+                                                                @CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName((int)data.Mes))
+                                                            </div>
+                                                            <div>
+                                                                @data.Anno: <strong>@(((double)@data.Ganancia).ToString("C0", CultureInfo.CreateSpecificCulture("en-US")))</strong>
+                                                            </div>
+                                                        </div>
+                                                    </TooltipTemplate>
+                                                    <ChildContent>
+                                                        <RadzenMarkers MarkerType="MarkerType.Circle" />
+                                                    </ChildContent>
+                                                </RadzenLineSeries>
+                                            }
+                                        }
+                                        @if (tipoChartWS.Equals("area"))
+                                        {
+                                            @for (int i = 0; i < AnnosDataWS.Count; i++)
+                                            {
+                                                <RadzenAreaSeries Smooth="@suave" Data="@AnnosDataWS[i]" CategoryProperty="Mes" Title="@AnnosDataWS[i][0].Anno.ToString()" ValueProperty="Ganancia">
+                                                    <TooltipTemplate Context="data">
+                                                        <div>
+                                                            <div>
+                                                                @CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName((int)data.Mes))
+                                                            </div>
+                                                            <div>
+                                                                @data.Anno: <strong>@(((decimal)@data.Ganancia).ToString("C0", CultureInfo.CreateSpecificCulture("en-US")))</strong>
+                                                            </div>
+                                                        </div>
+                                                    </TooltipTemplate>
+                                                    <ChildContent>
+                                                        <RadzenMarkers MarkerType="MarkerType.Circle" />
+                                                    </ChildContent>
+                                                </RadzenAreaSeries>
+                                            }
+                                        }
+                                        <RadzenCategoryAxis Step="1" Min="1" Padding="20">
+                                            <RadzenAxisTitle Text="Mes" />
+                                        </RadzenCategoryAxis>
+                                        <RadzenValueAxis Formatter="@FormatAsUSD">
+                                            <RadzenGridLines Visible="true" />
+                                            <RadzenAxisTitle Text="" />
+                                        </RadzenValueAxis>
+                                    </RadzenChart>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- End Stats -->
+                </div>
+                <!-- Taller Fin -->
+            </div>
+        </div>
+
+        
+    </div>
+</div>
+
+
+@code {
+
+    public Statistic stats { get; set; } = new Statistic();
+    private List<List<DataItem>> AnnosDataStore { get; set; } = new List<List<DataItem>>();
+    private List<List<DataItem>> AnnosDataWS { get; set; } = new List<List<DataItem>>();
+    private List<List<DataItem>> AnnosDataTotal { get; set; } = new List<List<DataItem>>();
+    private string tipoChartStore { get; set; } = "lineal";
+    private string tipoChartWS { get; set; } = "lineal";
+    private string tipoChartTotal { get; set; } = "lineal";
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await LoadItems();
+    }
+
+    async Task LoadItems(int page = 1)
+    {
+        stats = await statsService.Get();
+        foreach (var item in stats.EarningsStoreLife)
+        {
+            if (AnnosDataStore.Exists(x => x.Exists(y => y.Anno == item.Anno)))
+            {
+                var index = AnnosDataStore.FindIndex(x => x.Exists(y => y.Anno == item.Anno));
+                AnnosDataStore[index].Add(new DataItem { Anno = item.Anno, Mes = (uint)item.Date.Month, Ganancia = item.Earning });
+            }
+            else
+            {
+                DataItem dtemp = new DataItem() { Anno = item.Anno, Mes = (uint)item.Date.Month, Ganancia = item.Earning };
+                List<DataItem> temp = new List<DataItem>();
+                temp.Add(dtemp);
+                AnnosDataStore.Add(temp);
+            }
+        }
+        foreach (var item in stats.EarningsWSLife)
+        {
+            if (AnnosDataWS.Exists(x => x.Exists(y => y.Anno == item.Anno)))
+            {
+                var index = AnnosDataWS.FindIndex(x => x.Exists(y => y.Anno == item.Anno));
+                AnnosDataWS[index].Add(new DataItem { Anno = item.Anno, Mes = (uint)item.Date.Month, Ganancia = item.Earning });
+            }
+            else
+            {
+                DataItem dtemp = new DataItem() { Anno = item.Anno, Mes = (uint)item.Date.Month, Ganancia = item.Earning };
+                List<DataItem> temp = new List<DataItem>();
+                temp.Add(dtemp);
+                AnnosDataWS.Add(temp);
+            }
+        }
+        foreach (var item in stats.EarningsTotal)
+        {
+            if (AnnosDataTotal.Exists(x => x.Exists(y => y.Anno == item.Anno)))
+            {
+                var index = AnnosDataTotal.FindIndex(x => x.Exists(y => y.Anno == item.Anno));
+                AnnosDataTotal[index].Add(new DataItem { Anno = item.Anno, Mes = (uint)item.Date.Month, Ganancia = item.Earning });
+            }
+            else
+            {
+                DataItem dtemp = new DataItem() { Anno = item.Anno, Mes = (uint)item.Date.Month, Ganancia = item.Earning };
+                List<DataItem> temp = new List<DataItem>();
+                temp.Add(dtemp);
+                AnnosDataTotal.Add(temp);
+            }
+        }
+    }
+
+    string FormatAsUSD(object value)
+    {
+        return (Convert.ToDecimal(value)).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
+    }
+
+    private void CambiarChartStore(string nombre)
+    {
+        tipoChartStore = nombre;
+    }
+
+    private void CambiarChartWS(string nombre)
+    {
+        tipoChartWS = nombre;
+    }
+
+    private void CambiarChartTotal(string nombre)
+    {
+        tipoChartTotal = nombre;
+    }
+
+    //chart
+    bool suave = true;
+    class DataItem
+    {
+        public int Anno { get; set; }
+        public uint Mes { get; set; }
+        public decimal Ganancia { get; set; }
+    }
+
+}
