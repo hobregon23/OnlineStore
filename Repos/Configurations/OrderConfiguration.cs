@@ -153,6 +153,32 @@ namespace OnlineStore.Repos
                     Shipping_price = 1500,
                     Status = "Pendiente",
                     User_id = "b99e4efb-37dd-4e8d-8faf-15s6d51sd1v6"
+                },
+                new Request
+                {
+                    Id = 12,
+                    Address_id = 3,
+                    Created_at = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1),
+                    Full_name_receptor = "Henry Obregon Mena",
+                    IsActive = true,
+                    Need_shipping = true,
+                    Price = 5500,
+                    Shipping_price = 1500,
+                    Status = "Pendiente",
+                    User_id = "b99e4efb-37dd-4e8d-8faf-15s6d51sd1v6"
+                },
+                new Request
+                {
+                    Id = 13,
+                    Address_id = 3,
+                    Created_at = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 10),
+                    Full_name_receptor = "Henry Obregon Mena",
+                    IsActive = true,
+                    Need_shipping = true,
+                    Price = 1200,
+                    Shipping_price = 1500,
+                    Status = "Pendiente",
+                    User_id = "b99e4efb-37dd-4e8d-8faf-15s6d51sd1v6"
                 }
             );
         }

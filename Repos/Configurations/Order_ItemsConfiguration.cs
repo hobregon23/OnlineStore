@@ -129,6 +129,26 @@ namespace OnlineStore.Repos
                     Qty = 3,
                     Request_id = 11,
                     Total_import = 21000
+                },
+                new Request_Item
+                {
+                    Id = 13,
+                    Created_at = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1),
+                    IsActive = true,
+                    Product_id = 10,
+                    Qty = 1,
+                    Request_id = 12,
+                    Total_import = 5500
+                },
+                new Request_Item
+                {
+                    Id = 14,
+                    Created_at = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 10),
+                    IsActive = true,
+                    Product_id = 6,
+                    Qty = 3,
+                    Request_id = 13,
+                    Total_import = 1200
                 }
             );
         }
