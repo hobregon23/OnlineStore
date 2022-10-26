@@ -3,59 +3,76 @@
 @attribute [Authorize(Roles = "Admin, Delivery, Worker")]
 @inject NavigationManager navi
 @inject IStatisticsService statsService
+@inject IAppointmentService appointmentService
+@inject IRequestService orderService
 
 
 
 <div class="container space-1 mb-5">
     <div class="col-md-12">
-        <AuthorizeView Roles="Admin">
-            <!-- Users & Orders Inicio -->
-            <div class="row mb-4 mt-2" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
-                <div class="col-xl-6 col-md-6 mb-2 mt-2">
-                    <div class="h-100 py-2" style="border: 0">
-                        <div class="d-flex">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <h5 class="admin-font-weight-bold text-secondary text-uppercase">
-                                        Datos Generales
-                                    </h5>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6 mb-2 mt-2">
-                    <div class="admin-border-left-primary admin-shadow px-2 py-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
-                        <div class="">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs admin-font-weight-bold text-primary text-uppercase mb-1">Pedidos (Hoy)</div>
-                                    <div class="h5 mb-0 admin-font-weight-bold admin-text-gray-800">@stats.OrdersToday</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fa fa-plane fa-2x admin-text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6 mb-2 mt-2">
-                    <div class="admin-border-left-primary admin-shadow px-2 py-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
-                        <div class="">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs admin-font-weight-bold text-primary text-uppercase mb-1">Registro (Hoy)</div>
-                                    <div class="h5 mb-0 admin-font-weight-bold admin-text-gray-800">@stats.UsersToday</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fa fa-users fa-2x admin-text-gray-300"></i>
-                                </div>
+        <!-- Users & Orders Inicio -->
+        <div class="row mb-4 mt-2" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+            <div class="col-xl-3 col-md-6 mb-2 mt-2">
+                <div class="h-100 py-2" style="border: 0">
+                    <div class="d-flex">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <h5 class="admin-font-weight-bold text-secondary text-uppercase">
+                                    Datos Generales
+                                </h5>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Users & Orders Fin -->
+            <div class="col-xl-3 col-md-6 mb-2 mt-2">
+                <div class="admin-border-left-primary admin-shadow px-2 py-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                    <div class="">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs admin-font-weight-bold text-primary text-uppercase mb-1">Citas (Hoy)</div>
+                                <div class="h5 mb-0 admin-font-weight-bold admin-text-gray-800">@appointments_today.Count</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fa fa-inbox fa-2x admin-text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-2 mt-2">
+                <div class="admin-border-left-primary admin-shadow px-2 py-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                    <div class="">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs admin-font-weight-bold text-primary text-uppercase mb-1">Pedidos (Hoy)</div>
+                                <div class="h5 mb-0 admin-font-weight-bold admin-text-gray-800">@stats.OrdersToday</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fa fa-plane fa-2x admin-text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-2 mt-2">
+                <div class="admin-border-left-primary admin-shadow px-2 py-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                    <div class="">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs admin-font-weight-bold text-primary text-uppercase mb-1">Registro (Hoy)</div>
+                                <div class="h5 mb-0 admin-font-weight-bold admin-text-gray-800">@stats.UsersToday</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fa fa-users fa-2x admin-text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Users & Orders Fin -->
+        <AuthorizeView Roles="Admin">
             <!-- Tienda Inicio -->
             <div class="my-card-deck d-block d-lg-flex my-card-lg-gutters-3 mb-2">
                 <!-- Stats -->
@@ -379,6 +396,98 @@
             </div>
             <!-- Best & Idle Fin -->
         </AuthorizeView>
+        <AuthorizeView Roles="Admin, Worker">
+            <div class="row mb-5">
+                <div class="col-lg-12">
+                    <div class="my-card-deck d-block d-lg-flex my-card-lg-gutters-3 mb-5">
+                        <!-- Stats -->
+                        <div class="my-card admin-shadow">
+                            <div class="my-card-body">
+                                <!-- Title & Settings -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="admin-font-weight-bold text-secondary text-uppercase">
+                                        Citas (Hoy)
+                                    </h5>
+                                </div>
+                                <!-- End Title & Settings -->
+                                <hr class="mt-2 mb-3">
+                                <div class="table-responsive-sm">
+
+                                    @if (appointments_today.Count.Equals(0))
+                                    {
+                                        <p class="text-danger" style="text-align: center">N/A</p>
+                                    }
+                                    else
+                                    {
+                                        <table class="table table-light">
+                                            <tbody class="font-size-1" style="font-family: 'Arial Rounded MT'">
+                                                @foreach (var item in appointments_today)
+                                                {
+                                                    <tr class="my-transition-3d-hover">
+                                                        <td class="align-middle"><a class=" text-info" style="font-size: small">@String.Format("{0:dd/MM/yyyy}", item.Date)</a></td>
+                                                        <td class="align-middle"><a style="font-size: small">@item.Type</a></td>
+                                                        <td class="align-middle"><a style="font-size: small">@item.Fullname</a></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    }
+                                </div>
+                                <!-- End Deposit Info -->
+                            </div>
+                        </div>
+                        <!-- End Stats -->
+                    </div>
+                </div>
+            </div>
+        </AuthorizeView>
+        <AuthorizeView Roles="Admin, Delivery">
+            <div class="row mb-5">
+                <div class="col-lg-12">
+                    <div class="my-card-deck d-block d-lg-flex my-card-lg-gutters-3 mb-5">
+                        <!-- Stats -->
+                        <div class="my-card admin-shadow">
+                            <div class="my-card-body">
+                                <!-- Title & Settings -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="admin-font-weight-bold text-secondary text-uppercase">
+                                        Pedidos (Últimos 10)
+                                    </h5>
+                                </div>
+                                <!-- End Title & Settings -->
+                                <hr class="mt-2 mb-3">
+                                <div class="table-responsive-sm">
+
+                                    @if (last10_orders.Count.Equals(0))
+                                    {
+                                        <p class="text-danger" style="text-align: center">N/A</p>
+                                    }
+                                    else
+                                    {
+                                        <table class="table table-light">
+                                            <tbody class="font-size-1" style="font-family: 'Arial Rounded MT'">
+                                                @foreach (var item in last10_orders)
+                                                {
+                                                    <tr class="my-transition-3d-hover">
+                                                        <td class="align-middle"><a class=" text-info" style="font-size: small">@String.Format("{0:dd/MM/yyyy}", item.Created_at)</a></td>
+                                                        <td class="align-middle"><a style="font-size: small">@item.Address.Province.Name</a></td>
+                                                        <td class="align-middle"><a style="font-size: small">$@(item.Price + item.Shipping_price)</a></td>
+                                                        <td class="align-middle"><a class="@(item.Status.Equals("Pendiente")?"text-warning":"") @(item.Status.Equals("Tomado")?"text-primary":"") @(item.Status.Equals("Terminado")?"text-success":"") @(item.Status.Equals("Cancelado")?"text-danger":"")" style="font-size: small">@item.Status</a></td>
+                                                        <td class="align-middle"><a class="@(item.Is_paid?"text-success":"")" style="font-size: small">@(item.Is_paid?"Pagada":"Sin Pagar")</a></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    }
+                                </div>
+                                <!-- End Deposit Info -->
+                            </div>
+                        </div>
+                        <!-- End Stats -->
+                    </div>
+                </div>
+            </div>
+        </AuthorizeView>
     </div>
 </div>
 
@@ -386,6 +495,8 @@
 @code {
 
     public Statistic stats { get; set; } = new Statistic();
+    public List<Appointment> appointments_today { get; set; } = new List<Appointment>();
+    public List<Request> last10_orders { get; set; } = new List<Request>();
     int bestCount = 1;
     int idleCount = 1;
 
@@ -397,6 +508,8 @@
     async Task LoadItems(int page = 1)
     {
         stats = await statsService.Get();
+        appointments_today = await appointmentService.GetToday();
+        last10_orders = await orderService.GetLast10();
     }
 
     string FormatAsUSD(object value)

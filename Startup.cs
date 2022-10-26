@@ -95,6 +95,7 @@ namespace OnlineStore
             services.AddScoped<IBannerTopService, BannerTopService>();
             services.AddScoped<IBannerBottomService, BannerBottomService>();
             services.AddScoped<IStatisticsService, StatisticsService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<ComponentStateChangedObserver>();
         }
 

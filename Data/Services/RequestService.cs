@@ -13,6 +13,7 @@ namespace OnlineStore.Data.Services
     {
         Task Add(Check_Out item, Cart cart, bool need_shipping);
         Task<Request> GetById(int id);
+        Task<List<Request>> GetLast10();
         Task<PaginationResponse<Request>> GetPag(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo);
         Task<bool> VerifyItemQty(List<CartItem> items);
         Task MarkAsTomado(Request item);
@@ -42,6 +43,13 @@ namespace OnlineStore.Data.Services
             _toastService = toastService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+        }
+
+        public async Task<List<Request>> GetLast10()
+        {
+            var rol = await _jwtAuthService.GetUserRol();
+            var prov_id = await _jwtAuthService.GetUserProvince();
+            return await _unitOfWork.Requests.GetLast10(rol, prov_id);
         }
 
         public async Task<PaginationResponse<Request>> Track(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo)

@@ -11,10 +11,13 @@
     <ul class="nav flex-column">
         <RadzenPanelMenu Style="border-bottom: none">
             <RadzenPanelMenuItem Text="Home" Path="/admin" Icon="home" Style="border-bottom: none" />
-            <RadzenPanelMenuItem Text="Órdenes" Path="/admin/orders" Icon="local_shipping" Style="border-bottom: none"></RadzenPanelMenuItem>
+            <AuthorizeView Roles="Admin, Delivery">
+                <RadzenPanelMenuItem Text="Órdenes" Path="/admin/orders" Icon="local_shipping" Style="border-bottom: none"></RadzenPanelMenuItem>
+            </AuthorizeView>
             <AuthorizeView Roles="Admin, Worker">
                 <RadzenPanelMenuItem Text="Servicios" Path="/admin/services" Icon="list_rich" Style="border-bottom: none"></RadzenPanelMenuItem>
                 <RadzenPanelMenuItem Text="Cierres" Path="/admin/cierres" Icon="verified" Style="border-bottom: none"></RadzenPanelMenuItem>
+                <RadzenPanelMenuItem Text="Citas" Path="/admin/appointments" Icon="inbox" Style="border-bottom: none"></RadzenPanelMenuItem>
             </AuthorizeView>
             <AuthorizeView Roles="Admin">
                 @*<RadzenPanelMenuItem Text="Pagos" Path="/admin/payments" Icon="payment" Style="border-bottom: none"></RadzenPanelMenuItem>*@

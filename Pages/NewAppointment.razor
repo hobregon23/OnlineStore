@@ -1,0 +1,112 @@
+﻿@page "/new-appointment"
+@inject IToastService toastService
+@inject IAppointmentService appointmentService
+@attribute [AllowAnonymous]
+
+<div class="content px-4">
+    <div class="container space-top-2 space-top-md-3">
+        <div class="container row px-5">
+            @if (Done)
+            {
+            <div class="col-lg-12 col-md-10 mx-md-auto m-5">
+                <div class="row" style="margin-top:-30px">
+                    <div class="col-lg-12" style="text-align:center">
+                        <div class="mb-4">
+                            <i class="fa fa-check fa-5x text-success"></i>
+                        </div>
+                        <a href="javascript:;" @onclick="@New" class="primary-btn transition-3d-hover">AGENDAR OTRA</a>
+                    </div>
+                </div>
+            </div>            
+            }
+            else
+            {
+                <EditForm class="col-lg-11 col-md-10 mx-md-auto" Model="appointment" OnValidSubmit="OnSubmit">
+                    <!-- Title -->
+                    <div class="col-xl-12 col-md-6 mb-5 mt-2">
+                    <div class="admin-border-left-primary admin-shadow px-2 py-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                        <div class="">
+                            <div class="row no-gutters align-items-center m-2">
+                                <div class="col mr-2">
+                                    <div class="text-secondary mb-1">Recuerde asistir a su cita entre las 10 y las 05 PM </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-info-circle fa-2x text-info"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="mb-4">
+                        <h2 class="h3 text-primary font-weight-normal mb-3 mt-3">Agendar Cita</h2>
+                    </div>
+                    <!-- End Title -->
+                    <!-- Errors here -->
+                    <DataAnnotationsValidator />
+                    <!-- End Errors -->
+                    <!-- Form Group -->
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label for="taskName">Tipo</label>
+                                <select class="form-control" @bind="@appointment.Type" required>
+                                    <option disabled value="">Seleccionar</option>
+                                    <option value="Defectación">Defectación</option>
+                                    <option value="Reparar entrada de carga">Reparar entrada de carga</option>
+                                    <option value="Cambio de partes y piezas">Cambio de partes y piezas</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label for="taskName">Fecha</label>
+                                <InputDate class="form-control" @bind-Value="@appointment.Date" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label>Nombre Completo<span>*</span></label>
+                                <InputText Class="form-control" @bind-Value="@appointment.Fullname" />
+                                <ValidationMessage For="@(() => appointment.Fullname)" />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Button -->
+                    <div class="row align-items-center mt-2 mb-5">
+                        <div class="col-lg-7 col-sm-6 text-right">
+                            <button type="submit" class="primary-btn transition-3d-hover" style="border:0">Agendar</button>
+                        </div>
+                    </div>
+                    <!-- End Button -->
+                </EditForm>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+
+    private Appointment appointment { get; set; } = new Appointment();
+    private bool Done { get; set; } = false;
+
+    private async Task OnSubmit()
+    {
+        if (appointment.Date.Year < DateTime.Now.Year || appointment.Date.Month < DateTime.Now.Month || appointment.Date.Day < DateTime.Now.Day + 1 )
+        {
+            toastService.ShowError("Debe ser para una fecha posterior a la actual", "Error");
+            return;
+        }
+        await appointmentService.Add(appointment);
+        Done = true;
+        toastService.ShowSuccess("Cita agendada", "Genial");
+    }
+
+    private void New()
+    {
+        Done = false;
+    }
+
+}
+

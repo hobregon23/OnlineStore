@@ -29,6 +29,7 @@ namespace OnlineStore.UoW
         ICenterRepository Centers { get; }
         IBannerTopRepository Top_Banners { get; }
         IBannerBottomRepository Bottom_Banners { get; }
+        IAppointmentRepository Appointments { get; }
 
         Task<bool> SaveChangesAsync();
     }
@@ -56,6 +57,8 @@ namespace OnlineStore.UoW
         public ICenterRepository Centers { get; }
         public IBannerTopRepository Top_Banners { get; }
         public IBannerBottomRepository Bottom_Banners { get; }
+        public IAppointmentRepository Appointments { get; }
+
 
         public UnitOfWork(ApplicationDbContext context, UserManager<User> userManager, IMapper mapper, IToastService toastService)
         {
@@ -77,6 +80,7 @@ namespace OnlineStore.UoW
             Centers = new CenterRepository(context, userManager);
             Top_Banners = new BannerTopRepository(context, userManager);
             Bottom_Banners = new BannerBottomRepository(context, userManager);
+            Appointments = new AppointmentRepository(context, userManager);
         }
 
         public async Task<bool> SaveChangesAsync()

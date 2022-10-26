@@ -38,6 +38,7 @@ namespace OnlineStore
             modelBuilder.ApplyConfiguration(new CenterConfiguration());
             modelBuilder.ApplyConfiguration(new BannerTopConfiguration());
             modelBuilder.ApplyConfiguration(new BannerBottomConfiguration());
+            modelBuilder.ApplyConfiguration(new AppointmentConfiguration());
         }
 
         public DbSet<Address> Addresses { get; set; }
@@ -57,5 +58,6 @@ namespace OnlineStore
         public DbSet<Center> Centers { get; set; }
         public DbSet<BannerTop> Top_Banners { get; set; }
         public DbSet<BannerBottom> Bottom_Banners { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
     }
 }

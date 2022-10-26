@@ -12,6 +12,7 @@ namespace OnlineStore.Repos
     {
         Task<Request> GetByIdIncluding(int id);
         Task<List<Request>> GetAllIncluding();
+        Task<List<Request>> GetLast10(string rol, int prov_id);
         Task<PaginationResponse<Request>> Track(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo, string user_id);
         Task<PaginationResponse<Request>> GetPag(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo, string rol, int prov_id);
     }
@@ -127,6 +128,20 @@ namespace OnlineStore.Repos
                 double pagesQuantity = Math.Ceiling(count / pagination.QuantityPerPage);
 
                 return new PaginationResponse<Request>() { ListaObjetos = await queryable.Paginate(pagination).ToListAsync(), CantPorPag = (int)pagesQuantity, ItemsTotal = queryable.Count() };
+            }
+        }
+
+        public async Task<List<Request>> GetLast10(string rol, int prov_id)
+        {
+            if (rol.Equals("Admin"))
+            {
+                var queryable = _context.Requests.Include(x => x.User).Include(x => x.Dealer).Include(x => x.Address).ThenInclude(x => x.Province).OrderByDescending(x => x.Created_at);
+                return await queryable.ToListAsync();
+            }
+            else
+            {
+                var queryable = _context.Requests.Include(x => x.User).Include(x => x.Dealer).Include(x => x.Address).ThenInclude(x => x.Province).Where(x => x.Need_shipping && x.Address.Province_id.Equals(prov_id) && x.Is_deleted == false).OrderByDescending(x => x.Created_at);
+                return await queryable.ToListAsync();
             }
         }
     }

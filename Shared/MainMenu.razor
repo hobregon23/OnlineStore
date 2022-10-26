@@ -16,7 +16,7 @@
                     <li class="@(navi.Uri.Contains("shop-grid") ? "active" : "")"><a href="javascript:;" @onclick="@(()=>navi.NavigateTo("shop-grid", true))">Tienda</a></li>
                     <li class="@(navi.Uri.Contains("contact") ? "active" : "")"><a href="javascript:;" @onclick="@(()=>navi.NavigateTo("contact", true))">Contacto</a></li>
                     <li class="@(navi.Uri.Contains("tracker") ? "active" : "")"><a href="javascript:;" @onclick="@(()=>navi.NavigateTo("tracker", true))">Pedidos</a></li>
-                    <AuthorizeView Roles="Admin, Delivery">
+                    <AuthorizeView Roles="Admin, Delivery, Worker">
                         <li><a href="javascript:;" @onclick="@(()=>navi.NavigateTo("admin", true))">Admin</a></li>
                     </AuthorizeView>
                 </ul>
