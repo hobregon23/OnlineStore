@@ -6,11 +6,11 @@ namespace OnlineStore.Models
     public class UserDto
     {
         [Required]
-        [StringLength(100, MinimumLength = 5)]
+        [StringLength(100, MinimumLength = 5, ErrorMessage = "Mínimo 5 caracteres")]
         public string UserName { get; set; }
 
         [Required]
-        [StringLength(100, MinimumLength = 5)]
+        [StringLength(11, MinimumLength = 11, ErrorMessage = "Debe tener 11 caracteres")]
         public string CI { get; set; }
 
         [Required]
@@ -22,21 +22,21 @@ namespace OnlineStore.Models
         public string LastName { get; set; }
 
         [Required]
-        [DataType(DataType.PhoneNumber)]
+        [DataType(DataType.PhoneNumber, ErrorMessage = "Número inválido")]
         [Phone]
         public string PhoneNumber { get; set; }
 
         [Required]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Correo inválido")]
         public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [StringLength(100, MinimumLength = 5)]
+        [StringLength(100, MinimumLength = 5, ErrorMessage = "Mínimo 5 caracteres")]
         public string Password { get; set; }
 
         [Compare("Password")]
-        [DataType(DataType.Password)]
+        [DataType(DataType.Password, ErrorMessage = "No coinciden")]
         public string ConfirmPassword { get; set; }
 
         [DataType(DataType.DateTime)]
