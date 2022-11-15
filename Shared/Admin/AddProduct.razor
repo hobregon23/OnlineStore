@@ -111,7 +111,7 @@
                     </div>
                     <div class="checkout__input">
                         <label>Imagen<span>*</span></label>
-                        <RadzenUpload @ref="upload" Auto="false" Accept="image/*" Multiple="false" Url=@($"api/upload/product?filename={Item.Name.ToLower()+".jpg"}") Complete=@CompleteUpload Progress=@(args => OnProgress(args, "Subidos")) class="w-100" />
+                        <RadzenUpload @ref="upload" Auto="false" Accept="image/*" Multiple="false" Url=@($"api/upload/product?filename={generated_name}") Complete=@CompleteUpload Progress=@(args => OnProgress(args, "Subidos")) class="w-100" />
                         <RadzenProgressBar Value="@progress" Unit="@info" Visible="@(progress>0)" Style="margin-bottom:20px"></RadzenProgressBar>
                     </div>
                     <!-- Button -->
@@ -145,6 +145,15 @@
     RadzenUpload upload;
     string info;
     int progress;
+
+    Random random = new Random();
+    string generated_name = "";
+
+    public void RandomString()
+    {
+        const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+        generated_name = (new string(Enumerable.Repeat(chars, 10).Select(s => s[random.Next(s.Length)]).ToArray())) + ".jpg";
+    }
 
     private string Brand_id
     {
@@ -215,7 +224,10 @@
     private async Task Submit()
     {
         if (upload.HasValue)
-            Item.Image_url = "img/products/" + Item.Name.ToLower() + ".jpg";
+        {
+            RandomString();
+            Item.Image_url = "img/products/" + generated_name;
+        }
         var res = await productService.Add(Item);
         if (res.Equals("ok"))
         {
