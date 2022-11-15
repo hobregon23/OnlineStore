@@ -272,7 +272,7 @@ namespace OnlineStore.Repos
                 },
                 new Product
                 {
-                    Id = 13,
+                    Id = 14,
                     Name = "Auriculares Huawei",
                     Category_id = 7,
                     Model_id = 28,
