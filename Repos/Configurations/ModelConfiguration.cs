@@ -239,6 +239,51 @@ namespace OnlineStore.Repos
                     Brand_id = 5,
                     Created_at = DateTime.Now,
                     IsActive = true
+                },
+                new Model
+                {
+                    Id = 26,
+                    Name = "Universal",
+                    Code_name = "universal",
+                    Brand_id = 1,
+                    Created_at = DateTime.Now,
+                    IsActive = true
+                },
+                new Model
+                {
+                    Id = 27,
+                    Name = "Universal",
+                    Code_name = "universal",
+                    Brand_id = 2,
+                    Created_at = DateTime.Now,
+                    IsActive = true
+                },
+                new Model
+                {
+                    Id = 28,
+                    Name = "Universal",
+                    Code_name = "universal",
+                    Brand_id = 3,
+                    Created_at = DateTime.Now,
+                    IsActive = true
+                },
+                new Model
+                {
+                    Id = 29,
+                    Name = "Universal",
+                    Code_name = "universal",
+                    Brand_id = 4,
+                    Created_at = DateTime.Now,
+                    IsActive = true
+                },
+                new Model
+                {
+                    Id = 30,
+                    Name = "Universal",
+                    Code_name = "universal",
+                    Brand_id = 5,
+                    Created_at = DateTime.Now,
+                    IsActive = true
                 }
             );
         }

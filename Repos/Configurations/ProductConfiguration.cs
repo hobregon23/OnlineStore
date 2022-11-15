@@ -209,6 +209,86 @@ namespace OnlineStore.Repos
                     Cost = 1000,
                     Created_at = DateTime.Now.AddDays(1),
                     IsActive = true
+                },
+                new Product
+                {
+                    Id = 11,
+                    Name = "Cargador para samsung a20",
+                    Category_id = 4,
+                    Model_id = 2,
+                    Brand_name = "Samsung",
+                    Category_name = "Cargadores",
+                    Model_name = "A20",
+                    Image_url = "img/sin_imagen.jpg",
+                    Description = "Producto 100% nuevo. Traido desde USA. Original",
+                    Is_new = true,
+                    Is_for_sell = true,
+                    Qty = 10,
+                    Original_price = 1300,
+                    Price = 1000,
+                    Cost = 350,
+                    Created_at = DateTime.Now,
+                    IsActive = true
+                },
+                new Product
+                {
+                    Id = 12,
+                    Name = "Tablet A20",
+                    Category_id = 6,
+                    Model_id = 2,
+                    Brand_name = "Samsung",
+                    Category_name = "Tabletas",
+                    Model_name = "A20",
+                    Image_url = "img/sin_imagen.jpg",
+                    Description = "Producto 100% nuevo. Traido desde USA. Original",
+                    Is_new = true,
+                    Is_for_sell = true,
+                    Qty = 10,
+                    Original_price = 15000,
+                    Price = 13000,
+                    Cost = 9000,
+                    Created_at = DateTime.Now,
+                    IsActive = true
+                },
+                new Product
+                {
+                    Id = 13,
+                    Name = "Auriculares Samsung",
+                    Category_id = 7,
+                    Model_id = 26,
+                    Brand_name = "Samsung",
+                    Category_name = "Accesorios",
+                    Model_name = "Universal",
+                    Image_url = "img/sin_imagen.jpg",
+                    Description = "Producto 100% nuevo. Traido desde USA. Original",
+                    Is_new = true,
+                    Is_for_sell = true,
+                    Qty = 10,
+                    Original_price = 400,
+                    Price = 400,
+                    Cost = 150,
+                    Created_at = DateTime.Now,
+                    IsActive = true
+                },
+                new Product
+                {
+                    Id = 13,
+                    Name = "Auriculares Huawei",
+                    Category_id = 7,
+                    Model_id = 28,
+                    Brand_name = "Huawei",
+                    Category_name = "Accesorios",
+                    Model_name = "Universal",
+                    Image_url = "img/sin_imagen.jpg",
+                    Description = "Producto 100% nuevo. Traido desde USA. Original",
+                    Is_new = true,
+                    Is_for_sell = true,
+                    Qty = 10,
+                    Original_price = 400,
+                    Price = 400,
+                    Cost = 150,
+                    Created_at = DateTime.Now,
+                    IsActive = true
                 }
             );
         }
