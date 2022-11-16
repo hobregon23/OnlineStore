@@ -7,10 +7,17 @@ namespace OnlineStore.Models
     {
         [Key]
         public int Id { get; set; }
+
         [Required(ErrorMessage = "Tipo de cita es requerido.")]
         public string Type { get; set; }
+
         public DateTime Date { get; set; } = DateTime.Now.AddDays(1);
+
         [Required(ErrorMessage = "El nombre es requerido.")]
         public string Fullname { get; set; }
+
+        [Required]
+        [EmailAddress(ErrorMessage = "Correo inválido")]
+        public string Email { get; set; }
     }
 }

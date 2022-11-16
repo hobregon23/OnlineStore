@@ -4,6 +4,7 @@
 @inject IJSRuntime JS
 @inject IToastService toastService
 @inject IAppointmentService appointmentService
+@inject INotificationService notificationService
 @inject NavigationManager navi
 
 
@@ -32,6 +33,7 @@
                                     <th>Tipo</th>
                                     <th><span style="cursor:pointer" @onclick="@(() => Ordenar("Date"))">Fecha </span><i class="@(IndicadorOrden("Date"))"></i></th>
                                     <th>Nombre</th>
+                                    <th>Correo</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -43,6 +45,7 @@
                                         <td class="align-middle"><a style="font-size: small">@item.Type</a></td>
                                         <td class="align-middle"><a class=" text-info" style="font-size: small">@String.Format("{0:dd/MM/yyyy}", item.Date)</a></td>
                                         <td class="align-middle"><a style="font-size: small">@item.Fullname</a></td>
+                                        <td class="align-middle"><a style="font-size: small">@item.Email</a></td>
                                         <td class="align-middle">
                                             <mark @onclick="@(() => Eliminar(item))" class="bg-danger" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="fa fa-trash" style="font-size: 20px" aria-hidden="true"></span></mark>
                                         </td>
@@ -122,13 +125,15 @@
 
     private async Task Eliminar(Appointment item)
     {
-        if (item.IsActive)
+        if (await JS.ConfirmSinResp($"Eliminar", $"¿Desea eliminar la cita?"))
         {
-            if (await JS.ConfirmSinResp($"Eliminar", $"¿Desea eliminar la cita?"))
+            await appointmentService.Eliminar(item.Id);
+            if (item.Date.AddHours(8) >= DateTime.Now)
             {
-                await appointmentService.Eliminar(item.Id);
-                await LoadItems();
+                notificationService.SendMailToClient("Cita Cancelada", "Su cita para nuestro taller ha sido cancelada. Podrá solicitar una nueva. Gracias.", item.Email);
+                toastService.ShowSuccess("El cliente ha sido notificado", "Info");
             }
+            await LoadItems();
         }
     }
 
