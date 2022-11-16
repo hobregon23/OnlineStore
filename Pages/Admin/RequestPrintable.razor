@@ -1,5 +1,5 @@
 ﻿@page "/admin/order_printable"
-@layout BlazorLayout
+@layout BlankLayout
 @attribute [Authorize(Roles = "Admin, Delivery")]
 @inject IRequestService orderService
 @inject IJSRuntime JS
@@ -7,121 +7,123 @@
 @inject ICenterService centerService
 
 
-    <div class="col-12" style="text-align: end">
-        <button type="button" class="btn btn-outline-primary hideWhenPrint" @onclick="Print">Imprimir</button>
-    </div>
-    <div id="app" class="col-11">
-
-        <h3>Factura</h3>
-
-        <div class="row my-3">
-            <div class="col-9">
-                <h1>OnlineStore</h1>
-                <span style="color: #6f6f6f;">@center.Address</span>
-                <p>@center.City</p>
-            </div>
-            <div class="col-3">
-                <img src="/img/logo-print.png" />
-            </div>
+    <div class="p-5">
+        <div class="col-12" style="text-align: end">
+            <button type="button" class="btn btn-outline-primary hideWhenPrint" @onclick="Print">Imprimir</button>
         </div>
+        <div id="app" class="col-11">
 
-        <hr />
+            <h3>Factura</h3>
 
-        <div class="row fact-info mt-3">
-            <div class="col-3">
-                <h5>Facturar a</h5>
-                <p>
-                    @requestInfo.Full_name_receptor
-                </p>
+            <div class="row my-3">
+                <div class="col-9">
+                    <h1>OnlineStore</h1>
+                    <span style="color: #6f6f6f;">@center.Address</span>
+                    <p>@center.City</p>
+                </div>
+                <div class="col-3">
+                    <img src="/img/logo-print.png" />
+                </div>
             </div>
-            <div class="col-3">
-                <h5>Enviar a</h5>
-                <p>
-                    @requestInfo.Address.Address_line, 
-                    @requestInfo.Address.City, 
-                    @requestInfo.Address.State,
-                    @requestInfo.Address.Province.Name,
-                    @requestInfo.Address.Postal_code
-                </p>
-            </div>
-            <div class="col-3">
-                <h5>N° de factura</h5>
-                <h5>Fecha</h5>
-                <h5>Envío</h5>
-            </div>
-            <div class="col-3">
-                <h6 style="color: #6f6f6f;">@requestInfo.Id</h6>
-                <h6 style="color: #6f6f6f;">@String.Format("{0:dd/MM/yyyy}", requestInfo.Created_at)</h6>
-                <h6 style="color: #6f6f6f;">@(requestInfo.Need_shipping ? "Si" : "No")</h6>
-            </div>
-        </div>
 
-        <div class="row my-5">
-            <table class="table table-borderless factura">
-                <thead>
-                    <tr>
-                        <th>Cant.</th>
-                        <th>Descripcion</th>
-                        <th>Precio Unitario</th>
-                        <th>Importe</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in requestInfo.Request_item_list)
-                    {
+            <hr />
+
+            <div class="row fact-info mt-3">
+                <div class="col-3">
+                    <h5>Facturar a</h5>
+                    <p>
+                        @requestInfo.Full_name_receptor
+                    </p>
+                </div>
+                <div class="col-3">
+                    <h5>Enviar a</h5>
+                    <p>
+                        @requestInfo.Address.Address_line,
+                        @requestInfo.Address.City,
+                        @requestInfo.Address.State,
+                        @requestInfo.Address.Province.Name,
+                        @requestInfo.Address.Postal_code
+                    </p>
+                </div>
+                <div class="col-3">
+                    <h5>N° de factura</h5>
+                    <h5>Fecha</h5>
+                    <h5>Envío</h5>
+                </div>
+                <div class="col-3">
+                    <h6 style="color: #6f6f6f;">@requestInfo.Id</h6>
+                    <h6 style="color: #6f6f6f;">@String.Format("{0:dd/MM/yyyy}", requestInfo.Created_at)</h6>
+                    <h6 style="color: #6f6f6f;">@(requestInfo.Need_shipping ? "Si" : "No")</h6>
+                </div>
+            </div>
+
+            <div class="row my-5">
+                <table class="table table-borderless factura">
+                    <thead>
                         <tr>
-                            <td>@item.Qty</td>
-                            <td>@item.Product.Name</td>
-                            <td>@item.Product.Price</td>
-                            <td>@item.Total_import</td>
+                            <th>Cant.</th>
+                            <th>Descripcion</th>
+                            <th>Precio Unitario</th>
+                            <th>Importe</th>
                         </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th class="pb-0"></th>
-                        <th class="pb-0"></th>
-                        <th class="pb-0" style="font-size: 20px">Sub Total</th>
-                        <th class="pb-0" style="font-size: 20px">$@requestInfo.Price</th>
-                    </tr>
-                    <tr>
-                        <th class="pb-0 pt-0"></th>
-                        <th class="pb-0 pt-0"></th>
-                        <th class="pb-0 pt-0" style="font-size: 20px">Envío</th>
-                        <th class="pb-0 pt-0" style="font-size: 20px">$@requestInfo.Shipping_price</th>
-                    </tr>
-                    <tr>
-                        <th class="pb-0 pt-0"></th>
-                        <th class="pb-0 pt-0"></th>
-                        <th class="pb-0 pt-0">Total Factura</th>
-                        <th class="pb-0 pt-0">$@(requestInfo.Price + requestInfo.Shipping_price)</th>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-
-        <div class="cond row mb-5">
-            <div class="col-10 mt-3">
-                <h4>Condiciones y formas de pago</h4><br />
-                @if (requestInfo.Is_paid)
-                {
-                    <p>Estado: Pagada</p>
-                }
-                else
-                {
-                    <p>Estado: Pendiente de pago</p>
-                    <p><input type="checkbox" disabled /> Pago en efectivo.</p>
-                    <p><input type="checkbox" disabled /> Pago por transferencia a la cuenta: <strong>@center.Tarjeta_Activa</strong></p>
-                }
-                <br />
-                <p>
-                    Gracias por su compra.
-                </p>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in requestInfo.Request_item_list)
+                        {
+                            <tr>
+                                <td>@item.Qty</td>
+                                <td>@item.Product.Name</td>
+                                <td>@item.Product.Price</td>
+                                <td>@item.Total_import</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class="pb-0"></th>
+                            <th class="pb-0"></th>
+                            <th class="pb-0" style="font-size: 20px">Sub Total</th>
+                            <th class="pb-0" style="font-size: 20px">$@requestInfo.Price</th>
+                        </tr>
+                        <tr>
+                            <th class="pb-0 pt-0"></th>
+                            <th class="pb-0 pt-0"></th>
+                            <th class="pb-0 pt-0" style="font-size: 20px">Envío</th>
+                            <th class="pb-0 pt-0" style="font-size: 20px">$@requestInfo.Shipping_price</th>
+                        </tr>
+                        <tr>
+                            <th class="pb-0 pt-0"></th>
+                            <th class="pb-0 pt-0"></th>
+                            <th class="pb-0 pt-0">Total Factura</th>
+                            <th class="pb-0 pt-0">$@(requestInfo.Price + requestInfo.Shipping_price)</th>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
-            <div class="col-2 mt-3" style="position: relative;">
-                <div style="position: absolute;bottom: 0;">
-                    <hr class="m-0" style="border-color: black;">
-                    <h5>Firma Cliente</h5>
+
+            <div class="cond row mb-5">
+                <div class="col-10 mt-3">
+                    <h4>Condiciones y formas de pago</h4><br />
+                    @if (requestInfo.Is_paid)
+                    {
+                        <p>Estado: Pagada</p>
+                    }
+                    else
+                    {
+                        <p>Estado: Pendiente de pago</p>
+                        <p><input type="checkbox" disabled /> Pago en efectivo.</p>
+                        <p><input type="checkbox" disabled /> Pago por transferencia a la cuenta: <strong>@center.Tarjeta_Activa</strong></p>
+                    }
+                    <br />
+                    <p>
+                        Gracias por su compra.
+                    </p>
+                </div>
+                <div class="col-2 mt-3" style="position: relative;">
+                    <div style="position: absolute;bottom: 0;">
+                        <hr class="m-0" style="border-color: black;">
+                        <h5>Firma Cliente</h5>
+                    </div>
                 </div>
             </div>
         </div>

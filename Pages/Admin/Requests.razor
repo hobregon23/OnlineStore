@@ -216,9 +216,10 @@
         }
     }
 
-    private void Print(Request item)
+    private async Task Print(Request item)
     {
-        navi.NavigateTo("/admin/order_printable?id="+item.Id, true);
+        //navi.NavigateTo("/order_printable?id=" + item.Id, true);
+        await JS.InvokeVoidAsync("open", "/admin/order_printable?id=" + item.Id, "_blank");
     }
 
     private async void DataChanged()

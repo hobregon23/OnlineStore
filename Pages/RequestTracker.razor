@@ -150,9 +150,10 @@
         await LoadItems();
     }
 
-    private void Print(Request item)
+    private async Task Print(Request item)
     {
-        navi.NavigateTo("/order_printable?id=" + item.Id, true);
+        //navi.NavigateTo("/order_printable?id=" + item.Id, true);
+        await JS.InvokeVoidAsync("open", "/order_printable?id=" + item.Id, "_blank");
     }
 
     private async Task Pay(Request item)
