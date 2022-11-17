@@ -187,7 +187,8 @@ namespace OnlineStore.Data.Services
                     State_id = item.Address.State_id,
                     Postal_code = item.Address.Postal_code,
                     Province_id = item.Address.Province_id,
-                    Province = null
+                    Province = null,
+                    State = null
                 };
                 request.Address_id = request.Address.Id;
             }
