@@ -99,7 +99,7 @@ namespace OnlineStore.Repos
             var user = _mapper.Map<User>(model);
             user.IsActive = true;
             user.Created_at = DateTime.Now;
-            user.Address = new Address() { Province = null, Address_line = model.Address.Address_line, City = model.Address.City, Postal_code = model.Address.Postal_code, State = model.Address.State, Province_id = model.Address.Province_id };
+            user.Address = new Address() { Province = null, State = null, Address_line = model.Address.Address_line, City = model.Address.City, Postal_code = model.Address.Postal_code, State_id = model.Address.State_id, Province_id = model.Address.Province_id };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -121,7 +121,7 @@ namespace OnlineStore.Repos
             var user = _mapper.Map<User>(model);
             user.IsActive = true;
             user.Created_at = DateTime.Now;
-            user.Address = new Address() { Province = null, Address_line = model.Address.Address_line, City = model.Address.City, Postal_code = model.Address.Postal_code, State = model.Address.State, Province_id = model.Address.Province_id };
+            user.Address = new Address() { Province = null, State = null, Address_line = model.Address.Address_line, City = model.Address.City, Postal_code = model.Address.Postal_code, State_id = model.Address.State_id, Province_id = model.Address.Province_id };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -155,7 +155,6 @@ namespace OnlineStore.Repos
                     user.PhoneNumber = model.PhoneNumber;
                     user.Name = model.Name;
                     user.LastName = model.LastName;
-                    user.PhoneNumber = model.PhoneNumber;
                     Update(user);
                     try
                     {
@@ -179,7 +178,6 @@ namespace OnlineStore.Repos
                 user.PhoneNumber = model.PhoneNumber;
                 user.Name = model.Name;
                 user.LastName = model.LastName;
-                user.PhoneNumber = model.PhoneNumber;
                 Update(user);
                 var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                 if (result.Succeeded)

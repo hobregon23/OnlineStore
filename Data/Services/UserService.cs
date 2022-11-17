@@ -82,7 +82,7 @@ namespace OnlineStore.Data.Services
 
         public async Task<bool> UpdateUser(UserUpdate model)
         {
-            if (!await _jwtAuthService.IsAuthorized(new List<string>() { "Admin", "User", "Delivery" }))
+            if (!await _jwtAuthService.IsAuthorized(new List<string>() { "Admin", "User", "Delivery", "Worker" }))
                 return false;
             _unitOfWork.Addresses.Update(model.Address);
             await _unitOfWork.SaveChangesAsync();

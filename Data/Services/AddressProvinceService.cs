@@ -13,6 +13,7 @@ namespace OnlineStore.Data.Services
         Task<decimal> GetShipPrice(int id);
         Task<List<Address_Province>> GetAll();
         Task<List<Address_Province>> GetAllActive();
+        Task<List<Address_State>> GetStatesByProvince(int id);
         Task Update(Address_Province item);
     }
 
@@ -41,18 +42,23 @@ namespace OnlineStore.Data.Services
 
         public async Task<List<Address_Province>> GetAll()
         {
-            return (await _unitOfWork.Provinces.GetAll()).ToList();
+            return await _unitOfWork.Provinces.GetAllIncluding();
         }
 
         public async Task<List<Address_Province>> GetAllActive()
         {
-            return (await _unitOfWork.Provinces.GetAll()).Where(x => x.IsActive).ToList();
+            return await _unitOfWork.Provinces.GetAllActiveIncluding();
         }
 
         public async Task Update(Address_Province item)
         {
             _unitOfWork.Provinces.Update(item);
             await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<List<Address_State>> GetStatesByProvince(int id)
+        {
+            return await _unitOfWork.Provinces.GetStatesByProvince(id);
         }
     }
 }

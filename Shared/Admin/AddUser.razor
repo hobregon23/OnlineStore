@@ -101,31 +101,39 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="checkout__input">
-                                <label>Municipio <span>*</span></label>
-                                <InputText Class="form-control" @bind-Value="@Item.Address.State" />
-                                <ValidationMessage For="@(() => Item.Address.State)" />
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="checkout__input">
-                                <label>Código Postal<span>*</span></label>
-                                <InputText Class="form-control" @bind-Value="@Item.Address.Postal_code" />
-                                <ValidationMessage For="@(() => Item.Address.Postal_code)" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <div class="checkout__input">
                                 <label>Provincia<span>*</span></label><br />
-                                <InputSelect Class="form-control" @bind-Value="@ProvinceId" required>
+                                <select class="custom-select-primary" value="@Province" @onchange="OnProvinceChange" required>
+                                    <option value="all" disabled>Seleccionar</option>
                                     @foreach (var item in Provinces)
                                     {
                                         <option value="@item.Id">
                                             @item.Name
                                         </option>
                                     }
-                                </InputSelect>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label>Municipio <span>*</span></label><br />
+                                <select class="custom-select-primary" value="@State" @onchange="OnStateChange" required>
+                                    <option value="all" disabled>Seleccionar</option>
+                                    @foreach (var item in StatesByProvince_list)
+                                    {
+                                        <option value="@item.Id">
+                                            @item.Name
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
+                                <label>Código Postal<span>*</span></label>
+                                <InputText Class="form-control" @bind-Value="@Item.Address.Postal_code" />
+                                <ValidationMessage For="@(() => Item.Address.Postal_code)" />
                             </div>
                         </div>
                     </div>
@@ -153,8 +161,9 @@
     public Action DataChanged { get; set; }
 
     private List<Address_Province> Provinces = new List<Address_Province>();
+    private List<Address_State> StatesByProvince_list = new List<Address_State>();
     private string userRol { get; set; } = "Delivery";
-    private string ProvinceId
+    private string Province
     {
         get
         {
@@ -165,11 +174,40 @@
             Item.Address.Province_id = int.Parse(value);
         }
     }
+    private string State
+    {
+        get
+        {
+            return Item.Address.State_id.ToString();
+        }
+        set
+        {
+            Item.Address.State_id = int.Parse(value);
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
         Provinces = await provinceService.GetAll();
         Item.Address.Province_id = 1;
+        await LoadData();
+    }
+
+    public async Task LoadData()
+    {
+        StatesByProvince_list = await provinceService.GetStatesByProvince(Item.Address.Province_id);
+        Item.Address.State_id = StatesByProvince_list[0].Id;
+    }
+
+    public async Task OnStateChange(ChangeEventArgs e)
+    {
+        Item.Address.State_id = int.Parse(e.Value.ToString());
+    }
+
+    public async Task OnProvinceChange(ChangeEventArgs e)
+    {
+        Item.Address.Province_id = int.Parse(e.Value.ToString());
+        await LoadData();
     }
 
     private async Task CloseTaskModal()
@@ -196,7 +234,6 @@
     {
         if (string.IsNullOrWhiteSpace(Item.Address.Address_line) || string.IsNullOrEmpty(Item.Address.Address_line) ||
             string.IsNullOrWhiteSpace(Item.Address.City) || string.IsNullOrEmpty(Item.Address.City) ||
-            string.IsNullOrWhiteSpace(Item.Address.State) || string.IsNullOrEmpty(Item.Address.State) ||
             string.IsNullOrWhiteSpace(Item.Address.Postal_code) || string.IsNullOrEmpty(Item.Address.Postal_code))
             return false;
         return true;

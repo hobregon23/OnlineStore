@@ -8,7 +8,11 @@ namespace OnlineStore.Models
         [Key]
         public int Id { get; set; }
         public string Address_line { get; set; }
-        public string State { get; set; }
+        [ForeignKey("State_id")]
+        public virtual Address_State State { get; set; }
+        [Required]
+        [Range(1, int.MaxValue)]
+        public int State_id { get; set; }
         public string City { get; set; }
         public string Postal_code { get; set; }
 

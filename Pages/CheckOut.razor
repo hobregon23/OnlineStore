@@ -5,8 +5,6 @@
 @inject IRequestService requestService
 @inject IUserService userService
 @inject IToastService toastService
-
-
 <!-- Checkout Section Begin -->
 <section class="checkout spad" style="padding-top: 30px">
     <div class="container">
@@ -52,8 +50,16 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="checkout__input">
-                                        <label>Municipio<span>*</span></label>
-                                        <InputText @bind-Value="Check_out.Address.State" />
+                                        <label>Municipio<span>*</span></label><br />
+                                        <select class="custom-select-primary" value="@State" @onchange="OnStateChange" required>
+                                            <option value="all" disabled>Seleccionar</option>
+                                            @foreach (var item in StatesByProvince_list)
+                                            {
+                                                <option value="@item.Id">
+                                                    @item.Name
+                                                </option>
+                                            }
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -134,7 +140,7 @@
     public List<CartItem> Cart_items { get; set; } = new List<CartItem>();
     public Cart Cart { get; set; } = new Cart();
     public UserDto User { get; set; } = new UserDto();
-    public Address Address { get; set; } = new Address();
+    private List<Address_State> StatesByProvince_list = new List<Address_State>();
     public List<Address_Province> Provinces { get; set; } = new List<Address_Province>();
     public Check_Out Check_out { get; set; } = new Check_Out();
     public List<Request_Item> Request_items { get; set; } = new List<Request_Item>();
@@ -166,6 +172,7 @@
             Cart.Total_amount = SubTotal_amount + Check_out.Shipping_price;
             Provinces = await provinceService.GetAllActive();
             Province = User.Address.Province_id.ToString();
+            StatesByProvince_list = await provinceService.GetStatesByProvince(User.Address.Province_id);
             FillRequestData();
         }
     }
@@ -202,6 +209,22 @@
             Check_out.Address.Province_id = int.Parse(value);
         }
     }
+    private string State
+    {
+        get
+        {
+            return Check_out.Address.State_id.ToString();
+        }
+        set
+        {
+            Check_out.Address.State_id = int.Parse(value);
+        }
+    }
+
+    public async Task OnStateChange(ChangeEventArgs e)
+    {
+        Check_out.Address.State_id = int.Parse(e.Value.ToString());
+    }
 
     private async Task OnProvinceChange(ChangeEventArgs e)
     {
@@ -209,6 +232,8 @@
         Check_out.Shipping_price = Need_shipping ? Province_ship_price : 0;
         Cart.Total_amount = SubTotal_amount + Check_out.Shipping_price;
         Check_out.Address.Province_id = int.Parse(e.Value.ToString());
+        StatesByProvince_list = await provinceService.GetStatesByProvince(User.Address.Province_id);
+        User.Address.State_id = StatesByProvince_list[0].Id;
     }
 
     private async Task OnSubmit()

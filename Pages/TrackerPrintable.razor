@@ -40,7 +40,7 @@
                     <p>
                         @requestInfo.Address.Address_line,
                         @requestInfo.Address.City,
-                        @requestInfo.Address.State,
+                        @requestInfo.Address.State.Name,
                         @requestInfo.Address.Province.Name,
                         @requestInfo.Address.Postal_code
                     </p>
@@ -134,7 +134,7 @@
 @code {
 
     private int Id { get; set; }
-    private Request requestInfo { get; set; } = new Request() { Address = new Address() { Province = new Address_Province() }, User = new User() };
+    private Request requestInfo { get; set; } = new Request() { Address = new Address() { Province = new Address_Province(), State = new Address_State() }, User = new User() };
     private Center center { get; set; } = new Center();
 
 

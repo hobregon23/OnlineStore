@@ -25,17 +25,17 @@ namespace OnlineStore.Repos
 
         public async Task<Request> GetByIdIncluding(int id)
         {
-            return await _context.Requests.Include(x => x.User).Include(x => x.Address).ThenInclude(x => x.Province).Include(x => x.Request_item_list).ThenInclude(x => x.Product).FirstOrDefaultAsync(x => x.Id.Equals(id));
+            return await _context.Requests.Include(x => x.User).Include(x => x.Address).ThenInclude(x => x.Province).ThenInclude(x => x.States).Include(x => x.Request_item_list).ThenInclude(x => x.Product).FirstOrDefaultAsync(x => x.Id.Equals(id));
         }
 
         public async Task<List<Request>> GetAllIncluding()
         {
-            return await _context.Requests.Include(x => x.User).Include(x => x.Address).ThenInclude(x => x.Province).Include(x => x.Request_item_list).ThenInclude(x => x.Product).ToListAsync();
+            return await _context.Requests.Include(x => x.User).Include(x => x.Address).ThenInclude(x => x.Province).ThenInclude(x => x.States).Include(x => x.Request_item_list).ThenInclude(x => x.Product).ToListAsync();
         }
 
         public async Task<PaginationResponse<Request>> Track(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo, string user_id)
         {
-            var queryable = _context.Requests.Include(x => x.User).Include(x => x.Address).ThenInclude(x => x.Province).Where(x => x.User_id.Equals(user_id) && x.Is_deleted == false).OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
+            var queryable = _context.Requests.Include(x => x.User).Include(x => x.Address).ThenInclude(x => x.Province).ThenInclude(x => x.States).Where(x => x.User_id.Equals(user_id) && x.Is_deleted == false).OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
 
             if (!string.IsNullOrEmpty(search_filter.Search_text) || !string.IsNullOrWhiteSpace(search_filter.Search_text))
             {
@@ -69,7 +69,7 @@ namespace OnlineStore.Repos
         {
             if (rol.Equals("Admin"))
             {
-                var queryable = _context.Requests.Include(x => x.User).Include(x => x.Dealer).Include(x => x.Address).ThenInclude(x => x.Province).OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
+                var queryable = _context.Requests.Include(x => x.User).Include(x => x.Dealer).Include(x => x.Address).ThenInclude(x => x.Province).ThenInclude(x => x.States).OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
 
                 if (!string.IsNullOrEmpty(search_filter.Search_text) || !string.IsNullOrWhiteSpace(search_filter.Search_text))
                 {
@@ -100,7 +100,7 @@ namespace OnlineStore.Repos
             }
             else
             {
-                var queryable = _context.Requests.Include(x => x.User).Include(x => x.Dealer).Include(x => x.Address).ThenInclude(x => x.Province).Where(x => x.Need_shipping && x.Address.Province_id.Equals(prov_id) && x.Is_deleted == false).OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
+                var queryable = _context.Requests.Include(x => x.User).Include(x => x.Dealer).Include(x => x.Address).ThenInclude(x => x.Province).ThenInclude(x => x.States).Where(x => x.Need_shipping && x.Address.Province_id.Equals(prov_id) && x.Is_deleted == false).OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
 
                 if (!string.IsNullOrEmpty(search_filter.Search_text) || !string.IsNullOrWhiteSpace(search_filter.Search_text))
                 {
@@ -135,12 +135,12 @@ namespace OnlineStore.Repos
         {
             if (rol.Equals("Admin"))
             {
-                var queryable = _context.Requests.Include(x => x.User).Include(x => x.Dealer).Include(x => x.Address).ThenInclude(x => x.Province).OrderByDescending(x => x.Created_at);
+                var queryable = _context.Requests.Include(x => x.User).Include(x => x.Dealer).Include(x => x.Address).ThenInclude(x => x.Province).ThenInclude(x => x.States).OrderByDescending(x => x.Created_at);
                 return await queryable.ToListAsync();
             }
             else
             {
-                var queryable = _context.Requests.Include(x => x.User).Include(x => x.Dealer).Include(x => x.Address).ThenInclude(x => x.Province).Where(x => x.Need_shipping && x.Address.Province_id.Equals(prov_id) && x.Is_deleted == false).OrderByDescending(x => x.Created_at);
+                var queryable = _context.Requests.Include(x => x.User).Include(x => x.Dealer).Include(x => x.Address).ThenInclude(x => x.Province).ThenInclude(x => x.States).Where(x => x.Need_shipping && x.Address.Province_id.Equals(prov_id) && x.Is_deleted == false).OrderByDescending(x => x.Created_at);
                 return await queryable.ToListAsync();
             }
         }

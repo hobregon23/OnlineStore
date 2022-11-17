@@ -75,22 +75,30 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="checkout__input">
-                            <label>Municipio<span>*</span></label>
-                            <InputText Class="form-control" @bind-Value="@userInfo.Address.State" />
-                            <ValidationMessage For="@(() => userInfo.Address.State)" />
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="checkout__input">
                             <label>Provincia<span>*</span></label><br />
-                            <InputSelect Class="form-control" @bind-Value="@ProvinceId" required>
+                            <select class="custom-select-primary" value="@Province" @onchange="OnProvinceChange" required>
+                                <option value="all" disabled>Seleccionar</option>
                                 @foreach (var item in Provinces)
                                 {
                                     <option value="@item.Id">
                                         @item.Name
                                     </option>
                                 }
-                            </InputSelect>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="checkout__input">
+                            <label>Municipio<span>*</span></label><br />
+                            <select class="custom-select-primary" value="@State" @onchange="OnStateChange" required>
+                                <option value="all" disabled>Seleccionar</option>
+                                @foreach (var item in StatesByProvince_list)
+                                {
+                                    <option value="@item.Id">
+                                        @item.Name
+                                    </option>
+                                }
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -163,7 +171,8 @@
 
     private UserDto userInfo = new UserDto();
     private List<Address_Province> Provinces = new List<Address_Province>();
-    private string ProvinceId
+    private List<Address_State> StatesByProvince_list = new List<Address_State>();
+    private string Province
     {
         get
         {
@@ -174,11 +183,40 @@
             userInfo.Address.Province_id = int.Parse(value);
         }
     }
+    private string State
+    {
+        get
+        {
+            return userInfo.Address.State_id.ToString();
+        }
+        set
+        {
+            userInfo.Address.State_id = int.Parse(value);
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
         Provinces = await provinceService.GetAll();
         userInfo.Address.Province_id = 1;
+        await LoadData();
+    }
+
+    public async Task LoadData()
+    {
+        StatesByProvince_list = await provinceService.GetStatesByProvince(userInfo.Address.Province_id);
+        userInfo.Address.State_id = StatesByProvince_list[0].Id;
+    }
+
+    public async Task OnStateChange(ChangeEventArgs e)
+    {
+        userInfo.Address.State_id = int.Parse(e.Value.ToString());
+    }
+
+    public async Task OnProvinceChange(ChangeEventArgs e)
+    {
+        userInfo.Address.Province_id = int.Parse(e.Value.ToString());
+        await LoadData();
     }
 
     private async Task CreateUser()
@@ -205,12 +243,10 @@
         bool lastname = regString.IsMatch(userInfo.LastName);
         bool ci = regNumber.IsMatch(userInfo.CI);
         bool city = regString.IsMatch(userInfo.Address.City);
-        bool state = regString.IsMatch(userInfo.Address.State);
         if (name) { toastService.ShowError("Nombre no debe contener números"); return false; }
         else if (lastname) { toastService.ShowError("Apellidos no debe contener números"); return false; }
         else if (ci) { toastService.ShowError("Carnet no debe contener letras"); return false; }
         else if (city) { toastService.ShowError("Ciudad no debe contener números"); return false; }
-        else if (state) { toastService.ShowError("Municipio no debe contener números"); return false; }
         return true;
     }
 
@@ -218,7 +254,6 @@
     {
         if (string.IsNullOrWhiteSpace(userInfo.Address.Address_line) || string.IsNullOrEmpty(userInfo.Address.Address_line) ||
             string.IsNullOrWhiteSpace(userInfo.Address.City) || string.IsNullOrEmpty(userInfo.Address.City) ||
-            string.IsNullOrWhiteSpace(userInfo.Address.State) || string.IsNullOrEmpty(userInfo.Address.State) ||
             string.IsNullOrWhiteSpace(userInfo.Address.Postal_code) || string.IsNullOrEmpty(userInfo.Address.Postal_code))
             return false;
         return true;

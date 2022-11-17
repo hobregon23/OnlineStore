@@ -93,9 +93,30 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="checkout__input">
-                            <label>Municipio <span>*</span></label>
-                            <InputText Class="form-control" @bind-Value="@userInfo.Address.State" />
-                            <ValidationMessage For="@(() => userInfo.Address.State)" />
+                            <label>Provincia<span>*</span></label><br />
+                            <select class="custom-select-primary" value="@Province" @onchange="OnProvinceChange" required>
+                                <option value="all" disabled>Seleccionar</option>
+                                @foreach (var item in Provinces)
+                                {
+                                    <option value="@item.Id">
+                                        @item.Name
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="checkout__input">
+                            <label>Municipio <span>*</span></label><br />
+                            <select class="custom-select-primary" value="@State" @onchange="OnStateChange" required>
+                                <option value="all" disabled>Seleccionar</option>
+                                @foreach (var item in StatesByProvince_list)
+                                {
+                                    <option value="@item.Id">
+                                        @item.Name
+                                    </option>
+                                }
+                            </select>
                         </div>
                     </div>
                     <div class="col-lg-4">
@@ -103,19 +124,6 @@
                             <label>Código Postal<span>*</span></label>
                             <InputText Class="form-control" @bind-Value="@userInfo.Address.Postal_code" />
                             <ValidationMessage For="@(() => userInfo.Address.Postal_code)" />
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="checkout__input">
-                            <label>Provincia<span>*</span></label><br />
-                            <InputSelect Class="form-control" @bind-Value="@ProvinceId" required>
-                                @foreach (var item in Provinces)
-                                {
-                                    <option value="@item.Id">
-                                        @item.Name
-                                    </option>
-                                }
-                            </InputSelect>
                         </div>
                     </div>
                 </div>
@@ -139,7 +147,8 @@
     public User userInfo { get; set; } = new User() { Address = new Address() { Province = new Address_Province() } };
     private List<Address_Province> Provinces = new List<Address_Province>();
     private string userRol { get; set; } = "Delivery";
-    private string ProvinceId
+    private List<Address_State> StatesByProvince_list = new List<Address_State>();
+    private string Province
     {
         get
         {
@@ -148,6 +157,17 @@
         set
         {
             userInfo.Address.Province_id = int.Parse(value);
+        }
+    }
+    private string State
+    {
+        get
+        {
+            return userInfo.Address.State_id.ToString();
+        }
+        set
+        {
+            userInfo.Address.State_id = int.Parse(value);
         }
     }
 
@@ -171,6 +191,19 @@
         userInfo = await userService.GetByIdIncluding(Id);
         Provinces = await provinceService.GetAll();
         userRol = await userService.GetUserRol(userInfo.Id);
+        StatesByProvince_list = await provinceService.GetStatesByProvince(userInfo.Address.Province_id);
+    }
+
+    public async Task OnStateChange(ChangeEventArgs e)
+    {
+        userInfo.Address.State_id = int.Parse(e.Value.ToString());
+    }
+
+    public async Task OnProvinceChange(ChangeEventArgs e)
+    {
+        userInfo.Address.Province_id = int.Parse(e.Value.ToString());
+        StatesByProvince_list = await provinceService.GetStatesByProvince(userInfo.Address.Province_id);
+        userInfo.Address.State_id = StatesByProvince_list[0].Id;
     }
 
     private async Task UpdateUser()
@@ -187,7 +220,6 @@
     {
         if (string.IsNullOrWhiteSpace(userInfo.Address.Address_line) || string.IsNullOrEmpty(userInfo.Address.Address_line) ||
             string.IsNullOrWhiteSpace(userInfo.Address.City) || string.IsNullOrEmpty(userInfo.Address.City) ||
-            string.IsNullOrWhiteSpace(userInfo.Address.State) || string.IsNullOrEmpty(userInfo.Address.State) ||
             string.IsNullOrWhiteSpace(userInfo.Address.Postal_code) || string.IsNullOrEmpty(userInfo.Address.Postal_code))
             return false;
         return true;

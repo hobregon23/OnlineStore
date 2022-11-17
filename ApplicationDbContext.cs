@@ -23,6 +23,7 @@ namespace OnlineStore
             }
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new ProvincesConfiguration());
+            modelBuilder.ApplyConfiguration(new StatesConfiguration());
             modelBuilder.ApplyConfiguration(new AddressesConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
@@ -42,6 +43,8 @@ namespace OnlineStore
         }
 
         public DbSet<Address> Addresses { get; set; }
+        public DbSet<Address_Province> Address_Provinces { get; set; }
+        public DbSet<Address_State> Address_States { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Model> Models { get; set; }
@@ -50,7 +53,6 @@ namespace OnlineStore
         public DbSet<Product> Products { get; set; }
         public DbSet<Request> Requests { get; set; }
         public DbSet<Request_Item> Request_Items { get; set; }
-        public DbSet<Address_Province> Address_Provinces { get; set; }
         public DbSet<FeaturedProduct> FeaturedProducts { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<Used_Product> UsedProducts { get; set; }

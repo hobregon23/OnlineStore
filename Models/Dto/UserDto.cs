@@ -49,6 +49,6 @@ namespace OnlineStore.Models
         public DateTime Deleted_at { get; set; }
         public bool IsActive { get; set; }
         public bool Is_deleted { get; set; }
-        public Address Address { get; set; } = new Address() { Province = new Address_Province() };
+        public Address Address { get; set; } = new Address() { Province = new Address_Province(), State = new Address_State() };
     }
 }

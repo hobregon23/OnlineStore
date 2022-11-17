@@ -15,7 +15,7 @@ namespace OnlineStore.Repos
                     Id = 1,
                     Address_line = "Calle 5 entre 14 y 16",
                     City = "Coliseo",
-                    State = "Jovellanos",
+                    State_id = 55,
                     Province_id = 5,
                     Postal_code = "44320"
                 },
@@ -24,7 +24,7 @@ namespace OnlineStore.Repos
                     Id = 2,
                     Address_line = "Calle 15 #1505",
                     City = "Cardenas",
-                    State = "Cardenas",
+                    State_id = 50,
                     Province_id = 5,
                     Postal_code = "58975"
                 },
@@ -33,7 +33,7 @@ namespace OnlineStore.Repos
                     Id = 3,
                     Address_line = "Calle 25 e/15 y 25 #1505",
                     City = "Pueblo Nuevo",
-                    State = "Manizales",
+                    State_id = 35,
                     Province_id = 3,
                     Postal_code = "58975"
                 }
