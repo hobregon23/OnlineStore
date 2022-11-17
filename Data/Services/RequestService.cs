@@ -176,7 +176,7 @@ namespace OnlineStore.Data.Services
             };
             if (userAddress.Address_line != item.Address.Address_line ||
                 userAddress.City != item.Address.City ||
-                userAddress.State != item.Address.State ||
+                userAddress.State_id != item.Address.State_id ||
                 userAddress.Postal_code != item.Address.Postal_code ||
                 userAddress.Province_id != item.Address.Province_id)
             {
@@ -184,7 +184,7 @@ namespace OnlineStore.Data.Services
                 {
                     Address_line = item.Address.Address_line,
                     City = item.Address.City,
-                    State = item.Address.State,
+                    State_id = item.Address.State_id,
                     Postal_code = item.Address.Postal_code,
                     Province_id = item.Address.Province_id,
                     Province = null
