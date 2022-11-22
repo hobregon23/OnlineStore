@@ -43,7 +43,7 @@ namespace OnlineStore.Repos
             double count = await queryable.CountAsync();
             double pagesQuantity = Math.Ceiling(count / pagination.QuantityPerPage);
 
-            return new PaginationResponse<User>() { ListaObjetos = await queryable.Paginate(pagination).ToListAsync(), CantPorPag = (int)pagesQuantity };
+            return new PaginationResponse<User>() { ListaObjetos = await queryable.Paginate(pagination).ToListAsync(), CantPorPag = (int)pagesQuantity, ItemsTotal = queryable.Count() };
         }
 
         public async Task<string> GetUserRol(string id)
