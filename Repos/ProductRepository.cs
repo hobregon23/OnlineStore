@@ -27,12 +27,12 @@ namespace OnlineStore.Repos
         //metodos especificos de la clase aqui
         public async Task<List<Product>> GetRecents(int qty)
         {
-            return (await _context.Products.Where(x => x.IsActive && x.Is_for_sell).ToListAsync()).OrderByDescending(x => x.Created_at).Take(qty).ToList();
+            return (await _context.Products.Where(x => x.IsActive && x.Is_for_sell).Include(x => x.Category).Include(x => x.Model).ThenInclude(x => x.Brand).Where(x => x.Category.IsActive && x.Model.IsActive && x.Model.Brand.IsActive).ToListAsync()).OrderByDescending(x => x.Created_at).Take(qty).ToList();
         }
 
         public async Task<List<Product>> GetRandom()
         {
-            var products = await _context.Products.Where(x => x.IsActive && x.Is_for_sell).ToListAsync();
+            var products = await _context.Products.Where(x => x.IsActive && x.Is_for_sell).Include(x => x.Category).Include(x => x.Model).ThenInclude(x => x.Brand).Where(x => x.Category.IsActive && x.Model.IsActive && x.Model.Brand.IsActive).ToListAsync();
             Random random = new Random();
             var numbers = new int[4] { random.Next(1, products.Count - 1), random.Next(1, products.Count - 1), random.Next(1, products.Count - 1), random.Next(1, products.Count - 1) };
             var respond = new List<Product>();
@@ -82,7 +82,7 @@ namespace OnlineStore.Repos
 
         public async Task<PaginationResponse<Product>> GetPag(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo)
         {
-            var queryable = _context.Products.Where(x => x.IsActive && x.Is_for_sell).OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
+            var queryable = _context.Products.Where(x => x.IsActive && x.Is_for_sell).Include(x => x.Category).Include(x => x.Model).ThenInclude(x => x.Brand).Where(x => x.Category.IsActive && x.Model.IsActive && x.Model.Brand.IsActive).OrderByDynamic(campoSorteo, ordenSorteo.ToUpper());
 
             if ((!string.IsNullOrEmpty(search_filter.Category) || !string.IsNullOrWhiteSpace(search_filter.Category)) && (!string.IsNullOrEmpty(search_filter.Search_text) || !string.IsNullOrWhiteSpace(search_filter.Search_text)))
             {

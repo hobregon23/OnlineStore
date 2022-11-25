@@ -48,7 +48,7 @@ namespace OnlineStore.Repos
 
         public async Task<List<FeaturedProduct>> GetIncludingProducts()
         {
-            return await _context.FeaturedProducts.Include(x => x.Product).ToListAsync();
+            return await _context.FeaturedProducts.Include(x => x.Product).ThenInclude(x => x.Category).Include(x => x.Product.Model).ThenInclude(x => x.Brand).Where(x => x.Product.Category.IsActive && x.Product.Model.IsActive && x.Product.Model.Brand.IsActive).ToListAsync();
         }
     }
 }

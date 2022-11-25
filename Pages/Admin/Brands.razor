@@ -139,7 +139,7 @@
     {
         if (item.IsActive)
         {
-            if (await JS.ConfirmSinResp($"Desactivar", $"Esto desactivará la categoría."))
+            if (await JS.ConfirmSinResp($"Desactivar", $"Esto desactivará la marca."))
             {
                 item.IsActive = false;
                 await brandService.Update(item);
@@ -148,7 +148,7 @@
         }
         else
         {
-            if (await JS.ConfirmSinResp($"Activar", $"Esto activará la categoría."))
+            if (await JS.ConfirmSinResp($"Activar", $"Esto activará la marca."))
             {
                 item.IsActive = true;
                 await brandService.Update(item);

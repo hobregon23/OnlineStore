@@ -96,6 +96,7 @@
                                 {
                                     <h5>$@item.Product.Price</h5>
                                 }
+                            <h5> @item.Product.Category.Name - @item.Product.Model.Name - @item.Product.Model.Brand.Name</h5>
                             </div>
                         </div>
                     </div>
@@ -129,7 +130,7 @@
                 <div class="latest-product__text">
                     <h4>Productos Recientes</h4>
                     <div class="latest-product__slider row">
-                        <div class="latest-prdouct__slider__item row mx-md-auto">
+                        <div class="latest-prdouct__slider__item col-lg-12 row mx-md-auto">
                             @foreach (var item in recentProducts)
                             {
                                 <div class="col-lg-4">
