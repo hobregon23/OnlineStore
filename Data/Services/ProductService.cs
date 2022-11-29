@@ -15,6 +15,7 @@ namespace OnlineStore.Data.Services
         Task<List<Product>> GetRecents(int qty);
         Task<List<Product>> GetRandom();
         Task<string> Rebajar(int id, int qty);
+        Task<string> Reinsertar(int id, int qty);
         Task<string> Update(Product item);
     }
 
@@ -97,6 +98,11 @@ namespace OnlineStore.Data.Services
         public async Task<string> Rebajar(int id, int qty)
         {
             return await _unitOfWork.Products.Rebajar(id, qty);
+        }
+
+        public async Task<string> Reinsertar(int id, int qty)
+        {
+            return await _unitOfWork.Products.Reinsertar(id, qty);
         }
 
         public async Task<string> Update(Product item)

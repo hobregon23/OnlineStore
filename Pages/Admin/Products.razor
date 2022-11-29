@@ -202,6 +202,7 @@
             if (await JS.ConfirmSinResp($"Desactivar", $"Esto desactivará el producto."))
             {
                 item.IsActive = false;
+                item.Is_deleted = true;
                 await productService.Update(item);
                 await LoadItems();
             }
@@ -211,6 +212,7 @@
             if (await JS.ConfirmSinResp($"Activar", $"Esto activará el producto."))
             {
                 item.IsActive = true;
+                item.Is_deleted = false;
                 await productService.Update(item);
                 await LoadItems();
             }

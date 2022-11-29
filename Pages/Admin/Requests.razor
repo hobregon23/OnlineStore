@@ -70,7 +70,11 @@
                                             @if (!item.Status.Equals("Terminado"))
                                             {
                                                 <AuthorizeView Roles="Admin">
-                                                    <mark @onclick="@(() => Activar_Desactivar(item))" class="@(item.IsActive ? "bg-danger" : "bg-success")" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="fa @(item.IsActive ? "fa-close" : "fa-check")" style="@(item.IsActive ? "font-size: 20px" : "")" aria-hidden="true"></span></mark>
+                                                    @*<mark @onclick="@(() => Activar_Desactivar(item))" class="@(item.IsActive ? "bg-danger" : "bg-success")" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="fa @(item.IsActive ? "fa-close" : "fa-check")" style="@(item.IsActive ? "font-size: 20px" : "")" aria-hidden="true"></span></mark>*@
+                                                    @if (item.Status.Equals("Pendiente") && !item.Is_paid)
+                                                    {
+                                                        <mark @onclick="@(() => Cancelar(item))" class="bg-danger" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="fa fa-trash" style="font-size: 20px" aria-hidden="true"></span></mark>
+                                                    }
                                                 </AuthorizeView>
                                                 if (!item.Status.Equals("Pendiente") && !item.Status.Equals("Cancelado"))
                                                 {
@@ -213,6 +217,15 @@
                 await orderService.Activar(item);
                 await LoadItems(PagParam.CurrentPage);
             }
+        }
+    }
+
+    private async Task Cancelar(Request item)
+    {
+        if (await JS.ConfirmSinResp($"Cancelar", $"¿Desea cancelar el pedido?"))
+        {
+            await orderService.Cancelar(item);
+            await LoadItems(PagParam.CurrentPage);
         }
     }
 

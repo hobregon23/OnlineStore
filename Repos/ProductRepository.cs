@@ -16,6 +16,7 @@ namespace OnlineStore.Repos
         Task<List<Product>> GetRandom();
         Task<string> Eliminar(int id);
         Task<string> Rebajar(int id, int qty);
+        Task<string> Reinsertar(int id, int qty);
     }
 
     public class ProductRepository : GenericRepository<Product>, IProductRepository
@@ -132,6 +133,26 @@ namespace OnlineStore.Repos
                 item.Qty -= qty;
                 if (item.Qty < 1)
                     item.IsActive = false;
+                Update(item);
+                await _context.SaveChangesAsync();
+                return "Ok";
+            }
+            catch
+            {
+                return "Error inesperado.";
+            }
+        }
+
+        public async Task<string> Reinsertar(int id, int qty)
+        {
+            try
+            {
+                var item = await GetById(id);
+                if (item == null)
+                    return "Error, no existe.";
+                item.Qty += qty;
+                if (item.Qty >= 1 && item.Is_deleted == false)
+                    item.IsActive = true;
                 Update(item);
                 await _context.SaveChangesAsync();
                 return "Ok";

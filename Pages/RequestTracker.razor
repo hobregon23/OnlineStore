@@ -6,84 +6,102 @@
 @inject ICenterService centerService
 
 
-<div class="container space-1 mb-5">
-    <div class="d-sm-flex align-items-center justify-content-between mb-3">
-        <div class="mt-3 ml-5 mb-2" style="flex:auto">
-            <span>Filtrar por</span>
-            <select class="form-control-mine" @onchange="OnFilterChange">
-                <option value="all">Todos</option>
-                <option value="Pendiente">Pendiente</option>
-                <option value="Tomado">Tomado</option>
-                <option value="Terminado">Terminado</option>
-                <option value="Cancelado">Cancelado</option>
-            </select>
+    <div class="container space-1 mb-5">
+        <div class="d-sm-flex align-items-center justify-content-between mb-3">
+            <div class="mt-3 ml-5 mb-2" style="flex:auto">
+                <span>Filtrar por</span>
+                <select class="form-control-mine" @onchange="OnFilterChange">
+                    <option value="all">Todos</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Tomado">Tomado</option>
+                    <option value="Terminado">Terminado</option>
+                    <option value="Cancelado">Cancelado</option>
+                </select>
+            </div>
+            <div class="mr-3 ml-3 row">
+                <SearchSimple search_obj="@search_obj" OnValidSubmit="@Search" />
+            </div>
         </div>
-        <div class="mr-3 ml-3 row">
-            <SearchSimple search_obj="@search_obj" OnValidSubmit="@Search" />
-        </div>
-    </div>
-    <div class="col-md-12">
-        <div class="row">
+        <div class="col-md-12">
+            <div class="row">
 
-            <div class="col-md-12 w-md-75 w-lg-40 mx-md-auto">
-                <div class="table-responsive-sm">
+                <div class="col-md-12 w-md-75 w-lg-40 mx-md-auto">
+                    <div class="table-responsive-sm">
 
-                    @if (request_List.Count.Equals(0))
-                    {
-                        <p class="text-danger" style="text-align: center">N/A</p>
-                    }
-                    else
-                    {
-                        <table class="table table-light">
-                            <thead>
-                                <tr style="font-size: small; color: white; background-image: linear-gradient(182deg, rgb(8, 38, 123) 0%, #4f1056 90%);">
-                                    <th><span style="cursor:pointer" @onclick="@(() => Ordenar("Created_at"))">Creado </span><i class="@(IndicadorOrden("Created_at"))"></i></th>
-                                    <th>Usuario</th>
-                                    <th>Provincia</th>
-                                    <th>Enviar</th>
-                                    <th>Precio Total</th>
-                                    <th><span style="cursor:pointer" @onclick="@(() => Ordenar("IsActive"))">Activo </span><i class="@(IndicadorOrden("IsActive"))"></i></th>
-                                    <th>Estado</th>
-                                    <th>Pago</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody class="font-size-1" style="font-family: 'Arial Rounded MT'">
-                                @foreach (var item in request_List)
-                                {
-                                    <tr class="my-transition-3d-hover">
-                                        <td class="align-middle"><a class="text-info" style="font-size: small">@String.Format("{0:dd/MM/yyyy}", item.Created_at)</a></td>
-                                        <td class="align-middle"><a style="font-size: small">@item.User.UserName</a></td>
-                                        <td class="align-middle"><a style="font-size: small">@item.Address.Province.Name</a></td>
-                                        <td class="align-middle"><a style="font-size: small">@(item.Need_shipping ? "Si" : "No")</a></td>
-                                        <td class="align-middle"><a style="font-size: small">$@(item.Price + item.Shipping_price)</a></td>
-                                        <td class="align-middle"><span style="font-size: small" class="@(item.IsActive ? "text-success" : "text-danger")"> @(item.IsActive ? "Activo" : "Inactivo")</span></td>
-                                        <td class="align-middle"><a class="@(item.Status.Equals("Pendiente")?"text-warning":"") @(item.Status.Equals("Tomado")?"text-primary":"") @(item.Status.Equals("Terminado")?"text-success":"") @(item.Status.Equals("Cancelado")?"text-danger":"")" style="font-size: small">@(item.Status.Equals("Tomado")?"En camino":item.Status)</a></td>
-                                        <td class="align-middle"><a class="@(item.Is_paid?"text-success":"")" style="font-size: small">@(item.Is_paid?"Pagada":"Sin Pagar")</a></td>
-                                        <td class="align-middle">
-                                            <mark @onclick="@(() => Print(item))" class="bg-secondary" style="cursor:pointer; border-radius:15px 15px 15px 15px; padding-left:5px; color:white"><span class="fa fa-file" aria-hidden="true"></span></mark>
-                                            @if (!item.Is_paid)
-                                            {
-                                                <mark @onclick="@(() => Pay(item))" class="bg-success" style="cursor:pointer; border-radius:15px 15px 15px 15px; padding-left:5px; color:white"><span class="fa fa-credit-card" aria-hidden="true"></span></mark>
-                                            }
-                                        </td>
+                        @if (request_List.Count.Equals(0))
+                        {
+                            <p class="text-danger" style="text-align: center">N/A</p>
+                        }
+                        else
+                        {
+                            <table class="table table-light">
+                                <thead>
+                                    <tr style="font-size: small; color: white; background-image: linear-gradient(182deg, rgb(8, 38, 123) 0%, #4f1056 90%);">
+                                        <th><span style="cursor:pointer" @onclick="@(() => Ordenar("Created_at"))">Creado </span><i class="@(IndicadorOrden("Created_at"))"></i></th>
+                                        <th>Usuario</th>
+                                        <th>Provincia</th>
+                                        <th>Enviar</th>
+                                        <th>Precio Total</th>
+                                        <th><span style="cursor:pointer" @onclick="@(() => Ordenar("IsActive"))">Activo </span><i class="@(IndicadorOrden("IsActive"))"></i></th>
+                                        <th>Estado</th>
+                                        <th>Pago</th>
+                                        <th>Acciones</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
+                                </thead>
+                                <tbody class="font-size-1" style="font-family: 'Arial Rounded MT'">
+                                    @foreach (var item in request_List)
+                                    {
+                                        <tr class="my-transition-3d-hover">
+                                            <td class="align-middle"><a class="text-info" style="font-size: small">@String.Format("{0:dd/MM/yyyy}", item.Created_at)</a></td>
+                                            <td class="align-middle"><a style="font-size: small">@item.User.UserName</a></td>
+                                            <td class="align-middle"><a style="font-size: small">@item.Address.Province.Name</a></td>
+                                            <td class="align-middle"><a style="font-size: small">@(item.Need_shipping ? "Si" : "No")</a></td>
+                                            <td class="align-middle"><a style="font-size: small">$@(item.Price + item.Shipping_price)</a></td>
+                                            <td class="align-middle"><span style="font-size: small" class="@(item.IsActive ? "text-success" : "text-danger")"> @(item.IsActive ? "Activo" : "Inactivo")</span></td>
+                                            <td class="align-middle"><a class="@(item.Status.Equals("Pendiente")?"text-warning":"") @(item.Status.Equals("Tomado")?"text-primary":"") @(item.Status.Equals("Terminado")?"text-success":"") @(item.Status.Equals("Cancelado")?"text-danger":"")" style="font-size: small">@(item.Status.Equals("Tomado")?"En camino":item.Status)</a></td>
+                                            <td class="align-middle"><a class="@(item.Is_paid?"text-success":"")" style="font-size: small">@(item.Is_paid?"Pagada":"Sin Pagar")</a></td>
+                                            <td class="align-middle">
+                                                <mark @onclick="@(() => Print(item))" class="bg-secondary" style="cursor:pointer; border-radius:15px 15px 15px 15px; padding-left:5px; color:white"><span class="fa fa-file" aria-hidden="true"></span></mark>
+                                                @if (!item.Is_paid)
+                                                {
+                                                    <mark @onclick="@(() => Pay(item))" class="bg-success" style="cursor:pointer; border-radius:15px 15px 15px 15px; padding-left:5px; color:white"><span class="fa fa-credit-card" aria-hidden="true"></span></mark>
+                                                    if (item.Status.Equals("Pendiente"))
+                                                    {
+                                                        <mark @onclick="@(() => Cancelar(item))" class="bg-danger" style="cursor:pointer; border-radius:20px 20px 20px 20px; padding-left:5px; color:white"><span class="fa fa-trash" style="font-size: 20px" aria-hidden="true"></span></mark>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                    <PaginationComponent TotaPagesQuantity="PagParam.TotalPageQuantity" CurrentPage="PagParam.CurrentPage" Radius="3" SelectedPage="SelectedPage"></PaginationComponent>
+                    <div class="col-lg-12 col-md-4 mt-2">
+                        <div class="filter__found" style="text-align: right">
+                            <h6><span>@request_List.Count de @PagParam.itemsTotal</span> encontrados</h6>
+                        </div>
+                    </div>
                 </div>
-                <PaginationComponent TotaPagesQuantity="PagParam.TotalPageQuantity" CurrentPage="PagParam.CurrentPage" Radius="3" SelectedPage="SelectedPage"></PaginationComponent>
-                <div class="col-lg-12 col-md-4 mt-2">
-                    <div class="filter__found" style="text-align: right">
-                        <h6><span>@request_List.Count de @PagParam.itemsTotal</span> encontrados</h6>
+            </div>
+
+        </div>
+        <div class="col-xl-12 col-md-6 mb-2 mt-2 mx-md-auto">
+            <div class="admin-border-left-primary admin-shadow px-2 py-1" style="border: 1px solid #e7eaf3;border-radius: 0.3125rem;">
+                <div class="">
+                    <div class="row no-gutters align-items-center m-2">
+                        <div class="col mr-2">
+                            <div class="text-secondary mb-1">Una vez que su orden sea procesada no podrá cancelarla y se cobrará de forma presencial si no la ha pagado </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fa fa-info-circle fa-2x text-info"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
-</div>
 <PayOrder Item="Item" Center="CenterInfo"></PayOrder>
 
 
@@ -160,6 +178,15 @@
     {
         Item = item;
         await JS.InvokeAsync<object>("ShowModal", "taskModal");
+    }
+
+    private async Task Cancelar(Request item)
+    {
+        if (await JS.ConfirmSinResp($"Cancelar", $"¿Desea cancelar su pedido?"))
+        {
+            await orderService.Cancelar(item);
+            await LoadItems(PagParam.CurrentPage);
+        }
     }
 
 }

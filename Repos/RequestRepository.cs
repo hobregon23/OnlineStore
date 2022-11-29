@@ -25,7 +25,10 @@ namespace OnlineStore.Repos
 
         public async Task<Request> GetByIdIncluding(int id)
         {
-            return await _context.Requests.Include(x => x.User).Include(x => x.Address).ThenInclude(x => x.Province).ThenInclude(x => x.States).Include(x => x.Request_item_list).ThenInclude(x => x.Product).FirstOrDefaultAsync(x => x.Id.Equals(id));
+            
+            var item = await _context.Requests.Include(x => x.User).Include(x => x.Address).ThenInclude(x => x.Province).ThenInclude(x => x.States).Include(x => x.Request_item_list).ThenInclude(x => x.Product).FirstOrDefaultAsync(x => x.Id.Equals(id));
+            _context.Entry(item).Reload();
+            return item;
         }
 
         public async Task<List<Request>> GetAllIncluding()

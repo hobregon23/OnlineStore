@@ -21,6 +21,7 @@ namespace OnlineStore.Data.Services
         Task MarkAsPendiente(Request item);
         Task MarkAsPaid(int id);
         Task Eliminar(Request item);
+        Task Cancelar(Request _item);
         Task Activar(Request item);
         Task<PaginationResponse<Request>> Track(Pagination pagination, SearchFilter search_filter, string campoSorteo, string ordenSorteo);
         Task<List<Request>> GetAllIncluding();
@@ -66,6 +67,8 @@ namespace OnlineStore.Data.Services
 
         public async Task<Request> GetById(int id)
         {
+            if (id == 0)
+                return new Request();
             return await _unitOfWork.Requests.GetByIdIncluding(id);
         }
 
@@ -124,6 +127,26 @@ namespace OnlineStore.Data.Services
             item.Is_deleted = true;
             _unitOfWork.Requests.Update(item);
             await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task Cancelar(Request _item)
+        {
+            var item = await GetById(_item.Id);
+            if (item.Status.Equals("Terminado") || item.Status.Equals("Tomado") || item.Is_paid)
+            {
+                _toastService.ShowError("No es posible cancelar este pedido", "Error");
+                return;
+            }
+            item.Status = "Cancelado";
+            item.IsActive = false;
+            item.Is_deleted = true;
+            _unitOfWork.Requests.Update(item);
+            await _unitOfWork.SaveChangesAsync();
+            foreach (var it in item.Request_item_list)
+            {
+                await _unitOfWork.Products.Reinsertar(it.Product_id, it.Qty);
+            }
+            _toastService.ShowSuccess("Pedido cancelado exitosamente", "Genial");
         }
 
         public async Task Activar(Request item)
