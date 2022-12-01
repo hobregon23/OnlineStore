@@ -225,20 +225,18 @@
 
     private bool ValidateStrings()
     {
-        string patronString = @"[^A-Za-z]";
-        string patronLastName = @"[A-Za-zÀ-ÖØ-öø-ÿ]+\s[A-Za-zÀ-ÖØ-öø-ÿ]";
+        string patronString = @"^[A-Za-zÀ-ÖØ-öø-ÿ]+$|^[A-Za-zÀ-ÖØ-öø-ÿ]+\s+[A-Za-zÀ-ÖØ-öø-ÿ]+$|^[A-Za-zÀ-ÖØ-öø-ÿ]+\s+[A-Za-zÀ-ÖØ-öø-ÿ]+\s+[A-Za-zÀ-ÖØ-öø-ÿ]+$|^[A-Za-zÀ-ÖØ-öø-ÿ]+\s+[A-Za-zÀ-ÖØ-öø-ÿ]+\s+[A-Za-zÀ-ÖØ-öø-ÿ]+\s+[A-Za-zÀ-ÖØ-öø-ÿ]+$";
         string patronNumber = @"\D";
         Regex regString = new Regex(patronString);
-        Regex regLastName = new Regex(patronLastName);
         Regex regNumber = new Regex(patronNumber);
         bool name = regString.IsMatch(userUpdate.Name);
-        bool lastname = regLastName.IsMatch(userUpdate.LastName);
+        bool lastname = regString.IsMatch(userUpdate.LastName);
         bool ci = regNumber.IsMatch(userUpdate.CI);
         bool city = regString.IsMatch(userUpdate.Address.City);
-        if (name) { toastService.ShowError("Nombre no debe contener números"); return false; }
+        if (!name) { toastService.ShowError("Nombre no debe contener números"); return false; }
         else if (!lastname) { toastService.ShowError("Debe escribir sus dos apellidos y no debe contener números"); return false; }
         else if (ci) { toastService.ShowError("Carnet no debe contener letras"); return false; }
-        else if (city) { toastService.ShowError("Ciudad no debe contener números"); return false; }
+        else if (!city) { toastService.ShowError("Ciudad no debe contener números"); return false; }
         return true;
     }
 
