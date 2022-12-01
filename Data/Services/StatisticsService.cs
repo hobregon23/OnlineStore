@@ -87,7 +87,7 @@ namespace OnlineStore.Data.Services
 
         private async Task<int> GetTodayOrders()
         {
-            var orders = (await _unitOfWork.Requests.GetAll()).ToList().Where(x => x.Created_at.Year.Equals(DateTime.Now.Year) && x.Created_at.Month.Equals(DateTime.Now.Month) && x.Created_at.Day.Equals(DateTime.Now.Day));
+            var orders = (await _unitOfWork.Requests.GetAll()).ToList().Where(x => x.IsActive && x.Created_at.Year.Equals(DateTime.Now.Year) && x.Created_at.Month.Equals(DateTime.Now.Month) && x.Created_at.Day.Equals(DateTime.Now.Day));
             return orders.Count();
         }
 
