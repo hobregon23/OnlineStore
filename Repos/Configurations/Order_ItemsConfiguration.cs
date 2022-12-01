@@ -143,7 +143,7 @@ namespace OnlineStore.Repos
                 new Request_Item
                 {
                     Id = 14,
-                    Created_at = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 10),
+                    Created_at = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
                     IsActive = true,
                     Product_id = 6,
                     Qty = 3,

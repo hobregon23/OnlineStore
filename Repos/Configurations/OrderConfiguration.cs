@@ -17,11 +17,12 @@ namespace OnlineStore.Repos
                     Created_at = new DateTime(2022, 09, 30),
                     Dealer_id = "fg3434gre-37dd-4e8d-8faf-xcgre34tgdg",
                     Full_name_receptor = "Frank Jose Antonio",
-                    IsActive = true,
+                    IsActive = false,
+                    Is_paid = true,
                     Need_shipping = true,
                     Price = 11000,
                     Shipping_price = 1500,
-                    Status = "Tomado",
+                    Status = "Terminado",
                     User_id = "b99e4efb-37dd-4e8d-8faf-15s6d51sd1v6"
                 },
                 new Request
@@ -30,11 +31,12 @@ namespace OnlineStore.Repos
                     Address_id = 3,
                     Created_at = new DateTime(2022, 10, 15),
                     Full_name_receptor = "Henry Obregon Mena",
-                    IsActive = true,
+                    IsActive = false,
+                    Is_paid = true,
                     Need_shipping = true,
                     Price = 7000,
                     Shipping_price = 1500,
-                    Status = "Pendiente",
+                    Status = "Terminado",
                     User_id = "b99e4efb-37dd-4e8d-8faf-15s6d51sd1v6"
                 },
                 new Request
@@ -43,11 +45,12 @@ namespace OnlineStore.Repos
                     Address_id = 3,
                     Created_at = DateTime.Now,
                     Full_name_receptor = "Eddy Gonzalez",
-                    IsActive = true,
+                    IsActive = false,
+                    Is_paid = true,
                     Need_shipping = false,
                     Price = 1750,
                     Shipping_price = 0,
-                    Status = "Pendiente",
+                    Status = "Terminado",
                     User_id = "b99e4efb-37dd-4e8d-8faf-15s6d51sd1v6"
                 },
                 new Request
@@ -56,11 +59,12 @@ namespace OnlineStore.Repos
                     Address_id = 3,
                     Created_at = new DateTime(2022, 08, 15),
                     Full_name_receptor = "Henry Obregon Mena",
-                    IsActive = true,
+                    IsActive = false,
+                    Is_paid = true,
                     Need_shipping = true,
                     Price = 14000,
                     Shipping_price = 1500,
-                    Status = "Pendiente",
+                    Status = "Terminado",
                     User_id = "b99e4efb-37dd-4e8d-8faf-15s6d51sd1v6"
                 },
                 new Request
@@ -69,11 +73,12 @@ namespace OnlineStore.Repos
                     Address_id = 3,
                     Created_at = new DateTime(2022, 07, 15),
                     Full_name_receptor = "Henry Obregon Mena",
-                    IsActive = true,
+                    IsActive = false,
+                    Is_paid = true,
                     Need_shipping = true,
                     Price = 7000,
                     Shipping_price = 1500,
-                    Status = "Pendiente",
+                    Status = "Terminado",
                     User_id = "b99e4efb-37dd-4e8d-8faf-15s6d51sd1v6"
                 },
                 new Request
@@ -82,11 +87,12 @@ namespace OnlineStore.Repos
                     Address_id = 3,
                     Created_at = new DateTime(2022, 06, 15),
                     Full_name_receptor = "Henry Obregon Mena",
-                    IsActive = true,
+                    IsActive = false,
+                    Is_paid = true,
                     Need_shipping = true,
                     Price = 21000,
                     Shipping_price = 1500,
-                    Status = "Pendiente",
+                    Status = "Terminado",
                     User_id = "b99e4efb-37dd-4e8d-8faf-15s6d51sd1v6"
                 },
                 new Request
@@ -95,11 +101,12 @@ namespace OnlineStore.Repos
                     Address_id = 3,
                     Created_at = new DateTime(2022, 05, 15),
                     Full_name_receptor = "Henry Obregon Mena",
-                    IsActive = true,
+                    IsActive = false,
+                    Is_paid = true,
                     Need_shipping = true,
                     Price = 14000,
                     Shipping_price = 1500,
-                    Status = "Pendiente",
+                    Status = "Terminado",
                     User_id = "b99e4efb-37dd-4e8d-8faf-15s6d51sd1v6"
                 },
                 new Request
@@ -108,11 +115,12 @@ namespace OnlineStore.Repos
                     Address_id = 3,
                     Created_at = new DateTime(2022, 04, 15),
                     Full_name_receptor = "Henry Obregon Mena",
-                    IsActive = true,
+                    IsActive = false,
+                    Is_paid = true,
                     Need_shipping = true,
                     Price = 7000,
                     Shipping_price = 1500,
-                    Status = "Pendiente",
+                    Status = "Terminado",
                     User_id = "b99e4efb-37dd-4e8d-8faf-15s6d51sd1v6"
                 },
                 new Request
@@ -121,11 +129,12 @@ namespace OnlineStore.Repos
                     Address_id = 3,
                     Created_at = new DateTime(2022, 03, 15),
                     Full_name_receptor = "Henry Obregon Mena",
-                    IsActive = true,
+                    IsActive = false,
+                    Is_paid = true,
                     Need_shipping = true,
                     Price = 28000,
                     Shipping_price = 1500,
-                    Status = "Pendiente",
+                    Status = "Terminado",
                     User_id = "b99e4efb-37dd-4e8d-8faf-15s6d51sd1v6"
                 },
                 new Request
@@ -134,11 +143,12 @@ namespace OnlineStore.Repos
                     Address_id = 3,
                     Created_at = new DateTime(2022, 02, 15),
                     Full_name_receptor = "Henry Obregon Mena",
-                    IsActive = true,
+                    IsActive = false,
+                    Is_paid = true,
                     Need_shipping = true,
                     Price = 14000,
                     Shipping_price = 1500,
-                    Status = "Pendiente",
+                    Status = "Terminado",
                     User_id = "b99e4efb-37dd-4e8d-8faf-15s6d51sd1v6"
                 },
                 new Request
@@ -147,11 +157,12 @@ namespace OnlineStore.Repos
                     Address_id = 3,
                     Created_at = new DateTime(2022, 01, 15),
                     Full_name_receptor = "Henry Obregon Mena",
-                    IsActive = true,
+                    IsActive = false,
+                    Is_paid = true,
                     Need_shipping = true,
                     Price = 21000,
                     Shipping_price = 1500,
-                    Status = "Pendiente",
+                    Status = "Terminado",
                     User_id = "b99e4efb-37dd-4e8d-8faf-15s6d51sd1v6"
                 },
                 new Request
@@ -171,7 +182,7 @@ namespace OnlineStore.Repos
                 {
                     Id = 13,
                     Address_id = 3,
-                    Created_at = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 10),
+                    Created_at = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
                     Full_name_receptor = "Henry Obregon Mena",
                     IsActive = true,
                     Need_shipping = true,
