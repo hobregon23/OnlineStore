@@ -2,6 +2,7 @@
 @inject IUserService userService
 @inject IToastService toastService
 @inject IAddressProvinceService provinceService
+@using System.Text.RegularExpressions
 
 
 <div class="modal" tabindex="-1" role="dialog" id="taskModal">
@@ -62,13 +63,20 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="checkout__input">
+                                <label>Carnet<span>*</span></label>
+                                <InputText Class="form-control" @bind-Value="@Item.CI" />
+                                <ValidationMessage For="@(() => Item.CI)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="checkout__input">
                                 <label>Contraseña<span>*</span></label>
                                 <InputPassword Class="form-control" @bind-Value="@Item.Password" />
                                 <ValidationMessage For="@(() => Item.Password)" />
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Confirmar contraseña<span>*</span></label>
@@ -81,13 +89,6 @@
                                 <label>Teléfono<span>*</span></label>
                                 <InputText Class="form-control" @bind-Value="@Item.PhoneNumber" />
                                 <ValidationMessage For="@(() => Item.PhoneNumber)" />
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="checkout__input">
-                                <label>Dirección<span>*</span></label>
-                                <InputText Class="form-control" @bind-Value="@Item.Address.Address_line" />
-                                <ValidationMessage For="@(() => Item.Address.Address_line)" />
                             </div>
                         </div>
                     </div>
@@ -129,6 +130,13 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-lg-8">
+                            <div class="checkout__input">
+                                <label>Dirección<span>*</span></label>
+                                <InputText Class="form-control" @bind-Value="@Item.Address.Address_line" />
+                                <ValidationMessage For="@(() => Item.Address.Address_line)" />
+                            </div>
+                        </div>
                         <div class="col-lg-4">
                             <div class="checkout__input">
                                 <label>Código Postal<span>*</span></label>
@@ -222,12 +230,33 @@
             toastService.ShowWarning("Complete su dirección", "Advertencia");
             return;
         }
+        if (!ValidateStrings())
+            return;
         var resp = await userService.AddAppUser(Item, userRol);
         if (resp)
         {
             await CloseTaskModal();
             DataChanged?.Invoke();
         }
+    }
+
+    private bool ValidateStrings()
+    {
+        string patronString = @"[^A-Za-z]";
+        string patronLastName = @"[A-Za-zÀ-ÖØ-öø-ÿ]+\s[A-Za-zÀ-ÖØ-öø-ÿ]";
+        string patronNumber = @"\D";
+        Regex regString = new Regex(patronString);
+        Regex regLastName = new Regex(patronLastName);
+        Regex regNumber = new Regex(patronNumber);
+        bool name = regString.IsMatch(Item.Name);
+        bool lastname = regLastName.IsMatch(Item.LastName);
+        bool ci = regNumber.IsMatch(Item.CI);
+        bool city = regString.IsMatch(Item.Address.City);
+        if (name) { toastService.ShowError("Nombre no debe contener números"); return false; }
+        else if (!lastname) { toastService.ShowError("Debe escribir sus dos apellidos y no debe contener números"); return false; }
+        else if (ci) { toastService.ShowError("Carnet no debe contener letras"); return false; }
+        else if (city) { toastService.ShowError("Ciudad no debe contener números"); return false; }
+        return true;
     }
 
     private bool AddressFullfill()

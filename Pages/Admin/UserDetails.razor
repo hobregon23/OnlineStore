@@ -5,6 +5,7 @@
 @inject NavigationManager navi
 @inject IToastService toastService
 @inject IAddressProvinceService provinceService
+@using System.Text.RegularExpressions
 
 
 <div class="container space-1 mb-5">
@@ -213,7 +214,28 @@
             toastService.ShowWarning("Complete su dirección", "Advertencia");
             return;
         }
+        if (!ValidateStrings())
+            return;
         await userService.Update(userInfo);
+    }
+
+    private bool ValidateStrings()
+    {
+        string patronString = @"[^A-Za-z]";
+        string patronLastName = @"[A-Za-zÀ-ÖØ-öø-ÿ]+\s[A-Za-zÀ-ÖØ-öø-ÿ]";
+        string patronNumber = @"\D";
+        Regex regString = new Regex(patronString);
+        Regex regLastName = new Regex(patronLastName);
+        Regex regNumber = new Regex(patronNumber);
+        bool name = regString.IsMatch(userInfo.Name);
+        bool lastname = regLastName.IsMatch(userInfo.LastName);
+        bool ci = regNumber.IsMatch(userInfo.CI);
+        bool city = regString.IsMatch(userInfo.Address.City);
+        if (name) { toastService.ShowError("Nombre no debe contener números"); return false; }
+        else if (!lastname) { toastService.ShowError("Debe escribir sus dos apellidos y no debe contener números"); return false; }
+        else if (ci) { toastService.ShowError("Carnet no debe contener letras"); return false; }
+        else if (city) { toastService.ShowError("Ciudad no debe contener números"); return false; }
+        return true;
     }
 
     private bool AddressFullfill()
