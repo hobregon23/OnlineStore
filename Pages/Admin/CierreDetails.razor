@@ -1,6 +1,6 @@
 ﻿@page "/admin/cierre_printable"
 @layout BlazorLayout
-@attribute [Authorize(Roles = "Admin, Delivery")]
+@attribute [Authorize(Roles = "Admin, Worker")]
 @inject ICierreService cierreService
 @inject IJSRuntime JS
 @inject NavigationManager navi
