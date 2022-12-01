@@ -182,7 +182,7 @@ namespace OnlineStore.Repos
                 {
                     Id = 13,
                     Address_id = 3,
-                    Created_at = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
+                    Created_at = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 2),
                     Full_name_receptor = "Henry Obregon Mena",
                     IsActive = true,
                     Need_shipping = true,
