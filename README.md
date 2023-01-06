@@ -20,8 +20,10 @@ Tecnologías:
 - BLAZOR
 
 Index
+![Screenshot 2022-10-03 at 23-43-19 OnlineStore](https://user-images.githubusercontent.com/61922773/193730006-6a799bca-b140-4d69-8c89-02917366f387.png)
 
 Catálogo
+![Screenshot 2022-10-03 at 23-44-05 OnlineStore](https://user-images.githubusercontent.com/61922773/193730146-5b538649-bd8d-4fdb-937d-a625595ba75e.png)
 
 Producto Info
 ![3-catalogo-item](https://user-images.githubusercontent.com/61922773/210934252-47167ab0-6ceb-4656-a674-c6ef47bf01b4.png)
