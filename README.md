@@ -41,4 +41,14 @@ Checkout
 
 ![8-checkout](https://user-images.githubusercontent.com/61922773/210934320-60cb4e86-9f6c-4788-b8a8-dea6e72ad944.png)
 
+Base de Datos
+
+![db_diagram](https://user-images.githubusercontent.com/61922773/210938709-ae5f7a6b-8ff7-4a9b-806e-985fbee649a1.jpg)
+
+Procesos
+
+![Proceso de reparacion](https://user-images.githubusercontent.com/61922773/210938738-ecf2040a-9c37-4d25-8fbe-1546e6e5da76.png)
+
+![Proceso de venta](https://user-images.githubusercontent.com/61922773/210938751-1730a4a0-484d-4486-830b-20ffa34ebc22.png)
+
 
