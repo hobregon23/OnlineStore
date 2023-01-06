@@ -1,5 +1,4 @@
 ## OnlineStore
-## Proyecto de curso de la Universidad.
 # Sitio de comercio electrónico, gestión de almacén y contabilidad de un negocio.
 
 Roles del sistema:
